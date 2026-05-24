@@ -1,0 +1,85 @@
+---
+title: "Analiza bibliometryczna naukowców z wybranych dyscyplin w polskich uczelniach przyrodniczych"
+subtitle: "Praca dyplomowa — studia podyplomowe Data Science"
+author: "Grzegorz Kulczycki"
+date: today
+format:
+  pdf:
+    documentclass: article
+    papersize: a4
+    geometry:
+      - margin=2.5cm
+    fontsize: 11pt
+    toc: true
+    toc-depth: 3
+    number-sections: true
+    fig-pos: "H"
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{float}
+      - \usepackage{longtable}
+  docx: default
+lang: pl
+tbl-colwidths: auto
+bibliography: referencje.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, warning = FALSE, message = FALSE,
+  fig.align = "center", out.width = "100%", dpi = 200
+)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+library(here)
+```
+
+# Wprowadzenie
+
+## Cel pracy
+
+Niniejsza praca dyplomowa stanowi analizę bibliometryczną pracowników naukowych wybranych dyscyplin z czterech polskich uczelni przyrodniczych: Uniwersytetu Przyrodniczego we Wrocławiu (UPWr), Szkoły Głównej Gospodarstwa Wiejskiego w Warszawie (SGGW), Uniwersytetu Rolniczego im. Hugona Kołłątaja w Krakowie (URK) oraz Uniwersytetu Warmińsko-Mazurskiego w Olsztynie (UWM). Wszystkie cztery uczelnie korzystają z systemu Omega-PSIR jako podstawowej Bazy Wiedzy, co umożliwia jednolitą procedurę pozyskania danych.
+
+## Pytania badawcze
+
+- **P1.** Czy istnieją odróżnialne typy profili bibliometrycznych (klastry naukowców)?
+- **P2.** Jak silnie dyscyplina różnicuje mierniki w porównaniu z uczelnią i stanowiskiem?
+- **P3.** Czy można predykować wysoki impact z cech strukturalnych?
+- **P4.** Jak wygląda struktura sieci współautorstwa w obrębie dyscyplin?
+
+# Materiał i metodyka
+
+## Źródła danych
+
+- **Omega-PSIR** — agregaty bibliometryczne per autor (h-index WoS/Scopus, sumaryczny IF, SNIP, MEiN).
+- **OpenAlex API** — FWCI (Field-Weighted Citation Impact), lista współautorów, ujednolicone identyfikatory.
+
+## Procedura pozyskania danych
+
+(Szczegóły w rozdziale Metodyka — zob. skrypty `Skrypty/R/01_*.R` do `04_*.R`.)
+
+## Metody analityczne
+
+- EDA + statystyka klasyczna (2-czynnikowa ANOVA / Kruskal-Wallis + Dunn).
+- PCA + klastrowanie k-means (walidacja silhouette + gap statistic).
+- Modelowanie predykcyjne: Random Forest + XGBoost (CV 5-fold + SHAP).
+- Analiza sieci współautorstwa: igraph + Louvain community detection.
+
+# Wyniki
+
+*[do uzupełnienia po implementacji etapów analitycznych]*
+
+# Dyskusja
+
+*[do uzupełnienia]*
+
+# Wnioski
+
+*[do uzupełnienia]*
+
+# Bibliografia
+
+::: {#refs}
+:::

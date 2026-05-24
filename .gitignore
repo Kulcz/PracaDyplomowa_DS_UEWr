@@ -1,0 +1,42 @@
+# === ŚRODOWISKA ===
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+.Python
+*.so
+*.egg-info/
+dist/
+build/
+
+# R
+.Rproj.user/
+.Rhistory
+.RData
+.Ruserdata
+renv/library/
+renv/staging/
+renv/local/
+renv/cellar/
+renv/lock/
+renv/python/
+renv/sandbox/
+renv/source/
+
+# === IDE ===
+.vscode/
+.idea/
+.positron/
+
+# === SYSTEM ===
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# === TYMCZASOWE ===
+*.tmp
+*.bak
+*.old
+.ipynb_checkpoints/
