@@ -20,8 +20,8 @@
 
 ## Tydzień 2-3: Scraping
 
-- [ ] Test scrapera na UPWR + "rolnictwo i ogrodnictwo" (znana baseline, n≈145)
-- [ ] Scraping wszystkich 12 komórek macierzy (3 dyscypliny × 4 uczelnie)
+- [x] Test scrapera na UPWR + "rolnictwo i ogrodnictwo" (2026-05-24, n=146, plik upwr_rolnictwo_i_ogrodnictwo_20260524_225545.csv)
+- [ ] Scraping pozostałych 11 komórek macierzy (3 dyscypliny × 4 uczelnie)
 - [ ] Walidacja: ile profili zebrano vs deklarowane
 
 ## Tydzień 4: Czyszczenie + matching OpenAlex

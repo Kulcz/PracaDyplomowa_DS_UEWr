@@ -11,36 +11,176 @@ library(tidyr)
 library(ggplot2)
 library(readr)
 library(here)
+library(fs)
 library(FactoMineR)
 library(factoextra)
 library(cluster)
+library(patchwork)
 
+set.seed(42)
+
+stopifnot(file_exists(here("Dane", "master", "profiles_features.csv")))
 df <- read_csv(here("Dane", "master", "profiles_features.csv"), show_col_types = FALSE)
 
-# Cechy do klastrowania (standaryzowane).
-# Filtrujemy df, potem X — zachowane indeksy do habillage w PCA biplot.
 cechy_klaster <- c("h_index_wos", "sum_IF", "sum_MEiN", "if_per_pub", "if_to_mein")
 df <- df %>% drop_na(all_of(cechy_klaster))
 X <- df %>% select(all_of(cechy_klaster)) %>% scale()
 
+PLOT_DIR <- here("Wykresy", "klastrowanie"); dir_create(PLOT_DIR)
+OUT_DIR  <- here("output");                   dir_create(OUT_DIR)
+
+cat(sprintf("[START] n = %d profili, %d cech\n", nrow(X), ncol(X)))
+
 # ---------- 1. PCA ----------
-# pca <- PCA(X, graph = FALSE)
-# fviz_pca_biplot(pca, habillage = df$dyscyplina, ...)
+pca <- PCA(X, graph = FALSE, ncp = ncol(X))
+eig <- as.data.frame(pca$eig)
+cat("\n=== PCA: wariancja wyjaśniona ===\n")
+print(round(eig, 2))
 
-# ---------- 2. Walidacja k (silhouette + gap statistic) ----------
-# fviz_nbclust(X, kmeans, method = "silhouette", k.max = 10)
-# fviz_nbclust(X, kmeans, method = "gap_stat", nstart = 25, k.max = 10)
+p_scree <- fviz_eig(pca, addlabels = TRUE, ylim = c(0, 100)) +
+  labs(title = "Scree plot: wariancja wyjaśniona przez komponenty")
+ggsave(file.path(PLOT_DIR, "01_pca_scree.png"), p_scree,
+       width = 8, height = 5, dpi = 200)
 
-# ---------- 3. K-means + interpretacja klastrow ----------
-# km <- kmeans(X, centers = k_opt, nstart = 25)
-# df$klaster <- km$cluster
-# Profile klastrow: srednia kazdej cechy + interpretacja jakosciowa
+p_biplot_dysc <- fviz_pca_biplot(
+  pca,
+  geom.ind = "point",
+  pointshape = 21, pointsize = 2,
+  fill.ind = df$dyscyplina,
+  col.var = "black", alpha.var = 0.6, repel = TRUE,
+  legend.title = "Dyscyplina"
+) + labs(title = "PCA biplot — kolor: dyscyplina")
+ggsave(file.path(PLOT_DIR, "02_pca_biplot_dyscyplina.png"), p_biplot_dysc,
+       width = 9, height = 7, dpi = 200)
 
-# ---------- 4. Porownanie Ward hierarchical ----------
-# hc <- hclust(dist(X), method = "ward.D2")
-# fviz_dend(hc, k = k_opt)
+p_biplot_ucz <- fviz_pca_biplot(
+  pca,
+  geom.ind = "point",
+  pointshape = 21, pointsize = 2,
+  fill.ind = df$uczelnia,
+  col.var = "black", alpha.var = 0.6, repel = TRUE,
+  legend.title = "Uczelnia"
+) + labs(title = "PCA biplot — kolor: uczelnia")
+ggsave(file.path(PLOT_DIR, "03_pca_biplot_uczelnia.png"), p_biplot_ucz,
+       width = 9, height = 7, dpi = 200)
 
-# ---------- 5. chi2 niezaleznosci: klaster vs dyscyplina vs uczelnia ----------
-# chisq.test(table(df$klaster, df$dyscyplina))
+# ---------- 2. Walidacja k: silhouette + gap statistic ----------
+K_MAX <- 8
+cat(sprintf("\n=== Walidacja k (zakres 2-%d) ===\n", K_MAX))
 
-cat("TODO: implementacja warstwy 2 (tydzien 7 harmonogramu)\n")
+p_sil <- fviz_nbclust(X, kmeans, method = "silhouette", k.max = K_MAX, nstart = 25) +
+  labs(title = "Średnia szerokość sylwetki (silhouette)")
+p_gap <- fviz_nbclust(X, kmeans, method = "gap_stat", k.max = K_MAX,
+                      nstart = 25, nboot = 50) +
+  labs(title = "Statystyka luki (gap)")
+
+ggsave(file.path(PLOT_DIR, "04_walidacja_k.png"),
+       p_sil + p_gap, width = 14, height = 5, dpi = 200)
+
+# Wyciagamy k optymalne z silhouette (argmax)
+sil_data <- p_sil$data
+k_opt <- as.integer(sil_data$clusters[which.max(sil_data$y)])
+cat(sprintf("Wybrane k (max silhouette) = %d\n", k_opt))
+
+# ---------- 3. K-means + profilowanie klastrów ----------
+km <- kmeans(X, centers = k_opt, nstart = 50, iter.max = 50)
+df$klaster <- factor(km$cluster)
+
+# Profile klastrów: srednia kazdej cechy w skali oryginalnej
+profile <- df %>%
+  group_by(klaster) %>%
+  summarise(
+    n = n(),
+    across(all_of(cechy_klaster), ~ round(mean(.x, na.rm = TRUE), 2)),
+    .groups = "drop"
+  )
+cat("\n=== Profile klastrów (oryginalna skala) ===\n")
+print(profile)
+write_csv(profile, file.path(OUT_DIR, "klaster_profile.csv"))
+
+# Wizualizacja klastrów na PCA
+p_clust <- fviz_cluster(
+  list(data = X, cluster = km$cluster),
+  geom = "point",
+  ellipse.type = "convex",
+  palette = "Set2"
+) + labs(title = sprintf("Klastry k-means (k = %d) w przestrzeni PC1-PC2", k_opt))
+ggsave(file.path(PLOT_DIR, "05_kmeans_clusters.png"), p_clust,
+       width = 9, height = 7, dpi = 200)
+
+# Heatmapa centroidow (skala standaryzowana - dla porownania cech)
+centr_std <- as.data.frame(km$centers) %>%
+  mutate(klaster = factor(seq_len(nrow(km$centers)))) %>%
+  pivot_longer(-klaster, names_to = "cecha", values_to = "z")
+
+p_centroidy <- ggplot(centr_std, aes(x = klaster, y = cecha, fill = z)) +
+  geom_tile() +
+  geom_text(aes(label = sprintf("%.2f", z)), size = 3.5) +
+  scale_fill_gradient2(low = "#3C5488", mid = "white", high = "#E64B35",
+                       midpoint = 0) +
+  labs(title = sprintf("Centroidy klastrów (z-scores, k = %d)", k_opt),
+       x = "Klaster", y = NULL, fill = "z") +
+  theme_minimal(base_size = 12)
+ggsave(file.path(PLOT_DIR, "06_centroidy_heatmap.png"), p_centroidy,
+       width = 7, height = 5, dpi = 200)
+
+# ---------- 4. Porównanie z Ward hierarchical ----------
+hc <- hclust(dist(X), method = "ward.D2")
+df$klaster_ward <- factor(cutree(hc, k = k_opt))
+
+p_dend <- fviz_dend(hc, k = k_opt, cex = 0.4, color_labels_by_k = TRUE,
+                    rect = TRUE, show_labels = FALSE) +
+  labs(title = sprintf("Dendrogram Warda (k = %d)", k_opt))
+ggsave(file.path(PLOT_DIR, "07_dendrogram_ward.png"), p_dend,
+       width = 12, height = 6, dpi = 200)
+
+# Zgodność k-means vs Ward (cross-table + Cramer's V)
+ct_km_ward <- table(km = df$klaster, ward = df$klaster_ward)
+cat("\n=== Cross-table: k-means vs Ward ===\n"); print(ct_km_ward)
+
+cramers_v <- function(tab) {
+  chi <- suppressWarnings(chisq.test(tab))
+  n <- sum(tab)
+  k <- min(nrow(tab), ncol(tab))
+  sqrt(as.numeric(chi$statistic) / (n * (k - 1)))
+}
+cat(sprintf("Cramer's V (k-means vs Ward) = %.3f\n", cramers_v(ct_km_ward)))
+
+# ---------- 5. chi2: klaster vs dyscyplina / uczelnia ----------
+cat("\n=== chi2 niezależności: klaster vs dyscyplina / uczelnia ===\n")
+ct_dysc <- table(klaster = df$klaster, dyscyplina = df$dyscyplina)
+ct_ucz  <- table(klaster = df$klaster, uczelnia = df$uczelnia)
+
+print(ct_dysc)
+chi_dysc <- suppressWarnings(chisq.test(ct_dysc))
+cat(sprintf("chi2 vs dyscyplina: X2 = %.2f, df = %d, p = %.4g, Cramer's V = %.3f\n",
+            chi_dysc$statistic, chi_dysc$parameter, chi_dysc$p.value,
+            cramers_v(ct_dysc)))
+
+print(ct_ucz)
+chi_ucz <- suppressWarnings(chisq.test(ct_ucz))
+cat(sprintf("chi2 vs uczelnia: X2 = %.2f, df = %d, p = %.4g, Cramer's V = %.3f\n",
+            chi_ucz$statistic, chi_ucz$parameter, chi_ucz$p.value,
+            cramers_v(ct_ucz)))
+
+# ---------- 6. Zapis ----------
+saveRDS(
+  list(
+    pca       = pca,
+    k_opt     = k_opt,
+    kmeans    = km,
+    hclust    = hc,
+    df        = df,                 # df z dolaczonymi kolumnami klaster / klaster_ward
+    profile   = profile,
+    crosstabs = list(km_ward = ct_km_ward, dysc = ct_dysc, ucz = ct_ucz),
+    cramers_v = list(
+      km_ward = cramers_v(ct_km_ward),
+      dysc    = cramers_v(ct_dysc),
+      ucz     = cramers_v(ct_ucz)
+    )
+  ),
+  file.path(OUT_DIR, "clusters.rds")
+)
+
+cat(sprintf("\nZapisano: %s\nWykresy : %s\n",
+            file.path(OUT_DIR, "clusters.rds"), PLOT_DIR))

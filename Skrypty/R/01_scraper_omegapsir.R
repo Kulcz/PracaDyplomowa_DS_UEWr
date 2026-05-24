@@ -5,29 +5,96 @@
 # - ETAP 2: pobiera profil i metryki z HTML po etykietach (dt/dd lub tekst węzłów)
 # - Debug: gdy nic nie złapie, zapisuje HTML do OUT_DIR/debug_html/
 #
+
 # UŻYCIE:
-#   Sys.setenv(UNI = "URK"); Sys.setenv(DYSCYPLINA = "rolnictwo_i_ogrodnictwo")
-#   source("Skrypty/R/01_scraper_omegapsir.R")
+# Sys.setenv(UNI = "URK") 
+# Sys.setenv(DYSCYPLINA = "rolnictwo_i_ogrodnictwo")
+# source("Skrypty/R/01_scraper_omegapsir.R")
 # ============================================================
 
 # Uczelnia: ustaw przed source() — Sys.setenv(UNI = "UPWR" | "SGGW" | "URK" | "UWM")
 # Default (gdy nie ustawiono): UPWR
 if (!nzchar(Sys.getenv("UNI"))) Sys.setenv(UNI = "UPWR")
 
-pkgs <- c("RSelenium", "stringr", "openxlsx", "rvest", "xml2")
+pkgs <- c("httr2", "jsonlite", "stringr", "openxlsx", "rvest", "xml2", "base64enc")
 to_install <- pkgs[!sapply(pkgs, requireNamespace, quietly = TRUE)]
 if (length(to_install) > 0) install.packages(to_install)
 
-library(RSelenium)
+library(httr2)
+library(jsonlite)
 library(stringr)
 library(openxlsx)
 library(rvest)
 library(xml2)
+library(base64enc)
+# RSelenium 1.7.10 ma regresję parsowania W3C WebDriver z Chrome 148+
+# (sessionId zwraca NA → operacje na sesji wybuchają). Idziemy bezpośrednio
+# do chromedriver przez WebDriver HTTP API.
 
 # ---------- Ustawienia ----------
 CH_HOST <- "127.0.0.1"
 CH_PORT <- 9515L
-CH_PATH <- "/wd/hub"
+WD_BASE <- sprintf("http://%s:%d", CH_HOST, CH_PORT)
+ELEMENT_KEY <- "element-6066-11e4-a52e-4f735466cecf"  # W3C identyfikator
+
+# ---------- Mini WebDriver client (httr2) ----------
+wd_post <- function(path, body = list()) {
+  request(paste0(WD_BASE, path)) |>
+    req_method("POST") |>
+    req_body_json(body, auto_unbox = TRUE) |>
+    req_timeout(30) |>
+    req_perform()
+}
+wd_get <- function(path) {
+  request(paste0(WD_BASE, path)) |>
+    req_timeout(30) |>
+    req_perform()
+}
+wd_del <- function(path) {
+  request(paste0(WD_BASE, path)) |>
+    req_method("DELETE") |>
+    req_timeout(30) |>
+    req_perform()
+}
+wd_val <- function(resp) {
+  fromJSON(resp_body_string(resp), simplifyVector = FALSE)$value
+}
+
+wd_new_session <- function() {
+  body <- list(capabilities = list(alwaysMatch = list(
+    browserName = "chrome",
+    `goog:chromeOptions` = list(args = list("--no-sandbox", "--disable-gpu"))
+  )))
+  v <- wd_val(wd_post("/session", body))
+  v$sessionId
+}
+wd_navigate     <- function(sid, url) wd_post(sprintf("/session/%s/url", sid), list(url = url))
+wd_current_url  <- function(sid) wd_val(wd_get(sprintf("/session/%s/url", sid)))
+wd_page_source  <- function(sid) wd_val(wd_get(sprintf("/session/%s/source", sid)))
+wd_screenshot   <- function(sid, file) {
+  b64 <- wd_val(wd_get(sprintf("/session/%s/screenshot", sid)))
+  writeBin(base64enc::base64decode(b64), file)
+}
+wd_find_elements <- function(sid, using, value) {
+  els <- wd_val(wd_post(sprintf("/session/%s/elements", sid),
+                        list(using = using, value = value)))
+  vapply(els, function(e) e[[ELEMENT_KEY]], character(1))
+}
+wd_click <- function(sid, element_id) {
+  wd_post(sprintf("/session/%s/element/%s/click", sid, element_id), list())
+}
+wd_quit <- function(sid) try(wd_del(sprintf("/session/%s", sid)), silent = TRUE)
+
+# Wykonanie JavaScript w przeglądarce — niezbędne dla PrimeFaces paginatora,
+# gdzie zwykły WebDriver click bywa ignorowany przez event delegation.
+wd_execute <- function(sid, script, args = list()) {
+  resp <- request(sprintf("%s/session/%s/execute/sync", WD_BASE, sid)) |>
+    req_method("POST") |>
+    req_body_json(list(script = script, args = args), auto_unbox = TRUE) |>
+    req_timeout(30) |>
+    req_perform()
+  fromJSON(resp_body_string(resp), simplifyVector = FALSE)$value
+}
 
 UNI <- toupper(Sys.getenv("UNI", unset = "UPWR"))
 SUPPORTED_UNI <- c("UPWR", "SGGW", "URK", "UWM")
@@ -95,10 +162,11 @@ file_stem <- paste0(CFG$code, "_", DYSCYPLINA, "_", timestamp)
 OUT_XLSX <- file.path(OUT_DIR, paste0(file_stem, ".xlsx"))
 OUT_CSV  <- file.path(OUT_DIR, paste0(file_stem, ".csv"))
 
-WAIT_RESULTS <- 2
+WAIT_RESULTS <- 4
 WAIT_PROFILE <- 6
 MAX_NEXT_CLICKS <- 300
 AUTOSAVE_EVERY <- 10
+LIST_RETRY <- 3       # po ENTER czekamy nawet 3*WAIT_RESULTS sek na JS render listy
 
 # ---------- Helpery ----------
 to_num_pl <- function(x) {
@@ -117,17 +185,40 @@ profile_url <- function(author_id) {
 }
 
 # --- wyniki: author_id ---
-get_author_ids_from_results <- function(remDr) {
-  links <- remDr$findElements("css selector", CFG$author_link_css)
-  if (length(links) == 0) return(character())
-  hrefs <- unlist(lapply(links, function(a) a$getElementAttribute("href")), use.names = FALSE)
-  ids <- vapply(hrefs, extract_author_id, character(1))
-  unique(ids[!is.na(ids) & nzchar(ids)])
+get_author_ids_from_results <- function(sid) {
+  html <- tryCatch(wd_page_source(sid), error = function(e) "")
+  if (!nzchar(html)) return(character())
+  m <- regmatches(html, gregexpr(CFG$author_id_regex, html, perl = TRUE))[[1]]
+  if (length(m) == 0) return(character())
+  ids <- sub(".*/info/author/", "", m)
+  ids <- sub("[?/#&].*$", "", ids)
+  unique(ids[nzchar(ids)])
 }
 
-# --- klik next ---
-click_next <- function(remDr) {
+# --- Następna strona przez JS execute ---
+# PrimeFaces używa event delegation + AJAX (PrimeFaces.ab). WebDriver native click
+# często nie triggeruje handler. Wywołujemy `el.click()` z poziomu JS — to event
+# faktycznie idzie przez listener PrimeFaces, zachowując stan filtra po stronie sesji.
+go_to_next_page_js <- function(sid, verbose = TRUE) {
+  script <- paste(
+    "var el = document.querySelector('a.ui-paginator-next:not(.ui-state-disabled)');",
+    "if (!el) return 'no-button';",
+    "if (el.getAttribute('aria-disabled') === 'true') return 'disabled';",
+    "el.click();",
+    "return 'clicked';"
+  )
+  res <- tryCatch(wd_execute(sid, script),
+                  error = function(e) paste0("ERR:", conditionMessage(e)))
+  if (verbose) cat(sprintf("  [next-js] %s\n", res))
+  isTRUE(res == "clicked")
+}
+
+# --- klik next (fallback) ---
+# Omega-PSIR używa PrimeFaces paginator: <a class="ui-paginator-next">.
+click_next <- function(sid, verbose = TRUE) {
   css_try <- c(
+    "a.ui-paginator-next:not(.ui-state-disabled)",
+    "a.ui-paginator-next",
     "a[rel='next']",
     "a[aria-label*='Nast']",
     "a[title*='Nast']",
@@ -135,32 +226,52 @@ click_next <- function(remDr) {
     ".pagination li.next a"
   )
   for (css in css_try) {
-    els <- try(remDr$findElements("css selector", css), silent = TRUE)
-    if (!inherits(els, "try-error") && length(els) > 0) {
-      ok <- try(els[[1]]$clickElement(), silent = TRUE)
-      if (!inherits(ok, "try-error")) return(TRUE)
+    els <- tryCatch(wd_find_elements(sid, "css selector", css),
+                    error = function(e) {
+                      if (verbose) cat(sprintf("  [click] CSS '%s' FIND-ERR: %s\n",
+                                               css, conditionMessage(e)))
+                      character()
+                    })
+    if (verbose) cat(sprintf("  [click] CSS '%s' -> %d elem\n", css, length(els)))
+    if (length(els) > 0) {
+      ok <- tryCatch({ wd_click(sid, els[1]); TRUE },
+                     error = function(e) {
+                       if (verbose) cat(sprintf("  [click] CLICK-ERR: %s\n",
+                                                conditionMessage(e)))
+                       FALSE
+                     })
+      if (ok) {
+        if (verbose) cat(sprintf("  [click] OK przez CSS '%s'\n", css))
+        return(TRUE)
+      }
     }
   }
   xpath_try <- c(
+    "//a[contains(@class,'ui-paginator-next') and not(contains(@class,'ui-state-disabled'))]",
     "//a[contains(@aria-label,'Nast')]",
     "//a[contains(@title,'Nast')]",
     "//a[@rel='next']",
     "//li[contains(@class,'next')]/a"
   )
   for (xp in xpath_try) {
-    els <- try(remDr$findElements("xpath", xp), silent = TRUE)
-    if (!inherits(els, "try-error") && length(els) > 0) {
-      ok <- try(els[[1]]$clickElement(), silent = TRUE)
-      if (!inherits(ok, "try-error")) return(TRUE)
+    els <- tryCatch(wd_find_elements(sid, "xpath", xp),
+                    error = function(e) character())
+    if (verbose) cat(sprintf("  [click] XPATH '%s' -> %d elem\n",
+                             substr(xp, 1, 60), length(els)))
+    if (length(els) > 0) {
+      ok <- tryCatch({ wd_click(sid, els[1]); TRUE }, error = function(e) FALSE)
+      if (ok) {
+        if (verbose) cat(sprintf("  [click] OK przez XPath\n"))
+        return(TRUE)
+      }
     }
   }
+  if (verbose) cat("  [click] WSZYSTKIE selektory zawiodły\n")
   FALSE
 }
 
 # --- pobierz HTML ---
-get_page_html <- function(remDr) {
-  remDr$getPageSource()[[1]]
-}
+get_page_html <- function(sid) wd_page_source(sid)
 
 # --- ekstrakcja wartości "po etykiecie" z HTML (bardzo odporne) ---
 # Działa dla układów typu <dt>Etykieta</dt><dd>Wartość</dd> oraz gdy etykieta jest w dowolnym węźle obok wartości.
@@ -415,18 +526,17 @@ looks_like_block_page <- function(html) {
 }
 
 # --- pobierz rekord profilu (z retry i debug dump) ---
-get_profile_record <- function(remDr, author_id, wait_sec = WAIT_PROFILE) {
+get_profile_record <- function(sid, author_id, wait_sec = WAIT_PROFILE) {
   url <- profile_url(author_id)
-  remDr$navigate(url)
+  wd_navigate(sid, url)
   Sys.sleep(wait_sec)
 
-  html <- get_page_html(remDr)
+  html <- get_page_html(sid)
   rec <- parse_profile_html(html)
 
-  # retry jeśli kompletnie pusto
   if (!has_any_data(rec)) {
     Sys.sleep(3)
-    html <- get_page_html(remDr)
+    html <- get_page_html(sid)
     rec <- parse_profile_html(html)
   }
 
@@ -434,7 +544,6 @@ get_profile_record <- function(remDr, author_id, wait_sec = WAIT_PROFILE) {
     warning(sprintf("Podejrzenie strony logowania/blokady dla %s", author_id), call. = FALSE)
   }
 
-  # jeśli nadal pusto, zapisz debug HTML
   if (!has_any_data(rec)) {
     dbg_file <- file.path(DEBUG_DIR, paste0(author_id, ".html"))
     writeLines(html, dbg_file, useBytes = TRUE)
@@ -460,14 +569,25 @@ save_outputs <- function(df, out_csv, out_xlsx) {
 # ============================================================
 cat(sprintf("\n[CONFIG] UNI=%s | URL_RESULTS=%s\n", CFG$name, URL_RESULTS))
 
-remDr <- remoteDriver(CH_HOST, port = CH_PORT, browserName = "chrome", path = CH_PATH)
-remDr$open()
-remDr$navigate(URL_RESULTS)
+SID <- wd_new_session()
+cat(sprintf("[SESSION] WebDriver sid=%s\n", substr(SID, 1, 16)))
+wd_navigate(SID, URL_RESULTS)
 Sys.sleep(WAIT_RESULTS)
 
 cat("\n--- OKNO CHROME OTWARTE ---\n")
-cat("Ustaw filtry w panelu po lewej i kliknij 'Filtruj' (np. Liczba pozycji: 148).\n\n")
+cat("Ustaw filtry w panelu po lewej i kliknij 'Filtruj' (np. Liczba pozycji: 146).\n\n")
 invisible(readline(prompt = "Gdy filtry są ustawione i zastosowane, wciśnij ENTER w konsoli R... "))
+
+# ---------- Diagnostyka po ENTER ----------
+cur_url <- tryCatch(wd_current_url(SID),         error = function(e) "<?>")
+html_sz <- tryCatch(nchar(wd_page_source(SID)),  error = function(e) 0L)
+cat(sprintf("\n[DIAG] aktualny URL : %s\n", cur_url))
+cat(sprintf("[DIAG] rozmiar HTML : %d bajtow\n", html_sz))
+screen_path <- file.path(DEBUG_DIR, "screen_after_enter.png")
+tryCatch(wd_screenshot(SID, screen_path),
+         error = function(e) cat("[DIAG] screenshot ERROR:", conditionMessage(e), "\n"))
+if (file.exists(screen_path))
+  cat(sprintf("[DIAG] screenshot   : %s\n", screen_path))
 
 # ---------- ETAP 1: author_id ----------
 cat("\n[ETAP 1] Zbieram author_id...\n")
@@ -477,7 +597,14 @@ no_growth <- 0
 
 for (k in 1:MAX_NEXT_CLICKS) {
   Sys.sleep(WAIT_RESULTS)
-  ids <- get_author_ids_from_results(remDr)
+  ids <- get_author_ids_from_results(SID)
+  for (try_n in seq_len(LIST_RETRY - 1)) {
+    if (length(ids) > 0) break
+    cat(sprintf("strona=%d | brak wynikow w DOM, retry %d/%d po %ds...\n",
+                k, try_n, LIST_RETRY - 1, WAIT_RESULTS))
+    Sys.sleep(WAIT_RESULTS)
+    ids <- get_author_ids_from_results(SID)
+  }
   if (length(ids) == 0) break
 
   before <- length(all_ids)
@@ -487,18 +614,28 @@ for (k in 1:MAX_NEXT_CLICKS) {
   cat(sprintf("strona=%d | ids_na_stronie=%d | unikalne=%d | +%d\n",
               k, length(ids), length(all_ids), added))
 
+  # Debug: zapis HTML pierwszej strony żeby zobaczyć paginator
+  if (k == 1) {
+    dump_path <- file.path(DEBUG_DIR, "page1_source.html")
+    writeLines(wd_page_source(SID), dump_path, useBytes = TRUE)
+    cat(sprintf("  [DEBUG] zapis HTML strony 1: %s\n", dump_path))
+  }
+
   same_page <- length(prev_ids_on_page) > 0 && identical(ids, prev_ids_on_page)
   prev_ids_on_page <- ids
 
   if (added == 0 || same_page) no_growth <- no_growth + 1 else no_growth <- 0
   if (no_growth >= 2) break
 
-  if (!click_next(remDr)) break
+  # Primary: PrimeFaces click przez JS. Fallback: WebDriver native click.
+  moved <- go_to_next_page_js(SID)
+  if (!moved) moved <- click_next(SID)
+  if (!moved) break
 }
 
 cat("\nZebrano profili: ", length(all_ids), "\n", sep = "")
 if (length(all_ids) == 0) {
-  remDr$close()
+  wd_quit(SID)
   stop("Nie zebrano żadnych profili – sprawdź filtry i listę wyników.")
 }
 
@@ -511,7 +648,7 @@ for (i in seq_along(all_ids)) {
   cat(sprintf("[%d/%d] %s\n", i, length(all_ids), id))
 
   records[[i]] <- tryCatch(
-    get_profile_record(remDr, id),
+    get_profile_record(SID, id),
     error = function(e) {
       data.frame(
         profil = NA_character_, stanowisko = NA_character_,
@@ -559,6 +696,8 @@ save_outputs(df, OUT_CSV, OUT_XLSX)
   cat("\nZapisano:\nCSV : ", OUT_CSV, "\nXLSX: ", OUT_XLSX, "\n", sep = "")
   cat("Debug HTML (dla profili bez danych): ", normalizePath(DEBUG_DIR), "\n", sep = "")
 
-remDr$close()
+wd_quit(SID)
 
 df
+
+

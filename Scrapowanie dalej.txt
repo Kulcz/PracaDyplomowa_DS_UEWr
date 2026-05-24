@@ -1,0 +1,16 @@
+Co to znaczy dla projektu
+
+  Pierwsza komórka macierzy 3×4 zamknięta. Workflow potwierdzony — dla
+  pozostałych 11 komórek (3 dyscypliny × 4 uczelnie − 1 już pobrana)
+  wystarczy:
+
+  Sys.setenv(UNI = "UPWR"); Sys.setenv(DYSCYPLINA = "weterynaria")
+  source("Skrypty/R/01_scraper_omegapsir.R")
+  # w Chrome: ustaw filtr weterynarii → Filtruj → ENTER w R
+
+  Powtarzasz 11×: UPWR × {weterynaria, zootechnika}, SGGW × {3 dysc.}, URK
+   × {3 dysc.}, UWM × {3 dysc.}.
+
+  Czas na komórkę: ~3-15 min (zależy od n).
+
+  Co dalej
