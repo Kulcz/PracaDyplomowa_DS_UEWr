@@ -5,8 +5,8 @@ if (file.exists("renv/activate.R")) {
 }
 
 # Ustawienia domyślne
+# Repo (P3M binarki) + HTTPUserAgent ustawiane globalnie w ~/.Rprofile.
 options(
-  repos = c(CRAN = "https://cloud.r-project.org/"),
   stringsAsFactors = FALSE,
   encoding = "UTF-8",
   scipen = 999,  # Wyłącz notację naukową

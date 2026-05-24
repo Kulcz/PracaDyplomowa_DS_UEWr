@@ -8,6 +8,7 @@
 
 library(dplyr)
 library(stringr)
+library(purrr)
 library(httr2)
 library(jsonlite)
 library(stringdist)
@@ -15,18 +16,24 @@ library(readr)
 library(fs)
 library(here)
 
-# ROR-y polskich uczelni rolniczych — do potwierdzenia w tygodniu 4
+# ROR-y polskich uczelni rolniczych (zweryfikowane 2026-05-24 via api.ror.org)
 ROR <- c(
-  upwr = "00bs9pb59",   # Uniwersytet Przyrodniczy we Wroclawiu (do weryfikacji)
-  sggw = "01dr6c206",   # SGGW (do weryfikacji)
-  urk  = "05j0czf65",   # Uniwersytet Rolniczy w Krakowie (do weryfikacji)
-  uwm  = "02b6qw903"    # UWM Olsztyn (do weryfikacji)
+  upwr = "05cs8k179",   # Wroclaw University of Environmental and Life Sciences
+  sggw = "05srvzs48",   # Warsaw University of Life Sciences (SGGW)
+  urk  = "012dxyr07",   # University of Agriculture in Krakow
+  uwm  = "05s4feg49"    # University of Warmia and Mazury in Olsztyn
 )
-# UWAGA: ROR-y trzeba zweryfikować na https://ror.org/search
 
 OPENALEX_BASE <- "https://api.openalex.org"
 MAILTO <- "grzegorz.kulczycki@gmail.com"  # polite pool
+SIM_THRESHOLD <- 0.85                     # akceptacja Jaro-Winkler
+AUTOSAVE_EVERY <- 50
 
+OUT_DIR  <- here("Dane", "openalex")
+OUT_FILE <- file.path(OUT_DIR, "author_match.csv")
+dir_create(OUT_DIR)
+
+stopifnot(file_exists(here("Dane", "master", "profiles_clean.csv")))
 profiles <- read_csv(here("Dane", "master", "profiles_clean.csv"), show_col_types = FALSE)
 
 # ---------- Helper: pojedyncze zapytanie ----------
@@ -59,21 +66,122 @@ best_match <- function(name, candidates) {
   )
 }
 
-# ---------- Petla matchingowa ----------
-matches <- profiles %>%
-  mutate(idx = row_number()) %>%
-  rowwise() %>%
-  mutate(
-    ror = ROR[uczelnia],
-    candidates_n = NA_integer_,
-    openalex_id = NA_character_,
-    matched_name = NA_character_,
-    similarity = NA_real_
+# ---------- Helper: czyszczenie nazwy do searcha ----------
+# Omega-PSIR zwraca "prof. dr hab. inż. Jan Kowalski" — OpenAlex search lepiej radzi sobie
+# z czystym "Jan Kowalski" niż z prefiksami tytulow naukowych.
+clean_name_for_search <- function(x) {
+  if (is.na(x) || !nzchar(x)) return(NA_character_)
+  x <- str_replace_all(x, "(?i)\\b(prof|dr|hab|inz|inż|mgr|lic|emer|m\\.sc|ph\\.?d)\\.?", "")
+  x <- str_squish(x)
+  if (!nzchar(x)) NA_character_ else x
+}
+
+# ---------- Pojedynczy match dla 1 profilu ----------
+match_one <- function(profil, uczelnia) {
+  ror <- ROR[uczelnia]
+  name_clean <- clean_name_for_search(profil)
+
+  if (is.na(ror) || is.na(name_clean)) {
+    return(tibble(
+      candidates_n = NA_integer_, openalex_id = NA_character_,
+      matched_name = NA_character_, similarity = NA_real_,
+      match_accepted = FALSE, error = "missing_ror_or_name"
+    ))
+  }
+
+  cands <- tryCatch(
+    search_openalex_author(name_clean, ror),
+    error = function(e) NULL
   )
+  if (is.null(cands)) {
+    return(tibble(
+      candidates_n = NA_integer_, openalex_id = NA_character_,
+      matched_name = NA_character_, similarity = NA_real_,
+      match_accepted = FALSE, error = "api_failure"
+    ))
+  }
 
-# TODO: zaimplementowac petle z progress barem (purrr::map z pb)
-# Dla kazdego profilu: search_openalex_author(profil, ror) -> best_match(profil, ...)
-# Threshold akceptacji: similarity >= 0.85 (Jaro-Winkler)
-# Zapis do Dane/openalex/author_match.csv
+  bm <- best_match(name_clean, cands)
+  if (is.null(bm)) {
+    return(tibble(
+      candidates_n = 0L, openalex_id = NA_character_,
+      matched_name = NA_character_, similarity = NA_real_,
+      match_accepted = FALSE, error = NA_character_
+    ))
+  }
 
-cat("TODO: implementacja petli matchingowej (tydzien 4 harmonogramu)\n")
+  tibble(
+    candidates_n = length(cands),
+    openalex_id  = bm$openalex_id,
+    matched_name = bm$matched_name,
+    similarity   = bm$similarity,
+    match_accepted = bm$similarity >= SIM_THRESHOLD,
+    error = NA_character_
+  )
+}
+
+# ---------- Resumability: wczytaj poprzednie wyniki ----------
+done_ids <- character()
+if (file_exists(OUT_FILE)) {
+  prev <- read_csv(OUT_FILE, show_col_types = FALSE)
+  done_ids <- prev$author_id[!is.na(prev$author_id)]
+  cat(sprintf("[RESUME] Pominę %d profili już obsłużonych w %s\n",
+              length(done_ids), OUT_FILE))
+}
+
+to_process <- profiles %>% filter(!(author_id %in% done_ids))
+cat(sprintf("[START] Profili do dopasowania: %d (z %d całość)\n",
+            nrow(to_process), nrow(profiles)))
+
+# ---------- Pętla z autosave ----------
+results <- vector("list", nrow(to_process))
+t0 <- Sys.time()
+
+for (i in seq_len(nrow(to_process))) {
+  row <- to_process[i, ]
+  rec <- match_one(row$profil, row$uczelnia)
+  rec$author_id <- row$author_id
+  rec$profil_clean <- clean_name_for_search(row$profil)
+  rec$uczelnia <- row$uczelnia
+  rec$dyscyplina <- row$dyscyplina
+  results[[i]] <- rec
+
+  if (i %% 25 == 0 || i == nrow(to_process)) {
+    el <- as.numeric(difftime(Sys.time(), t0, units = "secs"))
+    eta <- el / i * (nrow(to_process) - i)
+    cat(sprintf("[%d/%d] sim=%.2f acc=%s | el=%.0fs eta=%.0fs\n",
+                i, nrow(to_process),
+                rec$similarity %||% NA_real_,
+                rec$match_accepted, el, eta))
+  }
+
+  if (i %% AUTOSAVE_EVERY == 0 || i == nrow(to_process)) {
+    df_partial <- bind_rows(results[seq_len(i)])
+    # merge z poprzednimi (resumability)
+    if (file_exists(OUT_FILE)) {
+      prev <- read_csv(OUT_FILE, show_col_types = FALSE)
+      df_partial <- bind_rows(prev, df_partial) %>%
+        distinct(author_id, .keep_all = TRUE)
+    }
+    write_csv(df_partial, OUT_FILE)
+  }
+}
+
+# ---------- Raport match_rate ----------
+final <- read_csv(OUT_FILE, show_col_types = FALSE)
+cat("\n========== MATCH RATE ==========\n")
+overall <- mean(final$match_accepted, na.rm = TRUE)
+cat(sprintf("Cały zbiór : %.1f%% (%d / %d)\n",
+            100 * overall, sum(final$match_accepted, na.rm = TRUE), nrow(final)))
+
+mr_tab <- final %>%
+  group_by(uczelnia, dyscyplina) %>%
+  summarise(
+    n = n(),
+    matched = sum(match_accepted, na.rm = TRUE),
+    match_rate = round(100 * matched / n, 1),
+    .groups = "drop"
+  )
+print(mr_tab)
+
+cat(sprintf("\nZapisano: %s\n", OUT_FILE))

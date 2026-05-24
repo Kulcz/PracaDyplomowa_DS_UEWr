@@ -16,9 +16,9 @@ profiles <- read_csv(here("Dane", "master", "profiles_clean.csv"), show_col_type
 # ---------- 1. Cechy wyprowadzone z Omega-PSIR ----------
 features <- profiles %>%
   mutate(
-    if_per_pub   = sum_IF / pmax(n_pub %||% NA, 1),   # n_pub trzeba dorzucic w 02 jesli dostepne
-    mein_per_pub = sum_MEiN / pmax(n_pub %||% NA, 1),
-    if_to_mein   = sum_IF / pmax(sum_MEiN, 1)          # proxy internacjonalizacji
+    if_per_pub   = sum_IF   / pmax(n_pub, 1),
+    mein_per_pub = sum_MEiN / pmax(n_pub, 1),
+    if_to_mein   = sum_IF   / pmax(sum_MEiN, 1)   # proxy internacjonalizacji
   )
 
 # ---------- 2. Cechy z OpenAlex (po zlaczeniu) ----------

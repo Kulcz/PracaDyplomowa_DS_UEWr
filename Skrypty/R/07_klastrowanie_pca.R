@@ -17,12 +17,11 @@ library(cluster)
 
 df <- read_csv(here("Dane", "master", "profiles_features.csv"), show_col_types = FALSE)
 
-# Cechy do klastrowania (standaryzowane)
+# Cechy do klastrowania (standaryzowane).
+# Filtrujemy df, potem X — zachowane indeksy do habillage w PCA biplot.
 cechy_klaster <- c("h_index_wos", "sum_IF", "sum_MEiN", "if_per_pub", "if_to_mein")
-X <- df %>%
-  select(all_of(cechy_klaster)) %>%
-  drop_na() %>%
-  scale()
+df <- df %>% drop_na(all_of(cechy_klaster))
+X <- df %>% select(all_of(cechy_klaster)) %>% scale()
 
 # ---------- 1. PCA ----------
 # pca <- PCA(X, graph = FALSE)

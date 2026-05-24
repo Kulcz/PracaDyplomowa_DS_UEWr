@@ -9,6 +9,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(readr)
+library(purrr)
 library(fs)
 library(here)
 

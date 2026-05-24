@@ -13,7 +13,9 @@
   - [ ] SGGW — j.w.
   - [ ] URK — j.w.
   - [ ] UWM — j.w.
-- [ ] Weryfikacja dostępności 3 dyscyplin na każdej z 4 uczelni (audyt zawartości)
+- [x] Wybór 3 dyscyplin: rolnictwo i ogrodnictwo + weterynaria + zootechnika i rybactwo (2026-05-24, po pre-screeningu OpenAlex)
+- [x] Pre-screening OpenAlex: ≥800 prac per komórka macierzy 3×4 (2026-05-24)
+- [ ] Weryfikacja liczebności pracowników w panelu Omega-PSIR per (uczelnia × dyscyplina) — 12 komórek
 - [ ] Uzgodnienie zakresu z promotorem
 
 ## Tydzień 2-3: Scraping

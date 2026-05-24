@@ -4,6 +4,15 @@
 
 Praca dyplomowa studiów podyplomowych Data Science na Uniwersytecie Ekonomicznym we Wrocławiu. Analiza bibliometryczna 3 dyscyplin × 4 uczelni przyrodniczych (~1500-2500 naukowców). Trzy warstwy DS: klastrowanie + modelowanie predykcyjne + sieci współautorstwa.
 
+**Dyscypliny (decyzja 2026-05-24, po pre-screeningu OpenAlex):**
+- rolnictwo i ogrodnictwo (baza referencyjna)
+- weterynaria (kontrast bio-STEM: duże zespoły, wysokie IF)
+- zootechnika i rybactwo (drugi pion zwierzęcy, klasyka dziedziny rolniczej)
+
+Wszystkie 3 w dziedzinie nauk rolniczych (rozporządzenie MEiN) — spójność systemu punktacji + bezpieczne liczebności na każdej z 4 uczelni (≥800 prac per komórka w OpenAlex).
+
+**Odrzucone:** „nauki leśne" — UPWR ma bardzo małą reprezentację (155 prac vs 1249 SGGW), brak osobnego wydziału leśnego.
+
 Pełny plan: `~/.claude/plans/chce-wykona-projekt-ko-cowy-zany-rabbit.md`
 
 Fundament metodyczny: `~/Analiza_projekty/UPWr_bibliometria` (scraper UPWr, analiza WPT). Wiele patternów stąd reusable — przy implementacji najpierw sprawdź czy nie ma już gotowego rozwiązania w UPWr_bibliometria.
@@ -17,10 +26,10 @@ Fundament metodyczny: `~/Analiza_projekty/UPWr_bibliometria` (scraper UPWr, anal
 
 ## Konfiguracja uczelni (Omega-PSIR)
 
-Wszystkie 4 potwierdzone (audyt 2026-05-24):
+Wszystkie 4 potwierdzone (audyt 2026-05-24, re-walidacja URL 2026-05-24):
 
 - UPWR: bazawiedzy.upwr.edu.pl
-- SGGW: bazawiedzy.sggw.edu.pl
+- SGGW: **bw.sggw.edu.pl** (stara `bazawiedzy.sggw.edu.pl` przekierowuje na 404 — przeniesione na skróconą domenę)
 - URK: repo.ur.krakow.pl
 - UWM: bazawiedzy.uwm.edu.pl
 

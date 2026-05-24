@@ -10,11 +10,9 @@
 #   source("Skrypty/R/01_scraper_omegapsir.R")
 # ============================================================
 
-# Ustawienie Uczelni z ktorej beda zbierane dane
-Sys.setenv(UNI = "UPWR")
-# Sys.setenv(UNI = "SGGW")
-# Sys.setenv(UNI = "URK")
-# Sys.setenv(UNI = "UWM")
+# Uczelnia: ustaw przed source() — Sys.setenv(UNI = "UPWR" | "SGGW" | "URK" | "UWM")
+# Default (gdy nie ustawiono): UPWR
+if (!nzchar(Sys.getenv("UNI"))) Sys.setenv(UNI = "UPWR")
 
 pkgs <- c("RSelenium", "stringr", "openxlsx", "rvest", "xml2")
 to_install <- pkgs[!sapply(pkgs, requireNamespace, quietly = TRUE)]
@@ -53,13 +51,15 @@ UNIVERSITY_CONFIG <- list(
     profile_url = function(author_id) sprintf("https://bazawiedzy.upwr.edu.pl/info/author/%s?lang=pl&r=publication&tab=main", author_id)
   ),
   SGGW = list(
+    # 2026-05-24: stara domena bazawiedzy.sggw.edu.pl zwraca 404 (redirect na www.sggw.edu.pl/404/),
+    # baza została przeniesiona pod bw.sggw.edu.pl (ten sam silnik Omega-PSIR).
     code = "sggw",
     name = "SGGW",
-    base_url = "https://bazawiedzy.sggw.edu.pl",
-    results_url = "https://bazawiedzy.sggw.edu.pl/search/author?ps=20&t=simple&lang=pl",
+    base_url = "https://bw.sggw.edu.pl",
+    results_url = "https://bw.sggw.edu.pl/search/author?ps=20&t=simple&lang=pl",
     author_link_css = "a[href*='/info/author/']",
     author_id_regex = "/info/author/([^?/#]+)",
-    profile_url = function(author_id) sprintf("https://bazawiedzy.sggw.edu.pl/info/author/%s?lang=pl&r=publication&tab=main", author_id)
+    profile_url = function(author_id) sprintf("https://bw.sggw.edu.pl/info/author/%s?lang=pl&r=publication&tab=main", author_id)
   ),
   URK = list(
     code = "urk",
@@ -321,6 +321,7 @@ parse_profile_html <- function(html) {
   sum_if   <- get_value_by_label(doc, "Sumaryczny\\s*IF")
   sum_snip <- get_value_by_label(doc, "Sumaryczny\\s*SNIP")
   sum_mein <- get_value_by_label(doc, "Sumaryczna\\s*punktacja\\s*MEiN")
+  n_pub    <- get_value_by_label(doc, "Liczba\\s*publikacji|Liczba\\s*pozycji|Wszystkie\\s*publikacje")
 
   # Fallback: gdy etykieta i wartość są w jednej linii/bloku HTML.
   if (is.na(h_scopus)) {
@@ -363,6 +364,15 @@ parse_profile_html <- function(html) {
       120
     )
   }
+  if (is.na(n_pub)) {
+    # Fallback: Omega-PSIR pokazuje liczbę publikacji w nagłówku zakładki, np. "Publikacje (145)".
+    n_pub <- extract_metric_value(
+      page_txt,
+      "(?:liczba\\s*publikacji|liczba\\s*pozycji|wszystkie\\s*publikacje|publikacje)",
+      "[0-9]+",
+      80
+    )
+  }
 
   data.frame(
     profil = profil,
@@ -374,6 +384,7 @@ parse_profile_html <- function(html) {
     sum_IF = suppressWarnings(to_num_pl(str_match(sum_if, "([0-9]+(?:[\\.,][0-9]+)?)")[,2])),
     sum_SNIP = suppressWarnings(to_num_pl(str_match(sum_snip, "([0-9]+(?:[\\.,][0-9]+)?)")[,2])),
     sum_MEiN = suppressWarnings(as.numeric(gsub(" ", "", str_match(sum_mein, "([0-9 ]+)")[,2]))),
+    n_pub    = suppressWarnings(as.numeric(gsub("\\D", "", n_pub))),
     stringsAsFactors = FALSE
   )
 }
@@ -385,7 +396,8 @@ has_any_data <- function(rec) {
       !is.na(rec$h_index_scopus),
       !is.na(rec$h_index_wos),
       !is.na(rec$sum_IF),
-      !is.na(rec$sum_MEiN))
+      !is.na(rec$sum_MEiN),
+      !is.na(rec$n_pub))
 }
 
 # --- szybka detekcja stron nienależących do profilu (logowanie / blokada) ---
@@ -506,6 +518,7 @@ for (i in seq_along(all_ids)) {
         jednostka = NA_character_, wydzial = NA_character_,
         h_index_scopus = NA_real_, h_index_wos = NA_real_,
         sum_IF = NA_real_, sum_SNIP = NA_real_, sum_MEiN = NA_real_,
+        n_pub = NA_real_,
         author_id = id, url = profile_url(id),
         error = conditionMessage(e),
         stringsAsFactors = FALSE
@@ -519,14 +532,14 @@ for (i in seq_along(all_ids)) {
 
   # szybka kontrola pierwszych 5
   if (i <= 5) {
-    print(records[[i]][, c("profil","jednostka","wydzial","h_index_scopus","sum_IF","sum_MEiN")])
+    print(records[[i]][, c("profil","jednostka","wydzial","h_index_scopus","sum_IF","sum_MEiN","n_pub")])
   }
 
   if (i %% AUTOSAVE_EVERY == 0 || i == length(all_ids)) {
     df_partial <- do.call(rbind, records[seq_len(i)])
     if (!("error" %in% names(df_partial))) df_partial$error <- NA_character_
     df_partial <- df_partial[, c("profil","stanowisko","jednostka","wydzial",
-                                 "h_index_scopus","h_index_wos","sum_IF","sum_SNIP","sum_MEiN",
+                                 "h_index_scopus","h_index_wos","sum_IF","sum_SNIP","sum_MEiN","n_pub",
                                  "author_id","url","error")]
     save_outputs(df_partial, OUT_CSV, OUT_XLSX)
     cat(sprintf("  [AUTOSAVE] zapisano %d/%d do: %s i %s\n", i, length(all_ids), OUT_CSV, OUT_XLSX))
@@ -537,7 +550,7 @@ df <- do.call(rbind, records)
 if (!("error" %in% names(df))) df$error <- NA_character_
 
 df <- df[, c("profil","stanowisko","jednostka","wydzial",
-             "h_index_scopus","h_index_wos","sum_IF","sum_SNIP","sum_MEiN",
+             "h_index_scopus","h_index_wos","sum_IF","sum_SNIP","sum_MEiN","n_pub",
              "author_id","url","error")]
 
 # ---------- zapis ----------

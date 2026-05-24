@@ -1,6 +1,6 @@
 # PracaDyplomowa_DS_UEWr
 
-Praca dyplomowa studiów podyplomowych Data Science na Uniwersytecie Ekonomicznym we Wrocławiu — analiza bibliometryczna naukowców z wybranych dyscyplin (rolnictwo+ogrodnictwo + 2 dyscypliny kontrastowe) w czterech polskich uczelniach przyrodniczych (UPWr, SGGW, URK, UWM).
+Praca dyplomowa studiów podyplomowych Data Science na Uniwersytecie Ekonomicznym we Wrocławiu — analiza bibliometryczna naukowców z trzech dyscyplin (rolnictwo i ogrodnictwo, weterynaria, zootechnika i rybactwo) w czterech polskich uczelniach przyrodniczych (UPWr, SGGW, URK, UWM).
 
 ## Plan
 
@@ -54,7 +54,7 @@ Wszystkie 4 uczelnie potwierdzone na Omega-PSIR (audyt 2026-05-24, HTTP 200/302)
 | Kod | Uczelnia | URL |
 |---|---|---|
 | UPWR | Uniwersytet Przyrodniczy we Wrocławiu | https://bazawiedzy.upwr.edu.pl |
-| SGGW | Szkoła Główna Gospodarstwa Wiejskiego | https://bazawiedzy.sggw.edu.pl |
+| SGGW | Szkoła Główna Gospodarstwa Wiejskiego | https://bw.sggw.edu.pl |
 | URK | Uniwersytet Rolniczy w Krakowie | https://repo.ur.krakow.pl |
 | UWM | Uniwersytet Warmińsko-Mazurski | https://bazawiedzy.uwm.edu.pl |
 
