@@ -2,7 +2,14 @@
 
 ## Charakter projektu
 
-Praca dyplomowa studiów podyplomowych Data Science na Uniwersytecie Ekonomicznym we Wrocławiu. Analiza bibliometryczna 3 dyscyplin × 4 uczelni przyrodniczych (~1500-2500 naukowców). Trzy warstwy DS: klastrowanie + modelowanie predykcyjne + sieci współautorstwa.
+Praca dyplomowa studiów podyplomowych Data Science na Uniwersytecie Ekonomicznym we Wrocławiu. Analiza bibliometryczna 3 dyscyplin × **6 uczelni przyrodniczych** (~3000-4500 naukowców). Trzy warstwy DS: klastrowanie + modelowanie predykcyjne + sieci współautorstwa.
+
+**6 uczelni (TOP 6 ośrodków rolniczych w Polsce, decyzja 2026-05-25):**
+- UPWr, SGGW, URK, UWM (Omega-PSIR)
+- UP Poznań (DSpace-CRIS REST API)
+- UP Lublin (OpenUP - własny CRIS oparty o ASP.NET MVC)
+
+**Strategia metodyczna B (decyzja 2026-05-25):** z CRIS uczelnianych ciągniemy TYLKO TOŻSAMOŚĆ (kto, gdzie, ORCID/POL-on/Scopus ID, dyscyplina). Metryki bibliometryczne (h-index, FWCI, n_pub, cited_by_count) liczymy z OpenAlex jednolicie dla wszystkich 6 uczelni. Eliminuje to różnice per system CRIS i daje globalnie porównywalne FWCI zamiast lokalnego IF. Strata: brak sum_MEiN (polska metryka, OpenAlex jej nie ma) — ale ta i tak była problematyczna (SGGW jej nie eksponuje).
 
 **Dyscypliny (decyzja 2026-05-24, po pre-screeningu OpenAlex):**
 - rolnictwo i ogrodnictwo (baza referencyjna)
@@ -20,28 +27,38 @@ Fundament metodyczny: `~/Analiza_projekty/UPWr_bibliometria` (scraper UPWr, anal
 ## Środowisko
 
 - **IDE:** Positron (cwd = root projektu)
-- **R:** zarządzane przez renv (`renv::restore()` przy first run)
-- **Python:** nie używamy (to jest projekt R-only)
+- **R:** zarządzane przez renv (`renv::restore()` przy first run) — analiza, modelowanie, raporty
+- **Python:** używamy do scrapingu (Playwright/Selenium dojrzalsze niż w R) — venv lokalnie w projekcie; wymiana danych z R przez CSV/Parquet
 - **Quarto:** rendering pracy do PDF + DOCX
 
-## Konfiguracja uczelni (Omega-PSIR)
+## Konfiguracja uczelni (6 CRIS)
 
-Wszystkie 4 potwierdzone (audyt 2026-05-24, re-walidacja URL 2026-05-24):
+| Uczelnia | System | URL |
+|---|---|---|
+| UPWR | Omega-PSIR | bazawiedzy.upwr.edu.pl |
+| SGGW | Omega-PSIR | **bw.sggw.edu.pl** (stara `bazawiedzy.sggw.edu.pl` daje 404) |
+| URK | Omega-PSIR | repo.ur.krakow.pl |
+| UWM | Omega-PSIR | bazawiedzy.uwm.edu.pl |
+| UP Poznań | **DSpace-CRIS** | sciencerep.up.poznan.pl (REST API JSON, bez Playwright) |
+| UP Lublin | **OpenUP** | open.up.lublin.pl (ASP.NET MVC, Playwright + httpx) |
 
-- UPWR: bazawiedzy.upwr.edu.pl
-- SGGW: **bw.sggw.edu.pl** (stara `bazawiedzy.sggw.edu.pl` przekierowuje na 404 — przeniesione na skróconą domenę)
-- URK: repo.ur.krakow.pl
-- UWM: bazawiedzy.uwm.edu.pl
+Per-CRIS różnice + strategia ekstrakcji — szczegóły w `Skrypty/Python/README.md`. Najważniejsze:
 
-Identyczna struktura URL Omega-PSIR (`/search/author?...` + `/info/author/<id>`).
+- **SGGW nie eksponuje sum_MEiN/punktacji ministerialnej** w UI profilu — pole 100% NA.
+- **URK i UWM** używają labela `Sumaryczna punktacja ministerialna` (nie `MEiN`).
+- **URK/SGGW/UWM** wymagają `WAIT_PROFILE ≥ 12 s` (PrimeFaces wolniej ładuje).
+- **UP Poznań DSpace**: tożsamość przez REST API — `person.researcharea` jako pole tekstowe, POL-on ID 100% pokrycia, ORCID 92%. Brak h-index/IF/n_pub w CRIS (uzupełnia OpenAlex).
+- **UP Lublin OpenUP**: lista przez Playwright, profile przez raw httpx (38 KB HTML). Bonus: Scopus Author ID + LICZBA PUNKTÓW (= sum_MEiN). Header z tytułem+katedrą jest renderowany JS — brakuje go w raw HTTP.
 
 ## Workflow scrapingu
 
-1. Otwórz Bazę Wiedzy uczelni w przeglądarce.
-2. Ustaw filtr dyscypliny w panelu po lewej, kliknij "Filtruj".
-3. Skopiuj URL z paska adresu i wstaw jako `results_url` w `UNIVERSITY_CONFIG` (`Skrypty/R/01_scraper_omegapsir.R`).
-4. `Sys.setenv(UNI = "...")`, `Sys.setenv(DYSCYPLINA = "...")`, `source(...)`.
-5. Scraper czeka na ENTER po otwarciu Chrome — pozwala doprecyzować filtry.
+Stack: Python 3.12 + Playwright (Chromium bundled) + BeautifulSoup. Parsery per uczelnia w `Skrypty/Python/scrapers/{upwr,sggw,urk,uwm}.py` dziedziczą z `BaseParser`. R-scraper zarchiwizowany w `Skrypty/R/_archive/`.
+
+1. `source .venv/bin/activate`
+2. `python Skrypty/Python/scrape.py --uni URK --dyscyplina rolnictwo_i_ogrodnictwo`
+3. Otwiera się Chromium z listą wyników — ręcznie ustaw filtr dyscypliny w panelu po lewej, kliknij „Filtruj".
+4. ENTER w terminalu — ETAP 1 (paginator → author_id), ETAP 2 (profile + autosave co 10).
+5. Wynik: `Dane/raw/<code>_<dyscyplina>_<timestamp>.csv`.
 
 ## Zasady pracy z literaturą
 
@@ -64,9 +81,9 @@ Standardowo: auto-sync przez `spa`, brak named commitów bez wyraźnej prośby. 
 | Tydzień | Etap |
 |---|---|
 | 1 | Audyt uczelni + scaffold (✓ zrobione) |
-| 2-3 | Pełny scraping 12 komórek |
-| 4 | Czyszczenie + matching OpenAlex |
-| 5 | OpenAlex Works (publikacje + coauthors) |
+| 2-3 | Pełny scraping **18 komórek (3 dyscypliny × 6 uczelni)** |
+| 4 | Czyszczenie + matching OpenAlex (ROR-y, ORCID, POL-on, Scopus ID) |
+| 5 | OpenAlex Works (publikacje + coauthors + FWCI dla wszystkich 6 uczelni jednolicie) |
 | 6 | EDA + 2-czynnikowa ANOVA |
 | 7 | Klastrowanie + PCA |
 | 8 | Modele predykcyjne + SHAP |

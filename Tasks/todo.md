@@ -20,9 +20,18 @@
 
 ## Tydzień 2-3: Scraping
 
-- [x] Test scrapera na UPWR + "rolnictwo i ogrodnictwo" (2026-05-24, n=146, plik upwr_rolnictwo_i_ogrodnictwo_20260524_225545.csv)
-- [ ] Scraping pozostałych 11 komórek macierzy (3 dyscypliny × 4 uczelnie)
-- [ ] Walidacja: ile profili zebrano vs deklarowane
+- [x] Test scrapera na UPWR + "rolnictwo i ogrodnictwo" (2026-05-24, n=146, R-scraper, plik upwr_rolnictwo_i_ogrodnictwo_20260524_225545.csv)
+- [x] Test Python-scrapera na URK + "rolnictwo i ogrodnictwo" (2026-05-25, n=163, ale IF/MEiN 0% bo URK ma inne labele — naprawione w refaktorze)
+- [x] Refaktor scrapera Python: core + 4 parsery per uczelnia (2026-05-25); URK/UWM używają `Sumaryczna punktacja ministerialna`; SGGW strukturalnie nie ma sum_MEiN w UI
+- [x] R-scraper przeniesiony do `Skrypty/R/_archive/` (workflow Pythonowy)
+- [x] **ROZSZERZENIE 4 → 6 uczelni** (2026-05-25): dodanie UP Poznań (DSpace-CRIS REST API) i UP Lublin (OpenUP), strategia metodyczna B (OpenAlex jako primary source metryk)
+- [x] UP Poznań: 208 osób z dyscyplina="rolnictwo i ogrodnictwo" zescrapowane przez DSpace REST API (POL-on ID 100%, ORCID 92%) — `up_poznan_rolnictwo_i_ogrodnictwo_20260525_230733.csv`
+- [x] UP Lublin: scraper testowany na 10 profilach (~/Dane/raw/up_lublin_test_20260525_230816.csv)
+- [ ] Re-scrape URK + rolnictwo (po refaktorze — weryfikacja, że IF/MEiN się ekstrahują)
+- [ ] Re-scrape UPWR + rolnictwo Pythonem (ujednolicenie schematu: tytul, orcid)
+- [ ] UP Lublin: pełen scrape (~2257 osób, ~15-20 min)
+- [ ] Scraping pozostałych komórek macierzy: 3 dyscypliny × 6 uczelni = 18 komórek minus 3 testowe (UPWr/URK/UP_Poznań × rolnictwo)
+- [ ] Walidacja: ile profili zebrano vs deklarowane (RAD-on)
 
 ## Tydzień 4: Czyszczenie + matching OpenAlex
 

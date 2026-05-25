@@ -7,9 +7,35 @@
 #
 
 # UŻYCIE:
-# Sys.setenv(UNI = "URK") 
-# Sys.setenv(DYSCYPLINA = "rolnictwo_i_ogrodnictwo")
-# source("Skrypty/R/01_scraper_omegapsir.R")
+#
+# KROK 0 — chromedriver musi chodzić na porcie 9515 (osobny terminal):
+#  
+#  ~/bin/chromedriver-148/chromedriver --port=9515
+
+
+#   Zostaw to okno otwarte — Ctrl+C zatrzymuje driver. Sprawdzenie ze chodzi:
+#     ss -ltn | grep 9515         # powinien byc LISTEN 127.0.0.1:9515
+#     curl -s http://127.0.0.1:9515/status   # JSON z "ready": true
+#
+#   Gdy Chrome zaktualizuje sie do nowego major (np. 149+) i scraper przestanie
+#   sie laczyc (Session not created: ...), pobierz matching chromedriver z
+#   Chrome for Testing:
+#     google-chrome --version       # sprawdz docelowy major
+#     # zamien NNN.X.YYYY.Z na wynik powyzej i pobierz odpowiedniego drivera:
+#     curl -o /tmp/cd.zip https://storage.googleapis.com/chrome-for-testing-public/NNN.X.YYYY.Z/linux64/chromedriver-linux64.zip
+#     unzip -o /tmp/cd.zip -d /tmp && cp /tmp/chromedriver-linux64/chromedriver ~/bin/chromedriver-148/
+#     chmod +x ~/bin/chromedriver-148/chromedriver
+#   (Katalog ~/bin/chromedriver-148/ ma pasujaca nazwe historyczna — w srodku
+#    moze byc dowolny matching major; sciezka jest hardcoded w tym komentarzu,
+#    nie w kodzie.)
+#
+#   /usr/bin/chromedriver z apt jest zwykle o jeden major do tylu wzgledem
+#   Chrome (mismatch 147 vs 148+) — uzywaj wersji z ~/bin/.
+#
+# KROK 1 — w konsoli R (cwd = root projektu):
+#   Sys.setenv(UNI = "URK")
+#   Sys.setenv(DYSCYPLINA = "rolnictwo_i_ogrodnictwo")
+#   source("Skrypty/R/01_scraper_omegapsir.R")
 # ============================================================
 
 # Uczelnia: ustaw przed source() — Sys.setenv(UNI = "UPWR" | "SGGW" | "URK" | "UWM")
@@ -41,26 +67,32 @@ CH_HOST <- "127.0.0.1"
 CH_PORT <- 9515L
 WD_BASE <- sprintf("http://%s:%d", CH_HOST, CH_PORT)
 ELEMENT_KEY <- "element-6066-11e4-a52e-4f735466cecf"  # W3C identyfikator
+`%||%` <- function(x, y) if (is.null(x)) y else x
 
 # ---------- Mini WebDriver client (httr2) ----------
-wd_post <- function(path, body = list()) {
-  request(paste0(WD_BASE, path)) |>
-    req_method("POST") |>
-    req_body_json(body, auto_unbox = TRUE) |>
-    req_timeout(30) |>
-    req_perform()
+wd_request <- function(method, path, body = NULL, timeout_sec = 30) {
+  req <- request(paste0(WD_BASE, path)) |>
+    req_method(method) |>
+    req_timeout(timeout_sec) |>
+    req_error(is_error = function(resp) FALSE)
+
+  if (!is.null(body)) {
+    req <- req |> req_body_json(body, auto_unbox = TRUE)
+  }
+
+  resp <- req_perform(req)
+  status <- resp_status(resp)
+  if (status >= 400) {
+    msg <- resp_body_string(resp)
+    stop(sprintf("WebDriver %s %s -> HTTP %s\n%s", method, path, status, msg),
+         call. = FALSE)
+  }
+  resp
 }
-wd_get <- function(path) {
-  request(paste0(WD_BASE, path)) |>
-    req_timeout(30) |>
-    req_perform()
-}
-wd_del <- function(path) {
-  request(paste0(WD_BASE, path)) |>
-    req_method("DELETE") |>
-    req_timeout(30) |>
-    req_perform()
-}
+
+wd_post <- function(path, body = list()) wd_request("POST", path, body)
+wd_get <- function(path) wd_request("GET", path)
+wd_del <- function(path) wd_request("DELETE", path)
 wd_val <- function(resp) {
   fromJSON(resp_body_string(resp), simplifyVector = FALSE)$value
 }
@@ -68,10 +100,22 @@ wd_val <- function(resp) {
 wd_new_session <- function() {
   body <- list(capabilities = list(alwaysMatch = list(
     browserName = "chrome",
-    `goog:chromeOptions` = list(args = list("--no-sandbox", "--disable-gpu"))
+    `goog:chromeOptions` = list(args = list(
+      "--no-sandbox",
+      "--disable-gpu",
+      "--disable-dev-shm-usage",
+      "--remote-debugging-port=0",
+      sprintf("--user-data-dir=%s", tempfile("omega-chrome-profile-"))
+    ))
   )))
-  v <- wd_val(wd_post("/session", body))
-  v$sessionId
+  resp <- wd_post("/session", body)
+  json <- fromJSON(resp_body_string(resp), simplifyVector = FALSE)
+  sid <- json$value$sessionId %||% json$sessionId
+  if (is.null(sid) || !nzchar(sid)) {
+    stop(sprintf("ChromeDriver nie zwrocil sessionId:\n%s", resp_body_string(resp)),
+         call. = FALSE)
+  }
+  sid
 }
 wd_navigate     <- function(sid, url) wd_post(sprintf("/session/%s/url", sid), list(url = url))
 wd_current_url  <- function(sid) wd_val(wd_get(sprintf("/session/%s/url", sid)))
@@ -137,7 +181,9 @@ UNIVERSITY_CONFIG <- list(
     code = "urk",
     name = "URK",
     base_url = "https://repo.ur.krakow.pl",
-    results_url = "https://repo.ur.krakow.pl/search/author?ps=20&t=simple&lang=pl",
+    # URK działa na starszej wariancie Omegi-PSIR; endpoint /search/author
+    # zwraca 404, a lista wyników startuje z search.seam.
+    results_url = "https://repo.ur.krakow.pl/search.seam?lang=pl",
     author_link_css = "a[href*='/info/author/']",
     author_id_regex = "/info/author/([^?/#]+)",
     profile_url = function(author_id) sprintf("https://repo.ur.krakow.pl/info/author/%s?lang=pl&r=publication&tab=main", author_id)
@@ -711,5 +757,3 @@ save_outputs(df, OUT_CSV, OUT_XLSX)
 wd_quit(SID)
 
 df
-
-
