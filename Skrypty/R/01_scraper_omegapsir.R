@@ -17,8 +17,13 @@
 if (!nzchar(Sys.getenv("UNI"))) Sys.setenv(UNI = "UPWR")
 
 pkgs <- c("httr2", "jsonlite", "stringr", "openxlsx", "rvest", "xml2", "base64enc")
-to_install <- pkgs[!sapply(pkgs, requireNamespace, quietly = TRUE)]
-if (length(to_install) > 0) install.packages(to_install)
+missing_pkgs <- pkgs[!vapply(pkgs, requireNamespace, logical(1), quietly = TRUE)]
+if (length(missing_pkgs) > 0) {
+  stop(sprintf(
+    "Brakuje pakietów: %s\nUruchom: renv::restore()  (lub Rscript init_r_env.R)",
+    paste(missing_pkgs, collapse = ", ")
+  ), call. = FALSE)
+}
 
 library(httr2)
 library(jsonlite)
@@ -570,6 +575,7 @@ save_outputs <- function(df, out_csv, out_xlsx) {
 cat(sprintf("\n[CONFIG] UNI=%s | URL_RESULTS=%s\n", CFG$name, URL_RESULTS))
 
 SID <- wd_new_session()
+on.exit(wd_quit(SID), add = TRUE)
 cat(sprintf("[SESSION] WebDriver sid=%s\n", substr(SID, 1, 16)))
 wd_navigate(SID, URL_RESULTS)
 Sys.sleep(WAIT_RESULTS)
@@ -663,7 +669,13 @@ for (i in seq_along(all_ids)) {
     }
   )
 
-  if ("error" %in% names(records[[i]]) && !is.na(records[[i]]$error[1])) {
+  # Ujednolicenie schematu rekordow: ścieżka sukcesu nie zawiera kolumny error,
+  # ale autosave robi do.call(rbind, ...) ktore wymaga jednolitych kolumn.
+  if (!"error" %in% names(records[[i]])) {
+    records[[i]]$error <- NA_character_
+  }
+
+  if (!is.na(records[[i]]$error[1])) {
     cat(sprintf("  [ERROR] %s\n", records[[i]]$error[1]))
   }
 
