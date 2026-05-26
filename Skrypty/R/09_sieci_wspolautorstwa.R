@@ -2,7 +2,10 @@
 # ============================================================
 # 09 - Warstwa 4 z planu DS: sieci współautorstwa
 # Cel: graf coauthorship wewnątrz kohorty, community detection (Louvain),
-#      centralności, zgodność z dyscypliną/uczelnią (ARI)
+#      centralności, zgodność ze stanowiskiem/uczelnią (ARI)
+# REFACTOR PENDING (2026-05-26): wszystkie odwolania do `dyscyplina` ->
+# `stanowisko`. Wektory vertices, ARI, heatmapy, kolorowanie sieci. Logika
+# pozostaje, tylko zmiana zmiennej grupujacej.
 # Input:  Dane/openalex/coauthorship_edges.csv + Dane/master/profiles_features.csv
 # Output: Wykresy/sieci/*.png, output/network_metrics.rds, Dashboard/network.html
 # ============================================================

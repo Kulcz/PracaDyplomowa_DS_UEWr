@@ -2,6 +2,9 @@
 # ============================================================
 # 07 - Warstwa 2 z planu DS: PCA + klastrowanie
 # Cel: typologia profili bibliometrycznych (k-means + walidacja silhouette/gap)
+# REFACTOR PENDING (2026-05-26): kolorowanie biplot/heatmap na dyscyplinie ->
+# stanowisku (po zmianie koncepcji 1 dyscyplina x 4 uczelnie A). Zmienic
+# fill.ind, chi2 test, nazwy plikow PNG.
 # Input:  Dane/master/profiles_features.csv
 # Output: Wykresy/klastrowanie/*.png, output/clusters.rds
 # ============================================================

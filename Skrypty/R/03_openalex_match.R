@@ -16,12 +16,17 @@ library(readr)
 library(fs)
 library(here)
 
-# ROR-y polskich uczelni rolniczych (zweryfikowane 2026-05-24 via api.ror.org)
+# ROR-y 4 uczelni Omega-PSIR w dyscyplinie rolnictwo i ogrodnictwo (FINAL 2026-05-26).
+# Zweryfikowane 2026-05-24 via api.ror.org.
+# Why 4 Omega-PSIR a nie 4A: test kompletności 2026-05-26 wykazal DSpace UP Poznan
+# pokazuje ~10-15% rzeczywistego dorobku autorow vs Omega-PSIR ~250-300%. Mieszanie
+# tych systemow w analizie ilosciowej zafalszowalo by porownania miedzyuczelniane.
 ROR <- c(
   upwr = "05cs8k179",   # Wroclaw University of Environmental and Life Sciences
   sggw = "05srvzs48",   # Warsaw University of Life Sciences (SGGW)
   urk  = "012dxyr07",   # University of Agriculture in Krakow
   uwm  = "05s4feg49"    # University of Warmia and Mazury in Olsztyn
+  # up_poznan = "04g6bbq64"  # DSpace, w archiwum (zob. _archive/)
 )
 
 OPENALEX_BASE <- "https://api.openalex.org"

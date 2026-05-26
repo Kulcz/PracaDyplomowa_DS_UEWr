@@ -1,7 +1,11 @@
 # LTeX: enabled=false
 # ============================================================
 # 06 - EDA + statystyka klasyczna (warstwa 1 z planu DS)
-# 2-czynnikowa analiza dyscyplina × uczelnia z auto-wyborem testu
+# 2-czynnikowa analiza uczelnia × stanowisko z auto-wyborem testu
+# REFACTOR PENDING (2026-05-26): zmiana koncepcji z 3 dyscyplin × 6 uczelni
+# na 1 dyscyplina × 4 uczelnie A. Dyscyplina jako czynnik -> stanowisko.
+# Wymiana zmiennej w ANOVA, emmeans, wizualizacjach - logika dwuczynnikowa
+# zachowana. Przepisac przy faktycznym uruchomieniu.
 # Input:  Dane/master/profiles_features.csv
 # Output: Wykresy/eda/*.png, output/eda_summary.rds
 # ============================================================

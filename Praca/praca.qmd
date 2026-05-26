@@ -1,5 +1,5 @@
 ---
-title: "Analiza bibliometryczna naukowców z wybranych dyscyplin w polskich uczelniach przyrodniczych"
+title: "Analiza bibliometryczna naukowców dyscypliny rolnictwo i ogrodnictwo w polskich uczelniach przyrodniczych z systemem Omega-PSIR"
 subtitle: "Praca dyplomowa — studia podyplomowe Data Science"
 author: "Grzegorz Kulczycki"
 date: today
@@ -40,21 +40,25 @@ library(here)
 
 ## Cel pracy
 
-Niniejsza praca dyplomowa stanowi analizę bibliometryczną pracowników naukowych trzech dyscyplin — rolnictwa i ogrodnictwa, weterynarii oraz zootechniki i rybactwa — z czterech polskich uczelni przyrodniczych: Uniwersytetu Przyrodniczego we Wrocławiu (UPWr), Szkoły Głównej Gospodarstwa Wiejskiego w Warszawie (SGGW), Uniwersytetu Rolniczego im. Hugona Kołłątaja w Krakowie (URK) oraz Uniwersytetu Warmińsko-Mazurskiego w Olsztynie (UWM). Wszystkie cztery uczelnie korzystają z systemu Omega-PSIR jako podstawowej Bazy Wiedzy, co umożliwia jednolitą procedurę pozyskania danych. Trzy dyscypliny pochodzą z tej samej dziedziny nauk rolniczych (rozporządzenie MEiN), co zapewnia porównywalność systemu punktacji ministerialnej, ale różnią się przedmiotem badań i potencjalnym profilem bibliometrycznym: rolnictwo i ogrodnictwo (rośliny uprawne i ogrodnicze) stanowi referencję pośrednią, weterynaria reprezentuje styl bio-STEM (publikacje kliniczne i diagnostyczne, większe zespoły), a zootechnika i rybactwo łączy hodowlę zwierząt gospodarskich z badaniami akwakultury i rybactwa. Wstępny audyt OpenAlex (2026-05-24) potwierdził dostępność co najmniej 800 prac per komórka macierzy 3 × 4 dla każdej z wybranych dyscyplin.
+Niniejsza praca dyplomowa stanowi analizę bibliometryczną pracowników naukowych dyscypliny **rolnictwo i ogrodnictwo** w czterech polskich uczelniach przyrodniczych korzystających z systemu Omega-PSIR jako Bazy Wiedzy: Uniwersytetu Przyrodniczego we Wrocławiu (UPWr, kategoria A), Szkoły Głównej Gospodarstwa Wiejskiego w Warszawie (SGGW, A), Uniwersytetu Rolniczego im. Hugona Kołłątaja w Krakowie (URK, A) oraz Uniwersytetu Warmińsko-Mazurskiego w Olsztynie (UWM, B+).
+
+Kryterium doboru próby jest **jednolitość systemu informacji o nauce** — wszystkie cztery uczelnie korzystają z polskiego CRIS-u Omega-PSIR, co zapewnia identyczną procedurę pozyskania danych, te same kategorie pól bibliometrycznych i porównywalność wskaźników. Spójność technologiczna źródła danych jest w analizie naukoznawczej istotniejsza niż jednorodność kategorii ewaluacyjnej, ponieważ niejednorodne CRIS-y dramatycznie różnią się polityką deponowania publikacji, co ujawnił test kompletności przeprowadzony na etapie projektowania badania (DSpace-CRIS Uniwersytetu Przyrodniczego w Poznaniu pokazywał ~10–15 % rzeczywistego dorobku naukowców widocznego w Omega-PSIR). Kategoria ewaluacyjna MEiN (A vs B+) wchodzi do analizy jako zmienna kontrolna, pozwalająca odpowiedzieć na pytanie, czy formalna ocena Komitetu Ewaluacji Nauki różnicuje wskaźniki bibliometryczne badanej populacji.
+
+Pominięto Uniwersytet Przyrodniczy w Poznaniu (kategoria A, DSpace) z powodu niekompletności jego CRIS-u oraz Zachodniopomorski Uniwersytet Technologiczny w Szczecinie (kategoria A) ze względu na brak publicznie dostępnego CRIS-u. Uniwersytet Przyrodniczy w Lublinie (B+) został pominięty ze względu na własny system OpenUP o asymetrycznej metodyce ekstrakcji.
 
 ## Pytania badawcze
 
-- **P1.** Czy istnieją odróżnialne typy profili bibliometrycznych (klastry naukowców)?
-- **P2.** Jak silnie dyscyplina różnicuje mierniki w porównaniu z uczelnią i stanowiskiem?
-- **P3.** Czy można predykować wysoki impact z cech strukturalnych?
-- **P4.** Jak wygląda struktura sieci współautorstwa w obrębie dyscyplin?
+- **P1.** Czy istnieją odróżnialne typy profili bibliometrycznych wśród naukowców dyscypliny rolnictwo i ogrodnictwo (klastrowanie typologiczne)?
+- **P2.** Jak silnie stanowisko naukowe (asystent / adiunkt / profesor uczelni / profesor) i uczelnia różnicują wskaźniki bibliometryczne (2-czynnikowa ANOVA z kategorią ewaluacyjną MEiN jako zmienną kontrolną)?
+- **P3.** Czy można predykować wysoki impact (top decyl FWCI lub sumarycznego IF) z cech strukturalnych (stanowisko, uczelnia, afiliacja, liczba publikacji, sieci współpracy)?
+- **P4.** Jak wygląda struktura sieci współautorstwa wśród naukowców czterech badanych uczelni — czy widoczne są wspólnoty międzyuczelniane?
 
 # Materiał i metodyka
 
 ## Źródła danych
 
-- **Omega-PSIR** — agregaty bibliometryczne per autor (h-index WoS/Scopus, sumaryczny IF, SNIP, MEiN).
-- **OpenAlex API** — FWCI (Field-Weighted Citation Impact), lista współautorów, ujednolicone identyfikatory.
+- **Omega-PSIR (4 instancje uczelniane)** — primary source: agregaty bibliometryczne per autor (h-index WoS/Scopus, sumaryczny IF, SNIP, punktacja MEiN/ministerialna, liczba publikacji), dane afiliacyjne (jednostka, wydział, stanowisko), identyfikatory ORCID.
+- **OpenAlex API** — uzupełnienie: FWCI (Field-Weighted Citation Impact, niepoliczalny lokalnie), liczba cytowań (cited_by_count), lista współautorów do analizy sieci, oraz cross-check QA dla metryk lokalnych.
 
 ## Procedura pozyskania danych
 
@@ -62,10 +66,10 @@ Niniejsza praca dyplomowa stanowi analizę bibliometryczną pracowników naukowy
 
 ## Metody analityczne
 
-- EDA + statystyka klasyczna (2-czynnikowa ANOVA / Kruskal-Wallis + Dunn).
-- PCA + klastrowanie k-means (walidacja silhouette + gap statistic).
-- Modelowanie predykcyjne: Random Forest + XGBoost (CV 5-fold + SHAP).
-- Analiza sieci współautorstwa: igraph + Louvain community detection.
+- EDA + statystyka klasyczna (2-czynnikowa ANOVA: uczelnia × stanowisko, z kategorią MEiN A/B+ jako zmienną kontrolną; Kruskal-Wallis + test Dunna dla niespełnionych założeń normalności).
+- PCA + klastrowanie k-means (walidacja silhouette + gap statistic) — typologia profili bibliometrycznych.
+- Modelowanie predykcyjne: Random Forest + XGBoost (CV 5-fold + SHAP do interpretacji ważności cech).
+- Analiza sieci współautorstwa: igraph + Louvain community detection — mapowanie wspólnot międzyuczelnianych.
 
 # Wyniki
 

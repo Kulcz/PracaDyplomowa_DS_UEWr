@@ -1,8 +1,11 @@
 # LTeX: enabled=false
 # ============================================================
 # 08 - Warstwa 3 z planu DS: modelowanie predykcyjne
-# Cel: klasyfikacja "high-impact" (top 10% IF w obrębie dyscypliny)
+# Cel: klasyfikacja "high-impact" (top 10% sum_IF/FWCI w probie)
 #      z cech strukturalnych — bez h_index/sum_IF jako predyktorów (tautologia).
+# REFACTOR PENDING (2026-05-26): target high_impact liczony globalnie w probie
+# (1 dyscyplina), nie per dyscyplina. Usunac group_by(dyscyplina) w target def
+# i z listy `strukturalne` predyktorow.
 # Input:  Dane/master/profiles_features.csv
 # Output: Wykresy/modele/*.png, output/model_results.rds
 # ============================================================

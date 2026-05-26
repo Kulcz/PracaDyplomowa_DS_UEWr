@@ -1,63 +1,81 @@
 # TODO: PracaDyplomowa_DS_UEWr
 
-## Tydzień 1: Setup + audyt
+## Finalna próba (decyzja 2026-05-26)
 
-- [x] Audyt 4 uczelni (URL Baz Wiedzy + status Omega-PSIR)
+**4 polskie uczelnie przyrodnicze z systemem Omega-PSIR ewaluowane w dyscyplinie rolnictwo i ogrodnictwo (491 osób):**
+
+| Uczelnia | Kat. MEiN | n |
+|---|---|---:|
+| UPWr | A | 146 |
+| SGGW | A | 112 |
+| URK | A | 163 |
+| UWM | B+ | 70 |
+
+Pominięte: UP Poznań (DSpace niekompletny → `_archive/`), ZUT Szczecin (brak CRIS), UP Lublin (OpenUP → `_archive/`).
+
+## Tydzień 1: Setup + audyt (✓ ukończone)
+
+- [x] Audyt uczelni (URL Baz Wiedzy + status CRIS)
 - [x] Scaffold repo (struktura, init R, gitignore, README, CLAUDE.md)
-- [x] Rozszerzenie `UNIVERSITY_CONFIG` o URK i UWM
 - [x] Szkielety skryptów 02-10 z TODO
 - [x] Szablon pracy Quarto (Praca/praca.qmd)
+- [x] Decyzja o próbie: 4 uczelnie Omega-PSIR (test kompletności 2026-05-26)
 - [ ] `Rscript init_r_env.R` — instalacja pakietów + snapshot renv
-- [ ] Manualna walidacja filtra dyscypliny w przeglądarce (per uczelnia):
-  - [ ] UPWR — pobrać URL z aktywnym filtrem "rolnictwo i ogrodnictwo"
-  - [ ] SGGW — j.w.
-  - [ ] URK — j.w.
-  - [ ] UWM — j.w.
-- [x] Wybór 3 dyscyplin: rolnictwo i ogrodnictwo + weterynaria + zootechnika i rybactwo (2026-05-24, po pre-screeningu OpenAlex)
-- [x] Pre-screening OpenAlex: ≥800 prac per komórka macierzy 3×4 (2026-05-24)
-- [ ] Weryfikacja liczebności pracowników w panelu Omega-PSIR per (uczelnia × dyscyplina) — 12 komórek
-- [ ] Uzgodnienie zakresu z promotorem
+- [ ] Uzgodnienie próby z promotorem
 
-## Tydzień 2-3: Scraping
+## Tydzień 2: Scraping (✓ kompletny)
 
-- [x] Test scrapera na UPWR + "rolnictwo i ogrodnictwo" (2026-05-24, n=146, R-scraper, plik upwr_rolnictwo_i_ogrodnictwo_20260524_225545.csv)
-- [x] Test Python-scrapera na URK + "rolnictwo i ogrodnictwo" (2026-05-25, n=163, ale IF/MEiN 0% bo URK ma inne labele — naprawione w refaktorze)
-- [x] Refaktor scrapera Python: core + 4 parsery per uczelnia (2026-05-25); URK/UWM używają `Sumaryczna punktacja ministerialna`; SGGW strukturalnie nie ma sum_MEiN w UI
-- [x] R-scraper przeniesiony do `Skrypty/R/_archive/` (workflow Pythonowy)
-- [x] **ROZSZERZENIE 4 → 6 uczelni** (2026-05-25): dodanie UP Poznań (DSpace-CRIS REST API) i UP Lublin (OpenUP), strategia metodyczna B (OpenAlex jako primary source metryk)
-- [x] UP Poznań: 208 osób z dyscyplina="rolnictwo i ogrodnictwo" zescrapowane przez DSpace REST API (POL-on ID 100%, ORCID 92%) — `up_poznan_rolnictwo_i_ogrodnictwo_20260525_230733.csv`
-- [x] UP Lublin: scraper testowany na 10 profilach (~/Dane/raw/up_lublin_test_20260525_230816.csv)
-- [ ] Re-scrape URK + rolnictwo (po refaktorze — weryfikacja, że IF/MEiN się ekstrahują)
-- [ ] Re-scrape UPWR + rolnictwo Pythonem (ujednolicenie schematu: tytul, orcid)
-- [ ] UP Lublin: pełen scrape (~2257 osób, ~15-20 min)
-- [ ] Scraping pozostałych komórek macierzy: 3 dyscypliny × 6 uczelni = 18 komórek minus 3 testowe (UPWr/URK/UP_Poznań × rolnictwo)
-- [ ] Walidacja: ile profili zebrano vs deklarowane (RAD-on)
+- [x] UPWR/rolnictwo (146 profili, Omega-PSIR, 2026-05-26)
+- [x] SGGW/rolnictwo (112 profili, Omega-PSIR, 2026-05-26)
+- [x] URK/rolnictwo (163 profili, Omega-PSIR, 2026-05-26)
+- [x] UWM/rolnictwo (70 profili, Omega-PSIR, 2026-05-26)
+- [x] Przywrócenie UWM z `_archive/` po teście kompletności
+- [x] UP Poznań i UP Lublin do `_archive/` (poza core analizą)
 
-## Tydzień 4: Czyszczenie + matching OpenAlex
+**Macierz 4×1 (4 uczelnie Omega-PSIR × rolnictwo i ogrodnictwo): kompletna.**
 
-- [ ] Implementacja `02_czyszczenie.R`
-- [ ] Weryfikacja ROR-ów uczelni (https://ror.org)
-- [ ] Implementacja `03_openalex_match.R`
+## Tydzień 3: Czyszczenie + matching OpenAlex
+
+- [ ] `02_czyszczenie.R`:
+  - dostosować `uczelnia` levels = `upwr/sggw/urk/uwm`
+  - filtr nie-naukowców (UPWr „specjalista", „starszy specjalista")
+  - filtr profili bez ORCID i n_pub=0 (administracyjne)
+- [ ] `03_openalex_match.R`:
+  - ROR vector dla 4 uczelni Omega-PSIR (UPWr/SGGW/URK/UWM zweryfikowane)
+  - matching ORCID-first, potem fuzzy po nazwisku + ROR
 - [ ] Raport match_rate; cel ≥ 70%
 
-## Tydzień 5: OpenAlex Works
+## Tydzień 4: OpenAlex Works
 
-- [ ] `04_openalex_works.R` — publications + coauthors + FWCI
-- [ ] Cache RDS per author
+- [ ] `04_openalex_works.R` — publications + coauthors + FWCI + h-index liczone z listy works (jako QA cross-check dla h-index_scopus z CRIS)
+- [ ] Cache RDS per author (resumability)
 
-## Tydzień 6-10: Analiza
+## Tydzień 5-9: Analiza
 
-- [ ] `05_features.R` — feature engineering
-- [ ] `06_eda_anova.R` — warstwa 1
-- [ ] `07_klastrowanie_pca.R` — warstwa 2
+- [ ] `05_features.R` — feature engineering (usunąć `factor(dyscyplina)`, levels uczelni `upwr/sggw/urk/uwm`)
+- [ ] `06_eda_anova.R` — warstwa 1 (2-czynnikowa ANOVA: uczelnia × stanowisko, kategoria MEiN jako zmienna kontrolna)
+- [ ] `07_klastrowanie_pca.R` — warstwa 2 (typologia profili)
 - [ ] `08_modele_predykcja.R` — warstwa 3 (RF + XGB + SHAP)
 - [ ] `09_sieci_wspolautorstwa.R` — warstwa 4 (igraph + Louvain)
 
-## Tydzień 11-13: Pisanie
+## Tydzień 10-13: Pisanie
 
 - [ ] Praca.qmd — uzupełnienie sekcji Wyniki/Dyskusja/Wnioski
 - [ ] Iteracje z promotorem
 - [ ] Render PDF + DOCX
+
+## Znane luki strukturalne (do raportu „Ograniczenia")
+
+- SGGW: `sum_MEiN` 0% (UI nie eksponuje), `wydzial` 5% (parser do dopracowania w `sggw.py`)
+- UWM: `sum_SNIP` 0% (UI nie eksponuje)
+- Wszystkie uczelnie: w analizach które używają `sum_MEiN` — SGGW wykluczyć lub policzyć MEiN z OpenAlex+wykaz MEiN przez ISSN
+
+## Materiał poza core analizą (potencjalna sekcja Dyskusji)
+
+- `Dane/raw/_archive/up_poznan_*.csv` (208 osób + 2582 publikacji) — case study DSpace + ETAP 2:
+  - finansowanie publikacji (`dc.description.finance`, `financecost`)
+  - model OA (`dc.share.type` — 64% `OPEN_JOURNAL`)
+  - Można dorzucić jako 1-2 strony „Polskie CRIS-y a globalne bazy bibliograficzne — niejednorodność polityki deponowania" jeśli zostanie czas.
 
 ## Recenzja
 

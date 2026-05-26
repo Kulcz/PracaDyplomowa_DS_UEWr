@@ -3,6 +3,10 @@
 # 10 - Finalne figury kompozytowe do pracy dyplomowej
 # Strategia: nie liczymy nic od nowa, tylko wczytujemy artefakty
 # RDS z 06-09 i renderujemy spójne figury do Wykresy/praca/.
+# REFACTOR PENDING (2026-05-26): facet_grid metryka ~ dyscyplina ->
+# metryka ~ stanowisko (lub uczelnia). Fig 1 (heatmap dyscyplina × uczelnia)
+# zmienic na heatmap stanowisko × uczelnia. Fig 5 (community vs dyscyplina) ->
+# community vs stanowisko.
 # Każda figura = jedna obserwacja w pracy (1-2 panele max).
 # Brak danego RDS -> dana figura jest pomijana (cat).
 # ============================================================

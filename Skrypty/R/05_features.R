@@ -26,14 +26,19 @@ features <- profiles %>%
 #   - n_unique_coauthors  (z coauthorship_edges)
 #   - avg_authors_per_pub
 #   - mean_fwci (Field-Weighted Citation Impact)
-#   - fwci_top10_pct (czy w top 10% FWCI per dyscyplina)
+#   - fwci_top10_pct (czy w top 10% FWCI w probie)
+#   - h_index_oa (policzony z listy cited_by_count works)
 
 # ---------- 3. Zmienne grupujace (faktoryzacja) ----------
+# FINAL 2026-05-26: 1 dyscyplina (rolnictwo i ogrodnictwo), 4 uczelnie Omega-PSIR
+# (UPWr A, SGGW A, URK A, UWM B+). Czynnik dyscyplina usuniety - role w analizie
+# przejmuje `stanowisko` (gradient kariery). Kategoria MEiN (A/B+) jako zmienna
+# kontrolna w 06_eda_anova.
 features <- features %>%
   mutate(
-    uczelnia   = factor(uczelnia, levels = c("upwr","sggw","urk","uwm")),
-    dyscyplina = factor(dyscyplina),
-    stanowisko = factor(stanowisko, levels = c("asystent","adiunkt","profesor uczelni","profesor"))
+    uczelnia    = factor(uczelnia, levels = c("upwr","sggw","urk","uwm")),
+    kategoria   = factor(ifelse(uczelnia == "uwm", "B+", "A"), levels = c("A","B+")),
+    stanowisko  = factor(stanowisko, levels = c("asystent","adiunkt","profesor uczelni","profesor"))
   )
 
 write_csv(features, here("Dane", "master", "profiles_features.csv"))
