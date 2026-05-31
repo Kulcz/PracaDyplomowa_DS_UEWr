@@ -1,0 +1,338 @@
+---
+title: "Profil bibliometryczny: Grzegorz Kulczycki"
+subtitle: "Wydział Przyrodniczo-Technologiczny, UPWr"
+author: "Raport automatyczny"
+date: "2026-03-06"
+format:
+  pdf:
+    documentclass: article
+    papersize: a4
+    geometry:
+      - margin=2.5cm
+    fontsize: 11pt
+    lang: pl
+    toc: false
+    number-sections: true
+    fig-pos: "H"
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{float}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, warning = FALSE, message = FALSE,
+  fig.align = "center", out.width = "85%", dpi = 200
+)
+
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(knitr)
+
+df <- read.csv("../../output_bibliometria/WPT_oczyszczone.csv", stringsAsFactors = FALSE)
+df <- df %>%
+  mutate(stanowisko = case_when(
+    stanowisko == "profesor Uczelni" ~ "profesor uczelni",
+    !is.na(stanowisko) ~ tolower(stanowisko),
+    TRUE ~ NA_character_
+  ))
+
+metryki <- c("h_index_wos", "sum_IF", "sum_MEiN")
+metryki_labels <- c(
+  h_index_wos = "h-index (WoS)",
+  sum_IF      = "Sumaryczny IF",
+  sum_MEiN    = "Punktacja MEiN"
+)
+
+# Dane osoby
+osoba <- df %>% filter(grepl("Kulczycki", profil))
+imie_nazwisko <- osoba$profil
+
+# Grupa stanowiskowa
+grupa_stan <- df %>%
+  filter(!is.na(stanowisko), stanowisko == osoba$stanowisko)
+
+# Jednostka
+grupa_jedn <- df %>%
+  filter(jednostka == osoba$jednostka)
+```
+
+# Dane podstawowe
+
+```{r dane-podstawowe}
+dane <- data.frame(
+  ` ` = c("Imię i nazwisko", "Stanowisko", "Jednostka", "Wydział"),
+  Wartość = c(
+    osoba$profil,
+    osoba$stanowisko,
+    osoba$jednostka,
+    "Wydział Przyrodniczo-Technologiczny"
+  ),
+  check.names = FALSE
+)
+kable(dane, booktabs = TRUE)
+```
+
+# Wskaźniki bibliometryczne
+
+```{r wskazniki}
+ws <- data.frame(
+  Metryka = c("h-index (WoS)", "Sumaryczny IF", "Punktacja MEiN"),
+  Wartość = c(osoba$h_index_wos, sprintf("%.2f", osoba$sum_IF), osoba$sum_MEiN),
+  check.names = FALSE
+)
+kable(ws, caption = "Wartości wskaźników bibliometrycznych.", booktabs = TRUE)
+```
+
+# Pozycja na tle wydziału
+
+```{r ranking-wpt}
+rank_wpt <- data.frame(Metryka = character(), Pozycja = character(),
+                        `Top (%)` = character(), check.names = FALSE)
+for (m in metryki) {
+  vals <- df[[m]][!is.na(df[[m]])]
+  n <- length(vals)
+  pos <- sum(vals > osoba[[m]]) + 1
+  pct <- sprintf("%.1f", 100 * pos / n)
+  rank_wpt <- rbind(rank_wpt, data.frame(
+    Metryka = metryki_labels[m],
+    Pozycja = paste0(pos, "/", n),
+    `Top (%)` = pct,
+    check.names = FALSE
+  ))
+}
+kable(rank_wpt, caption = "Pozycja w rankingu WPT (cały wydział).", booktabs = TRUE,
+      row.names = FALSE)
+```
+
+```{r ranking-stanowisko}
+rank_stan <- data.frame(Metryka = character(), Pozycja = character(), check.names = FALSE)
+for (m in metryki) {
+  vals <- grupa_stan[[m]][!is.na(grupa_stan[[m]])]
+  n <- length(vals)
+  pos <- sum(vals > osoba[[m]]) + 1
+  rank_stan <- rbind(rank_stan, data.frame(
+    Metryka = metryki_labels[m],
+    Pozycja = paste0(pos, "/", n),
+    check.names = FALSE
+  ))
+}
+kable(rank_stan,
+      caption = paste0("Pozycja wśród ", osoba$stanowisko, "ów (n = ", nrow(grupa_stan), ")."),
+      booktabs = TRUE, row.names = FALSE)
+```
+
+```{r ranking-jednostka}
+rank_jedn <- data.frame(Metryka = character(), Pozycja = character(), check.names = FALSE)
+for (m in metryki) {
+  vals <- grupa_jedn[[m]][!is.na(grupa_jedn[[m]])]
+  n <- length(vals)
+  pos <- sum(vals > osoba[[m]]) + 1
+  rank_jedn <- rbind(rank_jedn, data.frame(
+    Metryka = metryki_labels[m],
+    Pozycja = paste0(pos, "/", n),
+    check.names = FALSE
+  ))
+}
+kable(rank_jedn,
+      caption = paste0("Pozycja w jednostce (n = ", nrow(grupa_jedn), ")."),
+      booktabs = TRUE, row.names = FALSE)
+```
+
+# Porównanie z medianą
+
+```{r porownanie-mediany}
+por <- data.frame(
+  Metryka = character(), Wartość = character(),
+  `Mediana WPT` = character(), `Odch. (%)` = character(),
+  `Mediana grupy stan.` = character(), `Odch. (%)` = character(),
+  check.names = FALSE
+)
+for (m in metryki) {
+  v <- osoba[[m]]
+  med_wpt <- median(df[[m]], na.rm = TRUE)
+  med_stan <- median(grupa_stan[[m]], na.rm = TRUE)
+  por <- rbind(por, data.frame(
+    Metryka = metryki_labels[m],
+    Wartość = ifelse(m == "sum_IF", sprintf("%.1f", v), as.character(v)),
+    `Mediana WPT` = sprintf("%.1f", med_wpt),
+    `Odch. WPT (%)` = sprintf("%+.0f", 100 * (v / med_wpt - 1)),
+    `Mediana grupy` = sprintf("%.1f", med_stan),
+    `Odch. grupy (%)` = sprintf("%+.0f", 100 * (v / med_stan - 1)),
+    check.names = FALSE
+  ))
+}
+kable(por, caption = "Porównanie z medianą wydziałową i grupy stanowiskowej.",
+      booktabs = TRUE, row.names = FALSE)
+```
+
+# Wizualizacja pozycji
+
+```{r wykres-pozycja, fig.cap="Pozycja Grzegorza Kulczyckiego na tle rozkładu metryk WPT. Czerwona linia --- wartość osoby, szary histogram --- rozkład wydziałowy.", fig.width=8, fig.height=7}
+theme_biblio <- theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(face = "bold", size = 14),
+    plot.subtitle = element_text(color = "grey40", size = 10),
+    strip.text = element_text(face = "bold", size = 11),
+    panel.grid.minor = element_blank()
+  )
+
+df_long <- df %>%
+  select(profil, all_of(metryki)) %>%
+  pivot_longer(cols = all_of(metryki), names_to = "metryka", values_to = "wartosc") %>%
+  filter(!is.na(wartosc)) %>%
+  mutate(metryka = recode(metryka, !!!metryki_labels))
+
+osoba_long <- osoba %>%
+  select(profil, all_of(metryki)) %>%
+  pivot_longer(cols = all_of(metryki), names_to = "metryka", values_to = "wartosc") %>%
+  mutate(metryka = recode(metryka, !!!metryki_labels))
+
+ggplot(df_long, aes(x = wartosc)) +
+  geom_histogram(aes(y = after_stat(density)), bins = 20,
+                 fill = "grey70", color = "white", alpha = 0.7) +
+  geom_density(color = "grey40", linewidth = 0.6) +
+  geom_vline(data = osoba_long, aes(xintercept = wartosc),
+             color = "#E64B35", linewidth = 1.2, linetype = "solid") +
+  geom_label(data = osoba_long,
+             aes(x = wartosc, y = 0, label = wartosc),
+             color = "#E64B35", fontface = "bold", size = 3.5,
+             vjust = -0.5, fill = "white", label.size = 0.3) +
+  facet_wrap(~metryka, scales = "free", ncol = 1) +
+  labs(title = paste("Pozycja:", imie_nazwisko),
+       subtitle = "Wydział Przyrodniczo-Technologiczny, UPWr",
+       x = NULL, y = "Gęstość") +
+  theme_biblio
+```
+
+```{r wykres-percentyle, fig.cap="Pozycja percentylowa Grzegorza Kulczyckiego na tle WPT i grupy stanowiskowej."}
+# Oblicz percentyle: wydział i grupa stanowiskowa
+perc_data <- data.frame(
+  metryka = character(), grupa = character(), percentyl = numeric(),
+  stringsAsFactors = FALSE
+)
+
+grupa_stan_label <- paste0("Grupa: ", osoba$stanowisko)
+
+for (m in metryki) {
+  vals_wpt <- df[[m]][!is.na(df[[m]])]
+  pct_wpt <- round(100 * mean(vals_wpt <= osoba[[m]]))
+
+  vals_stan <- grupa_stan[[m]][!is.na(grupa_stan[[m]])]
+  pct_stan <- round(100 * mean(vals_stan <= osoba[[m]]))
+
+  perc_data <- rbind(perc_data, data.frame(
+    metryka = metryki_labels[m],
+    grupa = c("Wydział (WPT)", grupa_stan_label),
+    percentyl = c(pct_wpt, pct_stan),
+    stringsAsFactors = FALSE
+  ))
+}
+
+perc_data$metryka <- factor(perc_data$metryka,
+  levels = rev(c("h-index (WoS)", "Sumaryczny IF", "Punktacja MEiN")))
+perc_data$grupa <- factor(perc_data$grupa,
+  levels = c(grupa_stan_label, "Wydział (WPT)"))
+
+fill_vals <- c("#3C5488", "#E64B35")
+names(fill_vals) <- c("Wydział (WPT)", grupa_stan_label)
+
+perc_data$label_x <- ifelse(perc_data$percentyl >= 20,
+                             perc_data$percentyl / 2,
+                             perc_data$percentyl + 3)
+perc_data$label_hjust <- ifelse(perc_data$percentyl >= 20, 0.5, 0)
+perc_data$label_color <- ifelse(perc_data$percentyl >= 20, "white", "black")
+
+p_perc <- ggplot(perc_data, aes(x = metryka, y = percentyl, fill = grupa)) +
+  geom_col(position = position_dodge(width = 0.7), width = 0.6, alpha = 0.85) +
+  geom_text(aes(y = label_x, label = paste0(percentyl, "%"), hjust = label_hjust),
+            position = position_dodge(width = 0.7),
+            size = 4.5, fontface = "bold", color = perc_data$label_color) +
+  geom_hline(yintercept = 50, linetype = "dashed", color = "grey50", linewidth = 0.5) +
+  annotate("text", x = 3.42, y = 51, label = "mediana", size = 3.5,
+           color = "grey50", hjust = 0, fontface = "italic") +
+  coord_flip() +
+  scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 25),
+                     labels = paste0(seq(0, 100, 25), "%")) +
+  scale_fill_manual(values = fill_vals) +
+  labs(title = paste("Percentyl:", imie_nazwisko),
+       subtitle = "Pozycja na tle wydziału i grupy stanowiskowej (im wyżej, tym lepiej)",
+       x = NULL, y = NULL, fill = NULL) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold", size = 15),
+    plot.subtitle = element_text(color = "grey40", size = 11),
+    plot.margin = margin(10, 15, 10, 10),
+    legend.position = "bottom",
+    legend.text = element_text(size = 11),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.y = element_blank(),
+    panel.grid.major.x = element_line(color = "grey85"),
+    axis.text.y = element_text(size = 12, face = "bold", color = "black"),
+    axis.text.x = element_text(size = 11, color = "black")
+  )
+
+# Zapisz jako PNG i dołącz — unika problemów z przycinaniem przez xelatex
+perc_png <- "../../Wykresy/WPT/pracownicy/Kulczycki_Grzegorz/percentyl_pozycja.png"
+ggsave(perc_png, p_perc, width = 9, height = 4.5, dpi = 200)
+knitr::include_graphics(perc_png)
+```
+
+# Podsumowanie
+
+```{r podsumowanie, results='asis'}
+percs <- sapply(metryki, function(m) {
+  vals <- df[[m]][!is.na(df[[m]])]
+  round(100 * mean(vals <= osoba[[m]]))
+})
+
+percs_stan <- sapply(metryki, function(m) {
+  vals <- grupa_stan[[m]][!is.na(grupa_stan[[m]])]
+  round(100 * mean(vals <= osoba[[m]]))
+})
+
+cat(sprintf("**%s** (%s, %s) plasuje się następująco na tle Wydziału Przyrodniczo-Technologicznego UPWr:\n\n",
+    imie_nazwisko, osoba$stanowisko, gsub("Instytut ", "Inst. ", osoba$jednostka)))
+
+for (m in metryki) {
+  v <- osoba[[m]]
+  pct <- percs[m]
+  pct_s <- percs_stan[m]
+
+  opis_wpt <- dplyr::case_when(
+    pct >= 80 ~ "wyraźnie powyżej mediany wydziałowej",
+    pct >= 60 ~ "powyżej mediany wydziałowej",
+    pct >= 40 ~ "na poziomie mediany wydziałowej",
+    pct >= 20 ~ "poniżej mediany wydziałowej",
+    TRUE ~ "wyraźnie poniżej mediany wydziałowej"
+  )
+
+  opis_stan <- dplyr::case_when(
+    pct_s >= 75 ~ paste0("w czołówce grupy ", osoba$stanowisko, "ów"),
+    pct_s >= 50 ~ paste0("w górnej połowie grupy ", osoba$stanowisko, "ów"),
+    TRUE ~ paste0("w dolnej połowie grupy ", osoba$stanowisko, "ów")
+  )
+
+  if (m == "sum_IF") {
+    cat(sprintf("- **%s = %.2f** --- percentyl %d., %s. %s.\n",
+        metryki_labels[m], v, pct, opis_wpt, opis_stan))
+  } else {
+    cat(sprintf("- **%s = %d** --- percentyl %d., %s. %s.\n",
+        metryki_labels[m], as.integer(v), pct, opis_wpt, opis_stan))
+  }
+}
+
+avg_pct <- mean(percs)
+ocena <- dplyr::case_when(
+  avg_pct >= 80 ~ "wybitny profil bibliometryczny, wyraźnie powyżej przeciętnej wydziałowej",
+  avg_pct >= 65 ~ "bardzo dobry profil bibliometryczny, powyżej przeciętnej wydziałowej",
+  avg_pct >= 50 ~ "solidny, ponadprzeciętny profil na tle wydziału",
+  avg_pct >= 35 ~ "profil na poziomie przeciętnej wydziałowej",
+  TRUE ~ "profil poniżej przeciętnej wydziałowej"
+)
+
+best_m <- names(which.max(percs))
+cat(sprintf("\n**Ogólna ocena:** %s. Najsilniejszą stroną jest %s (percentyl %d.).\n",
+    ocena, metryki_labels[best_m], percs[best_m]))
+```

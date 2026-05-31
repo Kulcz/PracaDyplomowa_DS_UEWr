@@ -31,7 +31,18 @@ Praca dyplomowa studiów podyplomowych Data Science na Uniwersytecie Ekonomiczny
 **Próba pominięta (kategoria A bez publicznego CRIS):**
 - Zachodniopomorski Uniwersytet Technologiczny w Szczecinie — brak Bazy Wiedzy w publicznym API.
 
-Fundament metodyczny: `~/Analiza_projekty/UPWr_bibliometria` (scraper UPWr, analiza WPT). Wiele patternów stąd reusable.
+Fundament metodyczny: pilotaż **`pilot_UPWr/`** (wchłonięty 2026-05-31 dawny projekt `UPWr_bibliometria`) — scraper UPWr i analiza wydziału WPT. Wiele patternów stąd reusable.
+
+## Pilotaż wchłonięty: `pilot_UPWr/`
+
+Dawny samodzielny projekt `UPWr_bibliometria` (1 uczelnia, wydział WPT, ~145 osób) — pierwowzór metodyki tej pracy. Scalony tu 2026-05-31 (bez własnego env/git; korzysta z parasola).
+
+- **Skrypty** (`pilot_UPWr/Skrypty/R/`): 01 scraper UPWr (RSelenium), 02 czyszczenie+analiza WPT (ANOVA/Kruskal-Wallis), 03 analiza pracowników, **04 scraper list publikacji** (Chrome headless `--dump-dom`, rok+punkty per pozycja), **06 doratowanie capped >200 poz.** (RSelenium, paginacja `.ui-paginator-next`), **05 szeregi czasowe** (publikacje/punkty rocznie, punktowane vs 0-pkt).
+- **Dane/wyniki:** `pilot_UPWr/output_bibliometria/` (m.in. `WPT_publikacje_rocznie.csv`).
+- **Raporty:** `pilot_UPWr/Raport/wydzial/raport_{WPT,szeregi_czasowe}.pdf`.
+- **Uruchamianie:** ścieżki w skryptach są względne — odpalać z cwd `pilot_UPWr/`.
+- **Do uogólnienia na 4 uczelnie:** moduł szeregów czasowych (04/06/05) — listy publikacji Omega-PSIR mają rok+punkty per pozycja; ograniczenia portalu opisane w skryptach 04/06.
+- Notatki pierwotnego projektu: `pilot_UPWr/CLAUDE_pilot_archiwum.md`.
 
 ## Środowisko
 

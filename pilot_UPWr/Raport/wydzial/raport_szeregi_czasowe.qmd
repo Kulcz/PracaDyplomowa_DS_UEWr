@@ -1,0 +1,200 @@
+---
+title: "Aktywność publikacyjna Wydziału Przyrodniczo-Technologicznego UPWr w czasie"
+subtitle: "Szeregi czasowe: liczba publikacji i punktacja MEiN (1990–2026)"
+author: "Grzegorz Kulczycki"
+date: today
+format:
+  pdf:
+    documentclass: article
+    papersize: a4
+    geometry:
+      - margin=2.5cm
+    fontsize: 11pt
+    lang: pl
+    toc: true
+    toc-depth: 2
+    number-sections: true
+    fig-pos: "H"
+    header-includes:
+      - \usepackage{booktabs}
+      - \usepackage{float}
+      - \usepackage{longtable}
+lang: pl
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  echo = FALSE, warning = FALSE, message = FALSE,
+  fig.align = "center", out.width = "100%", dpi = 200
+)
+
+library(dplyr)
+library(tidyr)
+library(knitr)
+
+WYK <- "../../Wykresy/WPT/szeregi_czasowe"
+
+roczne <- read.csv("../../output_bibliometria/WPT_publikacje_rocznie.csv",
+                   stringsAsFactors = FALSE)
+raw <- read.csv("../../output_bibliometria/upwr_profiles_metrics_HTML_20260306_075402.csv",
+                stringsAsFactors = FALSE)
+puste <- tryCatch(readLines("../../output_bibliometria/WPT_publikacje_puste.txt", warn = FALSE),
+                  error = function(e) character(0))
+
+meta <- raw %>%
+  dplyr::select(author_id, stanowisko, jednostka) %>%
+  mutate(stanowisko = case_when(
+    stanowisko == "profesor Uczelni" ~ "profesor uczelni",
+    !is.na(stanowisko) ~ tolower(stanowisko),
+    TRUE ~ "nieokreślone"))
+
+df <- roczne %>% left_join(meta, by = "author_id")
+
+ROK_BIEZACY <- as.integer(format(Sys.Date(), "%Y"))
+REFORMA <- 2019L   # Ustawa 2.0 - zlamanie szeregu punktacji
+wpt_rok <- df %>% group_by(rok) %>%
+  summarise(publikacje = sum(n_publikacji), punktowane = sum(n_punktowane),
+            punkty = sum(suma_pkt), .groups = "drop")
+
+# kluczowe liczby
+n_aut_pub <- length(unique(df$author_id))
+n_pusci   <- length(puste)
+n_pub_tot <- sum(wpt_rok$publikacje)
+n_pkt_tot <- sum(wpt_rok$punkty)
+rok_min   <- min(wpt_rok$rok); rok_max <- max(wpt_rok$rok)
+
+fmt <- function(x) format(x, big.mark = " ", scientific = FALSE)
+```
+
+# Wprowadzenie
+
+Raport przedstawia **dynamikę aktywności publikacyjnej** pracowników Wydziału
+Przyrodniczo-Technologicznego (WPT) Uniwersytetu Przyrodniczego we Wrocławiu
+w ujęciu rocznym. W odróżnieniu od raportu przekrojowego (wartości skumulowane
+na jeden moment), tu śledzimy **zmiany w czasie** dwóch wskaźników:
+
+- **liczba publikacji** przypisanych do danego roku,
+- **suma punktów MEiN** publikacji danego roku.
+
+Dane pochodzą z portalu Baza Wiedzy UPWr — z list publikacji poszczególnych
+profili (szczegóły w nocie metodologicznej). Każda publikacja niesie rok wydania
+oraz punktację ministerialną, co pozwala zbudować szereg czasowy wstecz.
+
+## Zakres danych
+
+```{r zakres, results='asis'}
+cat(sprintf("Analizą objęto **%d pracowników** WPT posiadających publikacje w Bazie Wiedzy (kolejnych %d nie ma żadnych zindeksowanych pozycji). Łącznie zebrano **%s publikacji** za lata **%d–%d**, o łącznej punktacji **%s pkt MEiN**.\n",
+    n_aut_pub, n_pusci, fmt(n_pub_tot), rok_min, rok_max, fmt(n_pkt_tot)))
+```
+
+# Dwa reżimy punktacji — uwaga metodologiczna
+
+```{r reforma-opis, results='asis'}
+p2018 <- wpt_rok$punkty[wpt_rok$rok == 2018]
+p2019 <- wpt_rok$punkty[wpt_rok$rok == 2019]
+cat(sprintf("Suma punktów MEiN wykazuje **strukturalne złamanie szeregu w 2019 r.** (z %s pkt w 2018 r. do %s pkt w 2019 r.). Wynika ono ze zmiany systemu ewaluacji (Ustawa 2.0): od listy z 2019 r. obowiązują znacznie wyższe wartości punktowe czasopism (100/140/200 pkt zamiast wcześniejszych 20–40), a publikacje są punktowane wg listy z roku wydania. Zmiana ta to **artefakt metodologiczny oceny, a nie skok produktywności** — dlatego punktacji sprzed i po 2019 r. nie należy porównywać na jednej skali.\n\n",
+    fmt(p2018), fmt(p2019)))
+cat("W konsekwencji w niniejszym raporcie:\n\n")
+cat("- **liczbę publikacji** analizujemy w pełnym zakresie (wskaźnik niezależny od systemu punktowego, porównywalny w całym okresie),\n")
+cat("- **punktację MEiN** — wyłącznie w **okresie po reformie (2019–2026)**, gdzie skala jest jednolita i istotna dla bieżącej ewaluacji.\n")
+```
+
+# Liczba publikacji (1990–2026)
+
+```{r pub-opis, results='asis'}
+pub_pre  <- wpt_rok %>% filter(rok >= 2015, rok <= 2018) %>% summarise(m = mean(publikacje)) %>% pull(m)
+pub_post <- wpt_rok %>% filter(rok >= 2020, rok <= 2025) %>% summarise(m = mean(publikacje)) %>% pull(m)
+r2015 <- wpt_rok %>% filter(rok == 2015)
+udz_pkt <- 100 * r2015$punktowane / r2015$publikacje
+cat(sprintf("Liczba publikacji utrzymuje się na względnie stałym poziomie — średnio %.0f rocznie w latach 2015–2018 i %.0f w latach 2020–2025. Nie widać tu złamania szeregu charakterystycznego dla punktacji.\n\n",
+    pub_pre, pub_post))
+cat(sprintf("Liczba wszystkich publikacji jest jednak silnie zaburzona przez pozycje **0-punktowe** (materiały konferencyjne, artykuły popularne, abstrakty). Najlepszym przykładem jest **rok 2015** (%d pozycji — najwięcej w całym okresie), w którym tylko %.0f%% pozycji było punktowanych; nadwyżkę tworzy m.in. jedna konferencja ogrodnicza („Postęp w ogrodnictwie...\"), której materiały rozłożyły się na wielu pracowników Katedry Ogrodnictwa. Dlatego poniższy wykres rozdziela publikacje **punktowane (>0 pkt)** od **0-punktowych** — trend punktowanego dorobku jest znacznie stabilniejszy.\n",
+    r2015$publikacje, udz_pkt))
+```
+
+```{r fig-pub, fig.cap="Liczba publikacji WPT rocznie (1990–2026), z podziałem na punktowane (>0 pkt) i 0-punktowe (materiały konferencyjne, artykuły popularne). Linia przerywana oddziela niepełny rok bieżący."}
+include_graphics(file.path(WYK, "01_publikacje_rok.png"))
+```
+
+# Punktacja MEiN (okres po reformie, 2019–2026)
+
+```{r pkt-opis, results='asis'}
+ppost <- wpt_rok %>% filter(rok >= REFORMA, rok < ROK_BIEZACY)
+rok_pik <- ppost$rok[which.max(ppost$punkty)]
+v_pik   <- max(ppost$punkty)
+v_2019  <- wpt_rok$punkty[wpt_rok$rok == 2019]
+wzrost  <- v_pik / v_2019
+cat(sprintf("W obrębie jednolitej skali po reformie punktacja rośnie z **%s pkt** (2019) do maksimum **%s pkt** (%d), tj. o około **%.0f%%**, po czym stabilizuje się na poziomie ~28 tys. pkt rocznie (2023–2025). Dopiero ten trend — wewnątrz jednego reżimu — można interpretować jako realny wzrost punktowanego dorobku, a nie efekt zmiany reguł.\n",
+    fmt(v_2019), fmt(v_pik), rok_pik, 100 * (wzrost - 1)))
+```
+
+```{r fig-pkt, fig.cap="Suma punktów MEiN WPT rocznie — okres po reformie (2019–2026). Linia przerywana oddziela niepełny rok bieżący."}
+include_graphics(file.path(WYK, "02_punkty_rok.png"))
+```
+
+```{r tab-ostatnie}
+tail12 <- wpt_rok %>% arrange(desc(rok)) %>% head(12) %>% arrange(rok) %>%
+  mutate(punkty = fmt(punkty)) %>%
+  rename(Rok = rok, `Liczba publikacji` = publikacje, `Punkty MEiN` = punkty)
+kable(tail12, caption = "Liczba publikacji i punktacja MEiN w ostatnich 12 latach (punktacja sprzed 2019 r. — w starej skali, nieporównywalna).",
+      booktabs = TRUE, row.names = FALSE, align = "r")
+```
+
+# Według stanowiska
+
+Poniższe wykresy rozkładają roczne wartości na grupy stanowiskowe. Najwięcej
+punktów wnoszą profesorowie i profesorowie uczelni, lecz po 2019 r. rośnie też
+wyraźnie udział adiunktów.
+
+```{r fig-pub-stan, fig.cap="Liczba publikacji rocznie wg stanowiska (wszystkie pozycje, pola składane)."}
+include_graphics(file.path(WYK, "03_publikacje_rok_stanowisko.png"))
+```
+
+```{r fig-pubpkt-stan, fig.cap="Liczba publikacji \\textbf{punktowanych} (>0 pkt) rocznie wg stanowiska. Po odfiltrowaniu pozycji 0-punktowych znika m.in. pik 2015 widoczny na poprzednim wykresie."}
+include_graphics(file.path(WYK, "07_publikacje_punktowane_rok_stanowisko.png"))
+```
+
+```{r fig-pkt-stan, fig.cap="Suma punktów MEiN rocznie wg stanowiska — okres po reformie (2019–2026)."}
+include_graphics(file.path(WYK, "04_punkty_rok_stanowisko.png"))
+```
+
+# Według jednostki
+
+Liczbę publikacji wg jednostek pokazano dla ostatnich 20 lat (czytelność),
+a punktację — dla okresu po reformie (2019–2026).
+
+```{r fig-pub-jedn, fig.cap="Liczba publikacji rocznie wg jednostki (ostatnie 20 lat)."}
+include_graphics(file.path(WYK, "05_publikacje_rok_jednostka.png"))
+```
+
+```{r fig-pkt-jedn, fig.cap="Suma punktów MEiN rocznie wg jednostki — okres po reformie (2019–2026)."}
+include_graphics(file.path(WYK, "06_punkty_rok_jednostka.png"))
+```
+
+# Nota metodologiczna
+
+- **Źródło danych:** portal Baza Wiedzy UPWr, listy publikacji profili autorów
+  (zakładka *Publikacje*), scraping w maju 2026 na podstawie identyfikatorów
+  zebranych 2026-03-06.
+- **Pozyskanie danych:** strona renderowana po stronie klienta (JavaScript),
+  zrzut wyrenderowanego DOM przez Chrome headless. Z każdej pozycji odczytano rok
+  wydania (grupowanie listy + metadane COinS) oraz punktację MEiN (etykieta grupy
+  punktowej). Profile z ponad 200 pozycjami (limit jednej strony portalu)
+  doczytano stronicując listę (RSelenium + chromedriver), aby uniknąć ucięcia
+  najstarszych lat.
+- **Walidacja:** dla większości autorów suma punktów odczytanych z listy
+  zgadza się co do jednostki ze skumulowaną punktacją podawaną na profilu.
+- **Ograniczenia:**
+  - **Stanowisko i jednostka** pochodzą z migawki z 2026 r. i są stosowane wstecz
+    do całej historii publikacji danej osoby (publikacje sprzed awansu są
+    przypisane do obecnego stanowiska). Podział wg stanowiska należy więc czytać
+    jako „wkład osób o danym *obecnym* stanowisku", a nie stan z roku publikacji.
+  - **Rok `r ROK_BIEZACY`** jest niepełny (stan na `r format(Sys.Date(), "%Y-%m-%d")`),
+    stąd jego spadek na wykresach.
+  - Różnice między sumą punktów per-pozycja a skumulowaną punktacją nagłówkową
+    profilu wynikają z odmiennego sposobu księgowania w portalu, nie z błędu
+    odczytu.
+- **Oprogramowanie:** R, pakiety: dplyr, tidyr, ggplot2, RSelenium; Chrome headless.
+```{r sesja, results='asis'}
+cat(sprintf("- **Wygenerowano:** %s\n", format(Sys.Date(), "%Y-%m-%d")))
+```
