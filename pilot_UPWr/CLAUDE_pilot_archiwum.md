@@ -1,4 +1,10 @@
-# Pamięć projektu: UPWr_bibliometria
+# Pamięć projektu: UPWr_bibliometria (ARCHIWUM — wchłonięty do PracaDyplomowa_DS_UEWr)
+
+> **2026-05-31:** Ten plik to archiwum pamięci dawnego samodzielnego projektu.
+> `UPWr_bibliometria` jest teraz **pilotażem** w podfolderze `pilot_UPWr/`
+> nadrzędnej pracy **PracaDyplomowa_DS_UEWr** — jedno repo, jeden `renv`,
+> jeden `.venv`, jeden git. Aktualną pamięcią projektu jest nadrzędny `CLAUDE.md`.
+> Treść poniżej zachowana wyłącznie dla kontekstu historycznego.
 
 ## 📋 Informacje zasadnicze
     1. Najpierw przemyśl problem, przeczytaj kod źródłowy w poszukiwaniu odpowiednich plików i zapisz plan w pliku Tasks/todo.md.
