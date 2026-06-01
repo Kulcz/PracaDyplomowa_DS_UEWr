@@ -17,9 +17,7 @@ library(here)
 # Pliki uczelni kategorii A. UP Poznan ma DWA pliki:
 # - osoby (Person z metrykami z ETAP 2): up_poznan_rolnictwo_*.csv
 # - publikacje per autor (do warstwy 04): up_poznan_publications_rolnictwo_*.csv (POMIJAMY tu)
-# Tylko pliki profili 4 uczelni w dyscyplinie. Glob na "_rolnictwo_i_ogrodnictwo_"
-# odsiewa slowniki pomocnicze (np. udzial_przyznanych_kategorii_naukowych_ogolem.csv).
-raw_files <- dir_ls(here("Dane", "raw"), glob = "*_rolnictwo_i_ogrodnictwo_*.csv") %>%
+raw_files <- dir_ls(here("Dane", "raw"), glob = "*.csv") %>%
   keep(~ !str_detect(., "_publications_"))   # tylko Person CSV, nie publikacyjne
 
 stopifnot(length(raw_files) > 0)

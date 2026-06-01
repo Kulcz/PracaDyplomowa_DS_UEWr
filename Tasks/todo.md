@@ -1,25 +1,5 @@
 # TODO: PracaDyplomowa_DS_UEWr
 
-## ⏩ STAN NA 2026-05-31 — start następnej sesji tutaj
-
-**Pipeline danych 02→03→04→05 uruchomiony end-to-end (pierwszy raz).**
-Master gotowy: `Dane/master/profiles_features.csv` (462 osoby × 30 cech; 318 z metrykami OpenAlex).
-
-**Następne kroki (priorytet):**
-1. **Diagnoza słabego matchu URK (47.5%, 144 profile bez OA)** — sprawdzić `clean_name_for_search`
-   na nazwiskach URK i/lub pokrycie ROR URK (`012dxyr07`) w OpenAlex. To największa dziura w danych.
-2. **Refactor 06–10: `dyscyplina → stanowisko`** — wszystkie mają nagłówek „REFACTOR PENDING";
-   ~58 odwołań do nieistniejącej `dyscyplina`. Konieczne PRZED odpaleniem warstw analitycznych.
-   W `08` dodatkowo: target `high_impact` liczyć globalnie, nie `group_by(dyscyplina)`.
-3. **`renv::snapshot()`** — biblioteka przebudowana pod R 4.6 (zob. memory `reference-r46-env-fix`),
-   lockfile nieaktualny. Zapisać działający stan (renv też podbity 1.1.5→1.2.3).
-4. Potem: odpalić 06 (EDA/ANOVA) → 07 (klastrowanie) → 08 (modele) → 09 (sieci) → 10 (wykresy).
-
-**Środowisko:** R 4.6.0; ~50 pakietów zaktualizowanych do wersji wspierających 4.6.
-Gdyby `igraph`/warstwa 09 czegoś wymagała: `sudo apt install libglpk-dev` (teraz BRAK).
-
----
-
 ## Finalna próba (decyzja 2026-05-26)
 
 **4 polskie uczelnie przyrodnicze z systemem Omega-PSIR ewaluowane w dyscyplinie rolnictwo i ogrodnictwo (491 osób):**
@@ -54,21 +34,25 @@ Pominięte: UP Poznań (DSpace niekompletny → `_archive/`), ZUT Szczecin (brak
 
 **Macierz 4×1 (4 uczelnie Omega-PSIR × rolnictwo i ogrodnictwo): kompletna.**
 
-## Tydzień 3: Czyszczenie + matching OpenAlex (✓ uruchomione 2026-05-31)
+## Tydzień 3: Czyszczenie + matching OpenAlex
 
-- [x] `02_czyszczenie.R`: levels `upwr/sggw/urk/uwm`, filtr nie-naukowców → **462 rekordy** (z 491)
-- [x] `03_openalex_match.R`: ROR 4 uczelni, fuzzy match Jaro-Winkler ≥0.85 → **68.8% (318/462)**
-  - [ ] poprawić match URK (47.5% — patrz blok „STAN" u góry)
-- [x] Raport match_rate (cel ≥70% osiągnięty globalnie, ale URK ciągnie w dół)
+- [ ] `02_czyszczenie.R`:
+  - dostosować `uczelnia` levels = `upwr/sggw/urk/uwm`
+  - filtr nie-naukowców (UPWr „specjalista", „starszy specjalista")
+  - filtr profili bez ORCID i n_pub=0 (administracyjne)
+- [ ] `03_openalex_match.R`:
+  - ROR vector dla 4 uczelni Omega-PSIR (UPWr/SGGW/URK/UWM zweryfikowane)
+  - matching ORCID-first, potem fuzzy po nazwisku + ROR
+- [ ] Raport match_rate; cel ≥ 70%
 
-## Tydzień 4: OpenAlex Works (✓ uruchomione 2026-05-31)
+## Tydzień 4: OpenAlex Works
 
-- [x] `04_openalex_works.R` → `publications.csv` (15 453 prac) + `coauthorship_edges.csv` (23 478 krawędzi)
-- [x] Cache RDS per author w `Dane/openalex/cache/`
+- [ ] `04_openalex_works.R` — publications + coauthors + FWCI + h-index liczone z listy works (jako QA cross-check dla h-index_scopus z CRIS)
+- [ ] Cache RDS per author (resumability)
 
 ## Tydzień 5-9: Analiza
 
-- [x] `05_features.R` — dokończony join OA (mean_fwci, h_index_oa, n_unique_coauthors, ...) → **462×30**
+- [ ] `05_features.R` — feature engineering (usunąć `factor(dyscyplina)`, levels uczelni `upwr/sggw/urk/uwm`)
 - [ ] `06_eda_anova.R` — warstwa 1 (2-czynnikowa ANOVA: uczelnia × stanowisko, kategoria MEiN jako zmienna kontrolna)
 - [ ] `07_klastrowanie_pca.R` — warstwa 2 (typologia profili)
 - [ ] `08_modele_predykcja.R` — warstwa 3 (RF + XGB + SHAP)

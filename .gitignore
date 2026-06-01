@@ -40,3 +40,6 @@ Thumbs.db
 *.bak
 *.old
 .ipynb_checkpoints/
+
+# Tymczasowe pliki atomowego saveRDS (przerwane pobieranie OpenAlex)
+Dane/openalex/cache/.*.rds.*
