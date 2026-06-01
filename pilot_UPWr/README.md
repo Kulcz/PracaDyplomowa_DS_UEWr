@@ -1,4 +1,12 @@
-# UPWr_bibliometria
+# UPWr_bibliometria (pilotaż — podprojekt PracaDyplomowa_DS_UEWr)
+
+> **Status (2026-05-31):** To NIE jest już samodzielny projekt. Dawny
+> `UPWr_bibliometria` został wchłonięty jako **pilotaż** do nadrzędnej pracy
+> dyplomowej **PracaDyplomowa_DS_UEWr** i żyje w podfolderze `pilot_UPWr/`.
+> Nie ma własnego `renv`/`.venv`/git — korzysta z parasola projektu nadrzędnego.
+> Wszystkie ścieżki w skryptach są względne → uruchamiać z cwd `pilot_UPWr/`.
+> Rolę pilotażu i listę reużywalnych modułów opisuje nadrzędny `CLAUDE.md`
+> (sekcja „Pilotaż wchłonięty: pilot_UPWr/”). Poniższy opis jest historyczny.
 
 ## 📋 Opis projektu
 

@@ -148,7 +148,6 @@ for (i in seq_len(nrow(to_process))) {
   rec$author_id <- row$author_id
   rec$profil_clean <- clean_name_for_search(row$profil)
   rec$uczelnia <- row$uczelnia
-  rec$dyscyplina <- row$dyscyplina
   results[[i]] <- rec
 
   if (i %% 25 == 0 || i == nrow(to_process)) {
@@ -180,7 +179,7 @@ cat(sprintf("Cały zbiór : %.1f%% (%d / %d)\n",
             100 * overall, sum(final$match_accepted, na.rm = TRUE), nrow(final)))
 
 mr_tab <- final %>%
-  group_by(uczelnia, dyscyplina) %>%
+  group_by(uczelnia) %>%
   summarise(
     n = n(),
     matched = sum(match_accepted, na.rm = TRUE),
