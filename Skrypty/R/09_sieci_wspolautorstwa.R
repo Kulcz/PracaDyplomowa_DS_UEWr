@@ -2,11 +2,16 @@
 # ============================================================
 # 09 - Warstwa 4 z planu DS: sieci współautorstwa
 # Cel: graf coauthorship wewnątrz kohorty, community detection (Louvain),
-#      centralności, zgodność ze stanowiskiem/uczelnią (ARI)
-# REFACTOR PENDING (2026-05-26): wszystkie odwolania do `dyscyplina` ->
-# `stanowisko`. Wektory vertices, ARI, heatmapy, kolorowanie sieci. Logika
-# pozostaje, tylko zmiana zmiennej grupujacej.
-# Input:  Dane/openalex/coauthorship_edges.csv + Dane/master/profiles_features.csv
+#      centralności, zgodność ze stanowiskiem/uczelnią (ARI/NMI)
+#
+# Decyzje metodyczne (2026-06-13):
+#  - Krawedzie (coauthorship_edges.csv) sa kluczowane OpenAlex ID; master nie
+#    ma openalex_id -> dolaczamy go z author_match.csv (match_accepted) po
+#    author_id. Wezly = profile ZMATCHOWANE w OpenAlex (318).
+#  - Zmienna grupujaca: stanowisko + uczelnia (dawniej dyscyplina - usunieta).
+#  - URK ma slaby match OpenAlex (~48%) -> jest niedoreprezentowany w sieci;
+#    do raportu "Ograniczenia".
+# Input:  Dane/openalex/{coauthorship_edges,author_match}.csv + master/profiles_features.csv
 # Output: Wykresy/sieci/*.png, output/network_metrics.rds, Dashboard/network.html
 # ============================================================
 
@@ -25,10 +30,12 @@ set.seed(42)
 
 EDGES_FILE <- here("Dane", "openalex", "coauthorship_edges.csv")
 NODES_FILE <- here("Dane", "master", "profiles_features.csv")
-stopifnot(file_exists(EDGES_FILE), file_exists(NODES_FILE))
+MATCH_FILE <- here("Dane", "openalex", "author_match.csv")
+stopifnot(file_exists(EDGES_FILE), file_exists(NODES_FILE), file_exists(MATCH_FILE))
 
 edges_raw <- read_csv(EDGES_FILE, show_col_types = FALSE)
 nodes_raw <- read_csv(NODES_FILE, show_col_types = FALSE)
+match_raw <- read_csv(MATCH_FILE, show_col_types = FALSE)
 
 PLOT_DIR <- here("Wykresy", "sieci");    dir_create(PLOT_DIR)
 OUT_DIR  <- here("output");                dir_create(OUT_DIR)
@@ -36,24 +43,33 @@ DASH_DIR <- here("Dashboard");             dir_create(DASH_DIR)
 
 EDGE_WEIGHT_MIN <- 2     # wycina przypadkowe wspolne pojedyncze publikacje
 
-# ---------- 1. Przygotowanie węzłów + filtracja edges do kohorty ----------
-# Bierzemy tylko wewnętrzne współprace (oba endpointy w naszej kohorcie).
-nodes <- nodes_raw %>%
-  filter(!is.na(openalex_id)) %>%
-  distinct(openalex_id, .keep_all = TRUE)
+# ---------- 1. Węzły: master + openalex_id z author_match ----------
+# author_match linkuje author_id (Omega-PSIR) <-> openalex_id; bierzemy
+# tylko zaakceptowane dopasowania.
+match_ok <- match_raw %>%
+  mutate(match_accepted = as.logical(match_accepted)) %>%
+  filter(match_accepted, !is.na(openalex_id)) %>%
+  distinct(author_id, .keep_all = TRUE) %>%
+  select(author_id, openalex_id)
 
+nodes <- nodes_raw %>%
+  inner_join(match_ok, by = "author_id") %>%
+  distinct(openalex_id, .keep_all = TRUE) %>%
+  select(openalex_id, profil, uczelnia, stanowisko)
+
+# Krawedzie wewnetrzne: oba endpointy w kohorcie, waga >= prog.
 edges <- edges_raw %>%
   filter(author_a %in% nodes$openalex_id,
          author_b %in% nodes$openalex_id,
          weight >= EDGE_WEIGHT_MIN)
 
-cat(sprintf("[FILTR] nodes=%d, edges (weight>=%d, wewn.)=%d\n",
+cat(sprintf("[FILTR] nodes=%d (zmatchowane), edges (weight>=%d, wewn.)=%d\n",
             nrow(nodes), EDGE_WEIGHT_MIN, nrow(edges)))
 
 # ---------- 2. Budowa grafu ----------
 g <- graph_from_data_frame(
   d = edges %>% select(from = author_a, to = author_b, weight),
-  vertices = nodes %>% select(openalex_id, dyscyplina, uczelnia, stanowisko),
+  vertices = nodes %>% select(openalex_id, profil, uczelnia, stanowisko),
   directed = FALSE
 )
 cat(sprintf("[GRAPH] V=%d E=%d density=%.4f transitivity=%.3f\n",
@@ -74,8 +90,9 @@ V(g_main)$eigenvec    <- eigen_centrality(g_main)$vector
 
 centr_df <- tibble(
   openalex_id = V(g_main)$name,
-  dyscyplina  = V(g_main)$dyscyplina,
+  profil      = V(g_main)$profil,
   uczelnia    = V(g_main)$uczelnia,
+  stanowisko  = V(g_main)$stanowisko,
   degree      = V(g_main)$degree,
   betweenness = V(g_main)$betweenness,
   eigenvec    = V(g_main)$eigenvec
@@ -83,7 +100,8 @@ centr_df <- tibble(
 
 # Top 20 wg degree
 cat("\n=== TOP 20 wg degree (giant component) ===\n")
-print(centr_df %>% slice_max(degree, n = 20))
+print(centr_df %>% slice_max(degree, n = 20) %>%
+        select(profil, uczelnia, stanowisko, degree, betweenness))
 
 # ---------- 5. Community detection (Louvain) ----------
 louvain <- cluster_louvain(g_main, weights = E(g_main)$weight)
@@ -99,15 +117,14 @@ comm_sizes <- as.data.frame(table(membership(louvain))) %>%
 cat("\n=== Wielkości społeczności (top 10) ===\n")
 print(head(comm_sizes, 10))
 
-# ---------- 6. ARI: community vs (dyscyplina, uczelnia) ----------
-# igraph::compare wymaga numeric / factor labelingu; NA usuwamy.
+# ---------- 6. ARI/NMI: community vs (stanowisko, uczelnia) ----------
 df_cmp <- centr_df %>%
   mutate(community = membership(louvain)) %>%
-  filter(!is.na(dyscyplina), !is.na(uczelnia))
+  filter(!is.na(stanowisko), !is.na(uczelnia))
 
-ari_dysc <- igraph::compare(
+ari_stan <- igraph::compare(
   as.integer(factor(df_cmp$community)),
-  as.integer(factor(df_cmp$dyscyplina)),
+  as.integer(factor(df_cmp$stanowisko)),
   method = "adjusted.rand"
 )
 ari_ucz <- igraph::compare(
@@ -115,9 +132,9 @@ ari_ucz <- igraph::compare(
   as.integer(factor(df_cmp$uczelnia)),
   method = "adjusted.rand"
 )
-nmi_dysc <- igraph::compare(
+nmi_stan <- igraph::compare(
   as.integer(factor(df_cmp$community)),
-  as.integer(factor(df_cmp$dyscyplina)),
+  as.integer(factor(df_cmp$stanowisko)),
   method = "nmi"
 )
 nmi_ucz <- igraph::compare(
@@ -125,26 +142,26 @@ nmi_ucz <- igraph::compare(
   as.integer(factor(df_cmp$uczelnia)),
   method = "nmi"
 )
-cat(sprintf("\n[ZGODNOSC] ARI(comm,dysc)=%.3f NMI=%.3f\n", ari_dysc, nmi_dysc))
+cat(sprintf("\n[ZGODNOSC] ARI(comm,stan)=%.3f NMI=%.3f\n", ari_stan, nmi_stan))
 cat(sprintf("[ZGODNOSC] ARI(comm,ucz )=%.3f NMI=%.3f\n", ari_ucz,  nmi_ucz))
 
 # ---------- 7. Heatmapy zgodności ----------
-ct_dysc <- table(community = df_cmp$community, dyscyplina = df_cmp$dyscyplina) %>%
+ct_stan <- table(community = df_cmp$community, stanowisko = df_cmp$stanowisko) %>%
   as.data.frame() %>%
   group_by(community) %>%
   mutate(pct = Freq / sum(Freq)) %>%
   ungroup()
 
-p_heat_dysc <- ggplot(ct_dysc, aes(x = dyscyplina, y = factor(community), fill = pct)) +
+p_heat_stan <- ggplot(ct_stan, aes(x = stanowisko, y = factor(community), fill = pct)) +
   geom_tile() +
   geom_text(aes(label = sprintf("%.0f%%", 100 * pct)), size = 3) +
   scale_fill_gradient(low = "white", high = "#3C5488") +
-  labs(title = sprintf("Społeczności Louvain × dyscyplina (ARI = %.3f)", ari_dysc),
+  labs(title = sprintf("Społeczności Louvain × stanowisko (ARI = %.3f)", ari_stan),
        x = NULL, y = "Społeczność", fill = "% w społ.") +
   theme_minimal(base_size = 12) +
   theme(axis.text.x = element_text(angle = 30, hjust = 1))
-ggsave(file.path(PLOT_DIR, "01_comm_vs_dyscyplina.png"),
-       p_heat_dysc, width = 8, height = 7, dpi = 200)
+ggsave(file.path(PLOT_DIR, "01_comm_vs_stanowisko.png"),
+       p_heat_stan, width = 8, height = 7, dpi = 200)
 
 ct_ucz <- table(community = df_cmp$community, uczelnia = df_cmp$uczelnia) %>%
   as.data.frame() %>%
@@ -178,16 +195,16 @@ p_net <- ggraph(tg, layout = "stress") +
 ggsave(file.path(PLOT_DIR, "03_siec_louvain.png"),
        p_net, width = 12, height = 10, dpi = 200)
 
-# Kolor wg dyscypliny — porównanie wzrokowe ze społecznościami
-p_net_dysc <- ggraph(tg, layout = "stress") +
+# Kolor wg uczelni — czy społeczności pokrywają się z afiliacją?
+p_net_ucz <- ggraph(tg, layout = "stress") +
   geom_edge_link(alpha = 0.15, color = "grey30") +
-  geom_node_point(aes(color = dyscyplina, size = degree), alpha = 0.85) +
+  geom_node_point(aes(color = uczelnia, size = degree), alpha = 0.85) +
   scale_size(range = c(0.5, 5)) +
-  labs(title = "Sieć współautorstwa — kolor: dyscyplina",
-       color = "Dyscyplina", size = "Stopień") +
+  labs(title = "Sieć współautorstwa — kolor: uczelnia",
+       color = "Uczelnia", size = "Stopień") +
   theme_void(base_size = 12)
-ggsave(file.path(PLOT_DIR, "04_siec_dyscyplina.png"),
-       p_net_dysc, width = 12, height = 10, dpi = 200)
+ggsave(file.path(PLOT_DIR, "04_siec_uczelnia.png"),
+       p_net_ucz, width = 12, height = 10, dpi = 200)
 
 # ---------- 9. Statystyki globalne + degree distribution ----------
 deg_df <- tibble(degree = V(g_main)$degree)
@@ -203,13 +220,14 @@ ggsave(file.path(PLOT_DIR, "05_degree_distribution.png"),
 # ---------- 10. Wizualizacja interaktywna (visNetwork -> HTML) ----------
 vis_nodes <- tibble(
   id     = V(g_main)$name,
-  label  = substr(V(g_main)$name, 22, 40),   # OpenAlex ID skrot
+  label  = V(g_main)$profil,
   group  = as.character(V(g_main)$community),
   value  = V(g_main)$degree,
-  title  = sprintf("Dyscyplina: %s<br>Uczelnia: %s<br>Stopień: %d",
-                   V(g_main)$dyscyplina, V(g_main)$uczelnia, V(g_main)$degree)
+  title  = sprintf("%s<br>Uczelnia: %s<br>Stanowisko: %s<br>Stopień: %d",
+                   V(g_main)$profil, V(g_main)$uczelnia,
+                   V(g_main)$stanowisko, V(g_main)$degree)
 )
-vis_edges <- as_data_frame(g_main, what = "edges") %>%
+vis_edges <- igraph::as_data_frame(g_main, what = "edges") %>%
   rename(from = from, to = to) %>% mutate(value = weight)
 
 vis <- visNetwork(vis_nodes, vis_edges,
@@ -228,9 +246,9 @@ saveRDS(
     louvain      = louvain,
     modularity   = mod,
     comm_sizes   = comm_sizes,
-    ari = list(dysc = ari_dysc, ucz = ari_ucz),
-    nmi = list(dysc = nmi_dysc, ucz = nmi_ucz),
-    crosstabs = list(dysc = ct_dysc, ucz = ct_ucz),
+    ari = list(stan = ari_stan, ucz = ari_ucz),
+    nmi = list(stan = nmi_stan, ucz = nmi_ucz),
+    crosstabs = list(stan = ct_stan, ucz = ct_ucz),
     global_stats = list(
       V = vcount(g_main), E = ecount(g_main),
       density = edge_density(g_main),

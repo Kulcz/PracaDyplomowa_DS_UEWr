@@ -1,11 +1,15 @@
 # LTeX: enabled=false
 # ============================================================
 # 08 - Warstwa 3 z planu DS: modelowanie predykcyjne
-# Cel: klasyfikacja "high-impact" (top 10% sum_IF/FWCI w probie)
+# Cel: klasyfikacja "high-impact" (top 10% sum_IF w probie)
 #      z cech strukturalnych — bez h_index/sum_IF jako predyktorów (tautologia).
-# REFACTOR PENDING (2026-05-26): target high_impact liczony globalnie w probie
-# (1 dyscyplina), nie per dyscyplina. Usunac group_by(dyscyplina) w target def
-# i z listy `strukturalne` predyktorow.
+#
+# Decyzje metodyczne (2026-06-13):
+#  - Target high_impact liczony GLOBALNIE w calej probie (1 dyscyplina),
+#    nie per dyscyplina (czynnik usuniety po zmianie koncepcji proby).
+#  - Predyktory strukturalne: stanowisko, uczelnia, n_pub (bez dyscyplina).
+#  - Predyktory OpenAlex (opcjonalne) maja braki (URK ~48% match) -> recipe
+#    imputuje median/unknown; do interpretacji SHAP brac z ostroznoscia.
 # Input:  Dane/master/profiles_features.csv
 # Output: Wykresy/modele/*.png, output/model_results.rds
 # ============================================================
@@ -16,12 +20,19 @@ library(ggplot2)
 library(readr)
 library(here)
 library(fs)
-library(tidymodels)
+# Komponenty tidymodels ladowane jawnie (meta-pakiet tidymodels nie zainstalowany).
+library(rsample)
+library(recipes)
+library(parsnip)
+library(workflows)
+library(workflowsets)
+library(tune)
+library(dials)
+library(yardstick)
 library(ranger)
 library(xgboost)
 library(shapviz)
 library(vip)
-library(yardstick)
 library(patchwork)
 
 set.seed(42)
@@ -32,17 +43,15 @@ df <- read_csv(here("Dane", "master", "profiles_features.csv"), show_col_types =
 PLOT_DIR <- here("Wykresy", "modele"); dir_create(PLOT_DIR)
 OUT_DIR  <- here("output");             dir_create(OUT_DIR)
 
-# ---------- 1. Definicja targetu: high_impact = top 10% IF w obrębie dyscypliny ----------
+# ---------- 1. Definicja targetu: high_impact = top 10% sum_IF globalnie ----------
 df <- df %>%
-  filter(!is.na(sum_IF), !is.na(dyscyplina)) %>%
-  group_by(dyscyplina) %>%
+  filter(!is.na(sum_IF)) %>%
   mutate(high_impact = factor(
     sum_IF >= quantile(sum_IF, 0.9, na.rm = TRUE),
     levels = c(FALSE, TRUE), labels = c("no", "yes")
-  )) %>%
-  ungroup()
+  ))
 
-cat(sprintf("[TARGET] high_impact = top 10%% sum_IF per dyscyplina\n"))
+cat(sprintf("[TARGET] high_impact = top 10%% sum_IF (globalnie, n=%d)\n", nrow(df)))
 cat(sprintf("  yes : %d (%.1f%%)\n",
             sum(df$high_impact == "yes"), 100 * mean(df$high_impact == "yes")))
 cat(sprintf("  no  : %d (%.1f%%)\n",
@@ -51,7 +60,7 @@ cat(sprintf("  no  : %d (%.1f%%)\n",
 # ---------- 2. Predyktory ----------
 # Stałe: cechy strukturalne dostępne od razu po 02_czyszczenie + 05_features.
 # Opcjonalne: zostaną dodane po 05_features (jeśli OpenAlex zwróci coauthors).
-strukturalne <- c("stanowisko", "dyscyplina", "uczelnia", "n_pub")
+strukturalne <- c("stanowisko", "uczelnia", "n_pub")
 opcjonalne   <- c("n_unique_coauthors", "avg_authors_per_pub", "mean_fwci")
 maja         <- intersect(opcjonalne, names(df))
 
@@ -143,6 +152,31 @@ cm_xgb <- conf_mat(pred_xgb, truth = high_impact, estimate = .pred_class)
 cat("\n[CM RF] \n"); print(cm_rf$table)
 cat("\n[CM XGB]\n"); print(cm_xgb$table)
 
+# ---------- 8b. Optymalizacja progu decyzyjnego (Youden) ----------
+# Klasy niezbalansowane (~10%): prog 0.5 daje niska czulosc. Wyznaczamy prog
+# maksymalizujacy J Youdena (sens+spec-1) na predykcjach OUT-OF-FOLD z CV
+# (best RF), zeby nie stroic na zbiorze testowym; stosujemy go do testu.
+oof_rf <- res %>% extract_workflow_set_result("base_rf") %>%
+  collect_predictions(parameters = best_rf)
+thr_rf <- oof_rf %>%
+  roc_curve(truth = high_impact, .pred_yes, event_level = "second") %>%
+  mutate(j = sensitivity + specificity - 1) %>%
+  filter(is.finite(.threshold)) %>%
+  slice_max(j, n = 1, with_ties = FALSE) %>%
+  pull(.threshold)
+cat(sprintf("\n[PROG] Youden-optymalny prog (RF, OOF CV) = %.3f\n", thr_rf))
+
+pred_rf_thr <- pred_rf %>%
+  mutate(.pred_class_thr = factor(if_else(.pred_yes >= thr_rf, "yes", "no"),
+                                  levels = c("no", "yes")))
+mset_thr <- metric_set(sens, spec, j_index, bal_accuracy)
+test_metrics_thr <- pred_rf_thr %>%
+  mset_thr(truth = high_impact, estimate = .pred_class_thr, event_level = "second") %>%
+  mutate(model = "RF (prog Youdena)")
+cat("\n=== Test set metrics @ prog Youdena (RF) ===\n"); print(test_metrics_thr)
+cm_rf_thr <- conf_mat(pred_rf_thr, truth = high_impact, estimate = .pred_class_thr)
+cat("\n[CM RF @ prog]\n"); print(cm_rf_thr$table)
+
 # ---------- 9. ROC curves ----------
 roc_rf  <- pred_rf  %>% roc_curve(truth = high_impact, .pred_yes, event_level = "second") %>% mutate(model = "RF")
 roc_xgb <- pred_xgb %>% roc_curve(truth = high_impact, .pred_yes, event_level = "second") %>% mutate(model = "XGB")
@@ -187,14 +221,16 @@ ggsave(file.path(PLOT_DIR, "04_shap_beeswarm.png"),
 # ---------- 12. Zapis ----------
 saveRDS(
   list(
-    target_def    = "high_impact = top 10% sum_IF per dyscyplina",
+    target_def    = "high_impact = top 10% sum_IF (globalnie)",
     predyktory    = predyktory,
     tune_results  = res,
     ranking       = ranking,
     fit_rf        = fit_rf,
     fit_xgb       = fit_xgb,
     test_metrics  = test_metrics,
-    conf_mat      = list(rf = cm_rf, xgb = cm_xgb),
+    threshold_rf  = thr_rf,
+    test_metrics_thr = test_metrics_thr,
+    conf_mat      = list(rf = cm_rf, xgb = cm_xgb, rf_thr = cm_rf_thr),
     vip_rf        = vi_rf,
     shap_xgb      = sv
   ),

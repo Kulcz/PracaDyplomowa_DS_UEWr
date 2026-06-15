@@ -3,10 +3,13 @@
 # 10 - Finalne figury kompozytowe do pracy dyplomowej
 # Strategia: nie liczymy nic od nowa, tylko wczytujemy artefakty
 # RDS z 06-09 i renderujemy spójne figury do Wykresy/praca/.
-# REFACTOR PENDING (2026-05-26): facet_grid metryka ~ dyscyplina ->
-# metryka ~ stanowisko (lub uczelnia). Fig 1 (heatmap dyscyplina × uczelnia)
-# zmienic na heatmap stanowisko × uczelnia. Fig 5 (community vs dyscyplina) ->
-# community vs stanowisko.
+#
+# Decyzje metodyczne (2026-06-13):
+#  - Zmienna grupujaca: stanowisko / uczelnia (dyscyplina usunieta).
+#  - Fig 1: heatmap n per (uczelnia × stanowisko) - proba analityczna 06.
+#  - Fig 2: metryki pelnego pokrycia (h_index_wos, sum_IF, n_pub), bez sum_MEiN
+#    (SGGW=NA); facet metryka ~ uczelnia, os = stanowisko.
+#  - Fig 5: community × uczelnia (ARI/NMI uczelnia to glowny wynik warstwy 4).
 # Każda figura = jedna obserwacja w pracy (1-2 panele max).
 # Brak danego RDS -> dana figura jest pomijana (cat).
 # ============================================================
@@ -22,6 +25,8 @@ library(patchwork)
 OUT_DIR  <- here("output")
 PLOT_DIR <- here("Wykresy", "praca"); dir_create(PLOT_DIR)
 
+STANOWISKA <- c("adiunkt", "profesor uczelni", "profesor")
+
 # ---------- Wspólne style ----------
 theme_praca <- theme_minimal(base_size = 12) +
   theme(
@@ -34,9 +39,9 @@ theme_praca <- theme_minimal(base_size = 12) +
 
 paleta_uczelnia <- c(upwr = "#3C5488", sggw = "#E64B35", urk = "#00A087", uwm = "#F39B7F")
 paleta_stan <- c(
-  "asystent" = "#999999", "adiunkt" = "#56B4E9",
-  "profesor uczelni" = "#009E73", "profesor" = "#CC79A7"
+  "adiunkt" = "#91D1C2", "profesor uczelni" = "#4DBBD5", "profesor" = "#3C5488"
 )
+stan_labs <- c(adiunkt = "adiunkt", `profesor uczelni` = "prof. ucz.", profesor = "profesor")
 
 # ---------- Helper: bezpieczne wczytanie ----------
 try_load <- function(filename) {
@@ -51,66 +56,66 @@ mdl     <- try_load("model_results.rds")
 net     <- try_load("network_metrics.rds")
 
 # ============================================================
-# Fig 1: Próba badawcza (n per komórka 3×4)
+# Fig 1: Próba analityczna (n per uczelnia × stanowisko)
 # ============================================================
 if (!is.null(eda)) {
   n_komorka <- eda$opisowe %>%
-    filter(metryka == metryka[1]) %>%   # unikatowy n per (dysc × ucz)
-    select(dyscyplina, uczelnia, n)
+    filter(metryka == "h_index_wos") %>%   # metryka pelnego pokrycia -> n realne
+    mutate(stanowisko = factor(stanowisko, levels = STANOWISKA),
+           uczelnia   = factor(uczelnia, levels = c("upwr","sggw","urk","uwm"))) %>%
+    select(uczelnia, stanowisko, n)
 
-  p1 <- ggplot(n_komorka, aes(x = uczelnia, y = dyscyplina, fill = n)) +
+  p1 <- ggplot(n_komorka, aes(x = uczelnia, y = stanowisko, fill = n)) +
     geom_tile() +
     geom_text(aes(label = n), color = "white", fontface = "bold", size = 4) +
     scale_fill_gradient(low = "#9DB0CE", high = "#1F3864") +
-    labs(title = "Liczebność próby (3 dyscypliny × 4 uczelnie)",
+    scale_y_discrete(labels = stan_labs) +
+    labs(title = "Liczebność próby analitycznej (uczelnia × stanowisko)",
+         subtitle = "n wg h-index (WoS); asystenci wykluczeni z analizy 2-czynnikowej",
          x = NULL, y = NULL, fill = "n") +
     theme_praca
 
   ggsave(file.path(PLOT_DIR, "fig_01_proba.png"),
-         p1, width = 8, height = 4.5, dpi = 300)
+         p1, width = 8, height = 4, dpi = 300)
   cat("[OK] fig_01_proba.png\n")
 }
 
 # ============================================================
-# Fig 2: Boxploty kluczowych metryk per dyscyplina × uczelnia
-# (3 metryki — sum_IF, sum_MEiN, h_index_wos — w jednym panelu kompozytowym)
+# Fig 2: Boxploty metryk pełnego pokrycia (uczelnia × stanowisko)
 # ============================================================
-if (!is.null(eda)) {
-  # Reuse opisowe + cld_all do uproszczonych boxplotow
-  # (alternatywa: wczytac df bezposrednio z profiles_features.csv)
-  feat_path <- here("Dane", "master", "profiles_features.csv")
-  if (file_exists(feat_path)) {
-    df_feat <- read_csv(feat_path, show_col_types = FALSE) %>%
-      mutate(
-        uczelnia   = factor(uczelnia, levels = c("upwr","sggw","urk","uwm")),
-        dyscyplina = factor(dyscyplina)
-      )
+feat_path <- here("Dane", "master", "profiles_features.csv")
+if (file_exists(feat_path)) {
+  df_feat <- read_csv(feat_path, show_col_types = FALSE) %>%
+    mutate(
+      uczelnia   = factor(uczelnia, levels = c("upwr","sggw","urk","uwm")),
+      stanowisko = factor(stanowisko, levels = STANOWISKA)
+    ) %>%
+    filter(!is.na(stanowisko))
 
-    metryki_key <- c("sum_IF", "sum_MEiN", "h_index_wos")
-    metryki_labs <- c(sum_IF = "Sumaryczny IF",
-                      sum_MEiN = "Punktacja MEiN",
-                      h_index_wos = "h-index (WoS)")
+  metryki_key  <- c("h_index_wos", "sum_IF", "n_pub")
+  metryki_labs <- c(h_index_wos = "h-index (WoS)", sum_IF = "Sumaryczny IF",
+                    n_pub = "Liczba publikacji")
 
-    df_long <- df_feat %>%
-      pivot_longer(all_of(metryki_key), names_to = "metryka", values_to = "y") %>%
-      filter(!is.na(y)) %>%
-      mutate(metryka = factor(metryki_labs[metryka], levels = unname(metryki_labs)))
+  df_long <- df_feat %>%
+    pivot_longer(all_of(metryki_key), names_to = "metryka", values_to = "y") %>%
+    filter(!is.na(y)) %>%
+    mutate(metryka = factor(metryki_labs[metryka], levels = unname(metryki_labs)))
 
-    p2 <- ggplot(df_long, aes(x = uczelnia, y = y, fill = uczelnia)) +
-      geom_boxplot(outlier.size = 0.5, alpha = 0.85) +
-      facet_grid(metryka ~ dyscyplina, scales = "free_y", switch = "y") +
-      scale_fill_manual(values = paleta_uczelnia) +
-      labs(title = "Metryki bibliometryczne: 3 dyscypliny × 4 uczelnie",
-           x = NULL, y = NULL) +
-      theme_praca +
-      theme(legend.position = "none",
-            strip.placement = "outside",
-            axis.text.x = element_text(angle = 30, hjust = 1))
+  p2 <- ggplot(df_long, aes(x = stanowisko, y = y, fill = stanowisko)) +
+    geom_boxplot(outlier.size = 0.5, alpha = 0.85) +
+    facet_grid(metryka ~ uczelnia, scales = "free_y", switch = "y") +
+    scale_fill_manual(values = paleta_stan, labels = stan_labs) +
+    scale_x_discrete(labels = stan_labs) +
+    labs(title = "Metryki bibliometryczne: uczelnia × stanowisko",
+         x = NULL, y = NULL, fill = "Stanowisko") +
+    theme_praca +
+    theme(legend.position = "bottom",
+          strip.placement = "outside",
+          axis.text.x = element_text(angle = 30, hjust = 1))
 
-    ggsave(file.path(PLOT_DIR, "fig_02_metryki_box.png"),
-           p2, width = 11, height = 9, dpi = 300)
-    cat("[OK] fig_02_metryki_box.png\n")
-  }
+  ggsave(file.path(PLOT_DIR, "fig_02_metryki_box.png"),
+         p2, width = 11, height = 8, dpi = 300)
+  cat("[OK] fig_02_metryki_box.png\n")
 }
 
 # ============================================================
@@ -149,13 +154,9 @@ if (!is.null(clust)) {
 }
 
 # ============================================================
-# Fig 4: Modele predykcyjne (ROC + VIP)
+# Fig 4: Modele predykcyjne (metryki test set + VIP)
 # ============================================================
 if (!is.null(mdl)) {
-  library(yardstick)
-  # ROC z stored fits — odtworzony z conf_mat$rf nie wystarcza, więc używamy test_metrics
-  # i wyciągamy curves z fit_rf/fit_xgb (potrzeba train/test split — pomijamy reuse).
-  # Najprościej: bar plot z test_metrics (model × metric).
   metrics_long <- mdl$test_metrics %>%
     filter(.metric %in% c("roc_auc", "accuracy", "sens", "spec"))
 
@@ -167,6 +168,7 @@ if (!is.null(mdl)) {
     scale_fill_manual(values = c(RF = "#3C5488", XGB = "#E64B35")) +
     ylim(0, 1.05) +
     labs(title = "Metryki test set: RF vs XGBoost",
+         subtitle = "klasy niezbalansowane (10% high-impact) — niska czułość mimo wysokiego AUC",
          x = NULL, y = "Wartość", fill = "Model") +
     theme_praca
 
@@ -184,7 +186,7 @@ if (!is.null(mdl)) {
 }
 
 # ============================================================
-# Fig 5: Sieć współautorstwa (Louvain) + heatmap zgodności
+# Fig 5: Sieć współautorstwa (Louvain) + heatmap zgodności z uczelnią
 # ============================================================
 if (!is.null(net)) {
   library(igraph); library(tidygraph); library(ggraph)
@@ -200,15 +202,14 @@ if (!is.null(net)) {
     theme_void(base_size = 12) +
     theme(plot.title = element_text(face = "bold", size = 13))
 
-  ct <- net$crosstabs$dysc %>% as.data.frame()
-  p5b <- ggplot(ct, aes(x = dyscyplina, y = factor(community), fill = pct)) +
+  ct <- net$crosstabs$ucz %>% as.data.frame()
+  p5b <- ggplot(ct, aes(x = uczelnia, y = factor(community), fill = pct)) +
     geom_tile() +
     geom_text(aes(label = sprintf("%.0f%%", 100 * pct)), size = 3) +
-    scale_fill_gradient(low = "white", high = "#3C5488") +
-    labs(title = sprintf("Społeczność × dyscyplina (ARI = %.3f)", net$ari$dysc),
+    scale_fill_gradient(low = "white", high = "#E64B35") +
+    labs(title = sprintf("Społeczność × uczelnia (ARI = %.3f)", net$ari$ucz),
          x = NULL, y = "Społeczność", fill = "%") +
-    theme_praca +
-    theme(axis.text.x = element_text(angle = 30, hjust = 1))
+    theme_praca
 
   ggsave(file.path(PLOT_DIR, "fig_05_siec.png"),
          p5a + p5b + plot_layout(widths = c(1.4, 1)),
@@ -217,12 +218,10 @@ if (!is.null(net)) {
 }
 
 # ============================================================
-# Fig 6 (opcjonalna): Composite summary 2×2 — jeśli wszystko jest
+# Fig 6 (opcjonalna): Composite summary — jeśli wszystko jest
 # ============================================================
 have_all <- !is.null(eda) && !is.null(clust) && !is.null(mdl) && !is.null(net)
 if (have_all) {
-  # Jeśli wszystkie 4 RDS są, to powyższe figury są w pamięci.
-  # Composite 2x2 byłby zbyt zaganiany — pomijamy. Zostawiamy 5 osobnych figur.
   cat("[INFO] wszystkie 4 RDS dostępne — composite 2x2 pominięty (5 osobnych figur jest czytelniejsze)\n")
 }
 

@@ -1,0 +1,67 @@
+metryka,uczelnia,stanowisko,n,mean,median,sd,iqr
+h_index_wos,upwr,adiunkt,46,6.7,6,3.63,5
+h_index_wos,upwr,profesor uczelni,30,9.3,9,4.75,5.75
+h_index_wos,upwr,profesor,26,14.5,11,8.07,7.75
+h_index_wos,sggw,adiunkt,59,7.58,7,4.07,5
+h_index_wos,sggw,profesor uczelni,30,12.27,12,5.6,6
+h_index_wos,sggw,profesor,13,13.08,14,6.06,10
+h_index_wos,urk,adiunkt,45,6.44,6,2.99,3
+h_index_wos,urk,profesor uczelni,59,12.61,12,5.33,7
+h_index_wos,urk,profesor,37,12.51,13,6.19,9
+h_index_wos,uwm,adiunkt,17,8.94,8,3.68,4
+h_index_wos,uwm,profesor uczelni,34,11.47,10,4.93,2.75
+h_index_wos,uwm,profesor,19,16.16,14,6.29,5
+if_per_pub,upwr,adiunkt,47,1,0.47,0.96,1.43
+if_per_pub,upwr,profesor uczelni,30,0.57,0.52,0.42,0.63
+if_per_pub,upwr,profesor,26,0.58,0.56,0.32,0.3
+if_per_pub,sggw,adiunkt,58,1.54,1.17,0.99,1.25
+if_per_pub,sggw,profesor uczelni,30,1.3,1.12,0.85,0.8
+if_per_pub,sggw,profesor,13,0.98,0.93,0.53,0.59
+if_per_pub,urk,adiunkt,46,1.16,0.82,1.02,0.9
+if_per_pub,urk,profesor uczelni,59,1.34,1.04,0.93,1.03
+if_per_pub,urk,profesor,37,0.97,0.79,0.68,0.76
+if_per_pub,uwm,adiunkt,17,1.59,1.31,1.27,1.3
+if_per_pub,uwm,profesor uczelni,34,1.24,0.81,0.92,1.62
+if_per_pub,uwm,profesor,19,1.04,0.93,0.52,0.76
+if_to_mein,upwr,adiunkt,47,0.03,0.03,0.01,0.01
+if_to_mein,upwr,profesor uczelni,30,0.03,0.03,0.01,0.01
+if_to_mein,upwr,profesor,26,0.03,0.03,0.01,0.01
+if_to_mein,urk,adiunkt,46,0.03,0.03,0.01,0.01
+if_to_mein,urk,profesor uczelni,59,0.03,0.03,0.01,0.01
+if_to_mein,urk,profesor,37,0.03,0.03,0.01,0.01
+if_to_mein,uwm,adiunkt,17,0.03,0.03,0.01,0.01
+if_to_mein,uwm,profesor uczelni,34,0.03,0.03,0.01,0.01
+if_to_mein,uwm,profesor,19,0.03,0.03,0.01,0.01
+n_pub,upwr,adiunkt,47,84.43,52,112.17,64.5
+n_pub,upwr,profesor uczelni,30,134.47,125,60.71,71.75
+n_pub,upwr,profesor,26,186.15,172,72.78,103.25
+n_pub,sggw,adiunkt,59,42.78,35,33.12,27.5
+n_pub,sggw,profesor uczelni,30,114.3,87.5,136.72,41.5
+n_pub,sggw,profesor,13,120.38,83,103.17,79
+n_pub,urk,adiunkt,47,41.51,30,34.3,32
+n_pub,urk,profesor uczelni,59,87.44,72,52.72,57
+n_pub,urk,profesor,38,102.74,91.5,71.1,61
+n_pub,uwm,adiunkt,17,44.06,38,23.11,31
+n_pub,uwm,profesor uczelni,34,87.32,84.5,46.16,38.25
+n_pub,uwm,profesor,19,140.58,121,60.16,63
+sum_IF,upwr,adiunkt,47,42.45,35.51,37.12,40.51
+sum_IF,upwr,profesor uczelni,30,61.41,61.92,41.01,48.08
+sum_IF,upwr,profesor,26,103.39,86.89,69.07,73.15
+sum_IF,sggw,adiunkt,58,49.51,39.52,30.72,32.32
+sum_IF,sggw,profesor uczelni,30,110.4,77.67,92.62,71.78
+sum_IF,sggw,profesor,13,96.06,87.73,57.2,75.01
+sum_IF,urk,adiunkt,46,34.3,28.76,23.98,18.13
+sum_IF,urk,profesor uczelni,59,94.82,84.31,58.89,65.04
+sum_IF,urk,profesor,37,100.9,77.76,83.03,108.23
+sum_IF,uwm,adiunkt,17,55.2,45.8,43.88,32.61
+sum_IF,uwm,profesor uczelni,34,90.55,67.22,76.26,37.55
+sum_IF,uwm,profesor,19,153.49,106.47,131.01,108.5
+sum_MEiN,upwr,adiunkt,47,1389.3,1288,940.77,911
+sum_MEiN,upwr,profesor uczelni,30,2052.07,1930.5,1090.27,1612
+sum_MEiN,upwr,profesor,26,3268.46,2974,1675.77,1997.25
+sum_MEiN,urk,adiunkt,47,1131.51,955,773.48,749
+sum_MEiN,urk,profesor uczelni,59,2896.31,2530,1618.89,1441.5
+sum_MEiN,urk,profesor,38,3065.11,2607.5,2422.55,2855
+sum_MEiN,uwm,adiunkt,17,1950.47,1613,1245.56,646
+sum_MEiN,uwm,profesor uczelni,34,3091.94,2496.5,2099.52,1321.5
+sum_MEiN,uwm,profesor,19,4942.42,3320,3724.82,3614.5

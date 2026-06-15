@@ -2,11 +2,15 @@
 # ============================================================
 # 07 - Warstwa 2 z planu DS: PCA + klastrowanie
 # Cel: typologia profili bibliometrycznych (k-means + walidacja silhouette/gap)
-# REFACTOR PENDING (2026-05-26): kolorowanie biplot/heatmap na dyscyplinie ->
-# stanowisku (po zmianie koncepcji 1 dyscyplina x 4 uczelnie A). Zmienic
-# fill.ind, chi2 test, nazwy plikow PNG.
+#
+# Decyzje metodyczne (2026-06-13):
+#  - Cechy klastrowania: metryki o PELNYM pokryciu wszystkich 4 uczelni
+#    (h_index_wos, sum_IF, if_per_pub, n_pub). NIE uzywamy sum_MEiN/if_to_mein,
+#    bo SGGW=100% NA -> drop_na wyrzucilby cale SGGW z typologii (bias).
+#  - Zmienne grupujace do walidacji zewnetrznej (chi2): uczelnia, stanowisko
+#    (dawniej dyscyplina - usunieta po zmianie koncepcji proby).
 # Input:  Dane/master/profiles_features.csv
-# Output: Wykresy/klastrowanie/*.png, output/clusters.rds
+# Output: Wykresy/klastrowanie/*.png, output/clusters.rds, output/klaster_profile.csv
 # ============================================================
 
 library(dplyr)
@@ -25,14 +29,25 @@ set.seed(42)
 stopifnot(file_exists(here("Dane", "master", "profiles_features.csv")))
 df <- read_csv(here("Dane", "master", "profiles_features.csv"), show_col_types = FALSE)
 
-cechy_klaster <- c("h_index_wos", "sum_IF", "sum_MEiN", "if_per_pub", "if_to_mein")
-df <- df %>% drop_na(all_of(cechy_klaster))
+# Cechy o pelnym pokryciu (zob. nota metodyczna) - bez metryk MEiN.
+cechy_klaster <- c("h_index_wos", "sum_IF", "if_per_pub", "n_pub")
+
+df <- df %>%
+  mutate(
+    uczelnia   = factor(uczelnia, levels = c("upwr", "sggw", "urk", "uwm")),
+    stanowisko = factor(stanowisko,
+                        levels = c("asystent", "adiunkt", "profesor uczelni", "profesor"))
+  ) %>%
+  drop_na(all_of(cechy_klaster))
+
 X <- df %>% select(all_of(cechy_klaster)) %>% scale()
 
 PLOT_DIR <- here("Wykresy", "klastrowanie"); dir_create(PLOT_DIR)
 OUT_DIR  <- here("output");                   dir_create(OUT_DIR)
 
 cat(sprintf("[START] n = %d profili, %d cech\n", nrow(X), ncol(X)))
+cat("Pokrycie uczelni w probie klastrowania:\n")
+print(table(df$uczelnia))
 
 # ---------- 1. PCA ----------
 pca <- PCA(X, graph = FALSE, ncp = ncol(X))
@@ -45,15 +60,18 @@ p_scree <- fviz_eig(pca, addlabels = TRUE, ylim = c(0, 100)) +
 ggsave(file.path(PLOT_DIR, "01_pca_scree.png"), p_scree,
        width = 8, height = 5, dpi = 200)
 
-p_biplot_dysc <- fviz_pca_biplot(
+# Biplot kolorowany stanowiskiem (NA stanowiska -> "b.d." na potrzeby wykresu)
+stan_lab <- factor(ifelse(is.na(df$stanowisko), "b.d.", as.character(df$stanowisko)),
+                   levels = c("asystent", "adiunkt", "profesor uczelni", "profesor", "b.d."))
+p_biplot_stan <- fviz_pca_biplot(
   pca,
   geom.ind = "point",
   pointshape = 21, pointsize = 2,
-  fill.ind = df$dyscyplina,
+  fill.ind = stan_lab,
   col.var = "black", alpha.var = 0.6, repel = TRUE,
-  legend.title = "Dyscyplina"
-) + labs(title = "PCA biplot — kolor: dyscyplina")
-ggsave(file.path(PLOT_DIR, "02_pca_biplot_dyscyplina.png"), p_biplot_dysc,
+  legend.title = "Stanowisko"
+) + labs(title = "PCA biplot — kolor: stanowisko")
+ggsave(file.path(PLOT_DIR, "02_pca_biplot_stanowisko.png"), p_biplot_stan,
        width = 9, height = 7, dpi = 200)
 
 p_biplot_ucz <- fviz_pca_biplot(
@@ -149,22 +167,25 @@ cramers_v <- function(tab) {
 }
 cat(sprintf("Cramer's V (k-means vs Ward) = %.3f\n", cramers_v(ct_km_ward)))
 
-# ---------- 5. chi2: klaster vs dyscyplina / uczelnia ----------
-cat("\n=== chi2 niezależności: klaster vs dyscyplina / uczelnia ===\n")
-ct_dysc <- table(klaster = df$klaster, dyscyplina = df$dyscyplina)
+# ---------- 5. chi2: klaster vs uczelnia / stanowisko ----------
+# Walidacja zewnetrzna: czy typologia profili pokrywa sie z afiliacja / rola.
+cat("\n=== chi2 niezależności: klaster vs uczelnia / stanowisko ===\n")
 ct_ucz  <- table(klaster = df$klaster, uczelnia = df$uczelnia)
-
-print(ct_dysc)
-chi_dysc <- suppressWarnings(chisq.test(ct_dysc))
-cat(sprintf("chi2 vs dyscyplina: X2 = %.2f, df = %d, p = %.4g, Cramer's V = %.3f\n",
-            chi_dysc$statistic, chi_dysc$parameter, chi_dysc$p.value,
-            cramers_v(ct_dysc)))
+# stanowisko: wykluczamy NA (table domyslnie pomija NA)
+df_stan <- df %>% filter(!is.na(stanowisko)) %>% mutate(stanowisko = droplevels(stanowisko))
+ct_stan <- table(klaster = df_stan$klaster, stanowisko = df_stan$stanowisko)
 
 print(ct_ucz)
 chi_ucz <- suppressWarnings(chisq.test(ct_ucz))
 cat(sprintf("chi2 vs uczelnia: X2 = %.2f, df = %d, p = %.4g, Cramer's V = %.3f\n",
             chi_ucz$statistic, chi_ucz$parameter, chi_ucz$p.value,
             cramers_v(ct_ucz)))
+
+print(ct_stan)
+chi_stan <- suppressWarnings(chisq.test(ct_stan))
+cat(sprintf("chi2 vs stanowisko: X2 = %.2f, df = %d, p = %.4g, Cramer's V = %.3f\n",
+            chi_stan$statistic, chi_stan$parameter, chi_stan$p.value,
+            cramers_v(ct_stan)))
 
 # ---------- 6. Zapis ----------
 saveRDS(
@@ -175,11 +196,11 @@ saveRDS(
     hclust    = hc,
     df        = df,                 # df z dolaczonymi kolumnami klaster / klaster_ward
     profile   = profile,
-    crosstabs = list(km_ward = ct_km_ward, dysc = ct_dysc, ucz = ct_ucz),
+    crosstabs = list(km_ward = ct_km_ward, ucz = ct_ucz, stan = ct_stan),
     cramers_v = list(
       km_ward = cramers_v(ct_km_ward),
-      dysc    = cramers_v(ct_dysc),
-      ucz     = cramers_v(ct_ucz)
+      ucz     = cramers_v(ct_ucz),
+      stan    = cramers_v(ct_stan)
     )
   ),
   file.path(OUT_DIR, "clusters.rds")
