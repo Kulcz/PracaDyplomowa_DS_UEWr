@@ -1,8 +1,9 @@
 # LTeX: enabled=false
 # ============================================================
-# 02 - Czyszczenie surowych zbiorow z CRIS (4 uczelnie A, dyscyplina rolnictwo i ogrodnictwo)
+# 02 - Czyszczenie surowych zbiorow z CRIS (4 uczelnie Omega-PSIR, dyscyplina rolnictwo i ogrodnictwo)
+# Proba FINAL 2026-05-26: UPWr(A), SGGW(A), URK(A), UWM(B+) - wszystkie wczytywane.
 # Input:  Dane/raw/<uczelnia>_rolnictwo_i_ogrodnictwo_<timestamp>.csv
-#         (UWM i UP Lublin zarchiwizowane w Dane/raw/_archive/ - nie wczytywane)
+#         (UP Poznan i UP Lublin zarchiwizowane w Dane/raw/_archive/ - nie wczytywane)
 # Output: Dane/master/profiles_clean.csv
 # ============================================================
 

@@ -1,0 +1,57 @@
+project:
+  type: book
+  
+book:
+  title: "Praca UE"
+  subtitle: "Przegląd i meta-analiza literatury naukowej z wykorzystaniem narzędzi data science"
+  author: "Grzegorz Kulczycki"
+  date: today
+  
+  chapters:
+    - index.qmd
+    - Metody.qmd
+    - Przeglad_literatury.qmd
+
+   
+bibliography: references.bib
+lang: pl-PL
+crossref:
+  chapters: true
+
+# Spis tresci ---------------
+toc: true
+toc-title: "Spis treści"
+number-sections: true
+number-depth: 2
+toc-depth: 2
+toccolor: blue
+toc-location: right    # -> Tylko HTML (right, left, body)
+#toc-expand: true      # -> Tylko HTML
+smooth-scroll: true    # -> Tylko HTML płynne przewijanie
+# lof: true              # -> Tylko PDF  spis rysunków
+# lot: true              # -> Tylko PDF  spis tabel
+
+
+format:
+   pdf:
+     documentclass: scrreprt
+     colorlinks: true
+     fontsize: 12pt
+     geometry:
+      - top=5mm
+      - left=20mm
+      - heightrounded
+     
+
+
+   
+
+# header-includes: #allows you to add in your own Latex packages
+# - \usepackage{float}
+# - \usepackage{graphicx}
+# - \usepackage{multirow}
+# - \usepackage{array}
+# - \usepackage{hyperref}
+# - \usepackage[heading=true]{ctex}
+
+   

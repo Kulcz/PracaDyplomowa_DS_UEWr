@@ -1,0 +1,1282 @@
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex 2024.2.25)  1 MAR 2024 23:03
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**00_praca_UE_index.tex
+(./00_praca_UE_index.tex
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-02-20>
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/article.cls
+Document Class: article 2023/05/17 v1.4n Standard LaTeX document class
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/size12.clo
+File: size12.clo 2023/05/17 v1.4n Standard LaTeX file (size option)
+)
+\c@part=\count188
+\c@section=\count189
+\c@subsection=\count190
+\c@subsubsection=\count191
+\c@paragraph=\count192
+\c@subparagraph=\count193
+\c@figure=\count194
+\c@table=\count195
+\abovecaptionskip=\skip48
+\belowcaptionskip=\skip49
+\bibindent=\dimen140
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+Package: amsmath 2023/05/13 v2.17o AMS math features
+\@mathmargin=\skip50
+For additional information on amsmath, use the `?' option.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty
+Package: amstext 2021/08/26 v2.01 AMS text
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty
+File: amsgen.sty 1999/11/30 v2.0 generic functions
+\@emptytoks=\toks17
+\ex@=\dimen141
+)) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty
+Package: amsbsy 1999/11/29 v1.2d Bold Symbols
+\pmbraise@=\dimen142
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty
+Package: amsopn 2022/04/08 v2.04 operator names
+)
+\inf@bad=\count196
+LaTeX Info: Redefining \frac on input line 234.
+\uproot@=\count197
+\leftroot@=\count198
+LaTeX Info: Redefining \overline on input line 399.
+LaTeX Info: Redefining \colon on input line 410.
+\classnum@=\count199
+\DOTSCASE@=\count266
+LaTeX Info: Redefining \ldots on input line 496.
+LaTeX Info: Redefining \dots on input line 499.
+LaTeX Info: Redefining \cdots on input line 620.
+\Mathstrutbox@=\box51
+\strutbox@=\box52
+LaTeX Info: Redefining \big on input line 722.
+LaTeX Info: Redefining \Big on input line 723.
+LaTeX Info: Redefining \bigg on input line 724.
+LaTeX Info: Redefining \Bigg on input line 725.
+\big@size=\dimen143
+LaTeX Font Info:    Redeclaring font encoding OML on input line 743.
+LaTeX Font Info:    Redeclaring font encoding OMS on input line 744.
+\macc@depth=\count267
+LaTeX Info: Redefining \bmod on input line 905.
+LaTeX Info: Redefining \pmod on input line 910.
+LaTeX Info: Redefining \smash on input line 940.
+LaTeX Info: Redefining \relbar on input line 970.
+LaTeX Info: Redefining \Relbar on input line 971.
+\c@MaxMatrixCols=\count268
+\dotsspace@=\muskip16
+\c@parentequation=\count269
+\dspbrk@lvl=\count270
+\tag@help=\toks18
+\row@=\count271
+\column@=\count272
+\maxfields@=\count273
+\andhelp@=\toks19
+\eqnshift@=\dimen144
+\alignsep@=\dimen145
+\tagshift@=\dimen146
+\tagwidth@=\dimen147
+\totwidth@=\dimen148
+\lineht@=\dimen149
+\@envbody=\toks20
+\multlinegap=\skip51
+\multlinetaggap=\skip52
+\mathdisplay@stack=\toks21
+LaTeX Info: Redefining \[ on input line 2953.
+LaTeX Info: Redefining \] on input line 2954.
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty
+Package: amssymb 2013/01/14 v3.01 AMS font symbols
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty
+Package: amsfonts 2013/01/14 v3.01 Basic AMSFonts support
+\symAMSa=\mathgroup4
+\symAMSb=\mathgroup5
+LaTeX Font Info:    Redeclaring math symbol \hbar on input line 98.
+LaTeX Font Info:    Overwriting math alphabet `\mathfrak' in version `bold'
+(Font)                  U/euf/m/n --> U/euf/b/n on input line 106.
+)) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty
+Package: iftex 2022/02/03 v1.0f TeX engine tests
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/fontenc.sty
+Package: fontenc 2021/04/29 v2.0v Standard LaTeX package
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/inputenc.sty
+Package: inputenc 2021/02/14 v1.3d Input encoding file
+\inpenc@prehook=\toks22
+\inpenc@posthook=\toks23
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/textcomp.sty
+Package: textcomp 2020/02/02 v2.0n Standard LaTeX package
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/lmodern.sty
+Package: lmodern 2015/05/01 v1.6.1 Latin Modern Fonts
+LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
+(Font)                  OT1/cmr/m/n --> OT1/lmr/m/n on input line 22.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `normal'
+(Font)                  OML/cmm/m/it --> OML/lmm/m/it on input line 23.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `normal'
+(Font)                  OMS/cmsy/m/n --> OMS/lmsy/m/n on input line 24.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `normal'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 25.
+LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 26.
+LaTeX Font Info:    Overwriting symbol font `letters' in version `bold'
+(Font)                  OML/cmm/b/it --> OML/lmm/b/it on input line 27.
+LaTeX Font Info:    Overwriting symbol font `symbols' in version `bold'
+(Font)                  OMS/cmsy/b/n --> OMS/lmsy/b/n on input line 28.
+LaTeX Font Info:    Overwriting symbol font `largesymbols' in version `bold'
+(Font)                  OMX/cmex/m/n --> OMX/lmex/m/n on input line 29.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 31.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
+(Font)                  OT1/cmss/m/n --> OT1/lmss/m/n on input line 32.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
+(Font)                  OT1/cmr/m/it --> OT1/lmr/m/it on input line 33.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 34.
+LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `bold'
+(Font)                  OT1/cmr/bx/n --> OT1/lmr/bx/n on input line 35.
+LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
+(Font)                  OT1/cmss/bx/n --> OT1/lmss/bx/n on input line 36.
+LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
+(Font)                  OT1/cmr/bx/it --> OT1/lmr/bx/it on input line 37.
+LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
+(Font)                  OT1/cmtt/m/n --> OT1/lmtt/m/n on input line 38.
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/microtype/microtype.sty
+Package: microtype 2023/03/13 v3.1a Micro-typographical refinements (RS)
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/keyval.sty
+Package: keyval 2022/05/29 v1.15 key=value parser (DPC)
+\KV@toks@=\toks24
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty
+Package: etoolbox 2020/10/05 v2.5k e-TeX tools for LaTeX (JAW)
+\etb@tempcnta=\count274
+)
+\MT@toks=\toks25
+\MT@tempbox=\box53
+\MT@count=\count275
+LaTeX Info: Redefining \noprotrusionifhmode on input line 1059.
+LaTeX Info: Redefining \leftprotrusion on input line 1060.
+\MT@prot@toks=\toks26
+LaTeX Info: Redefining \rightprotrusion on input line 1078.
+LaTeX Info: Redefining \textls on input line 1368.
+\MT@outer@kern=\dimen150
+LaTeX Info: Redefining \textmicrotypecontext on input line 1988.
+\MT@listname@count=\count276
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/microtype/microtype-pdftex.def
+File: microtype-pdftex.def 2023/03/13 v3.1a Definitions specific to pdftex (RS)
+LaTeX Info: Redefining \lsstyle on input line 902.
+LaTeX Info: Redefining \lslig on input line 902.
+\MT@outer@space=\skip53
+)
+Package microtype Info: Loading configuration file microtype.cfg.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/microtype/microtype.cfg
+File: microtype.cfg 2023/03/13 v3.1a microtype main configuration file (RS)
+)) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/parskip/parskip.sty
+Package: parskip 2021-03-14 v2.0h non-zero parskip adjustments
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty
+Package: kvoptions 2022-06-15 v3.15 Key value format for package options (HO)
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty
+Package: ltxcmds 2023-12-04 v1.26 LaTeX kernel commands for general use (HO)
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty
+Package: kvsetkeys 2022-10-05 v1.19 Key value parser (HO)
+))) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty
+Package: xcolor 2023/11/15 v3.01 LaTeX color extensions (UK)
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg
+File: color.cfg 2016/01/02 v1.6 sample color configuration
+)
+Package xcolor Info: Driver file: pdftex.def on input line 274.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def
+File: pdftex.def 2022/09/22 v1.2b Graphics/color driver for pdftex
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx)
+Package xcolor Info: Model `cmy' substituted by `cmy0' on input line 1350.
+Package xcolor Info: Model `hsb' substituted by `rgb' on input line 1354.
+Package xcolor Info: Model `RGB' extended on input line 1366.
+Package xcolor Info: Model `HTML' substituted by `rgb' on input line 1368.
+Package xcolor Info: Model `Hsb' substituted by `hsb' on input line 1369.
+Package xcolor Info: Model `tHsb' substituted by `hsb' on input line 1370.
+Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1371.
+Package xcolor Info: Model `Gray' substituted by `gray' on input line 1372.
+Package xcolor Info: Model `wave' substituted by `hsb' on input line 1373.
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/dvipsnam.def
+File: dvipsnam.def 2016/06/17 v3.0m Driver-dependent file (DPC,SPQR)
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/xcolor/svgnam.def
+File: svgnam.def 2023/11/15 v3.01 Predefined colors according to SVG 1.1 (UK)
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/xcolor/x11nam.def
+File: x11nam.def 2023/11/15 v3.01 Predefined colors according to Unix/X11 (UK)
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/geometry/geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/iftex/ifvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+)
+\Gm@cnth=\count277
+\Gm@cntv=\count278
+\c@Gm@tempcnt=\count279
+\Gm@bindingoffset=\dimen151
+\Gm@wd@mp=\dimen152
+\Gm@odd@mp=\dimen153
+\Gm@even@mp=\dimen154
+\Gm@layoutwidth=\dimen155
+\Gm@layoutheight=\dimen156
+\Gm@layouthoffset=\dimen157
+\Gm@layoutvoffset=\dimen158
+\Gm@dimlist=\toks27
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/fancyvrb/fancyvrb.sty
+Package: fancyvrb 2024/01/20 4.5c verbatim text (tvz,hv)
+\FV@CodeLineNo=\count280
+\FV@InFile=\read2
+\FV@TabBox=\box54
+\c@FancyVerbLine=\count281
+\FV@StepNumber=\count282
+\FV@OutFile=\write3
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/framed/framed.sty
+Package: framed 2011/10/22 v 0.96: framed or shaded text with page breaks
+\OuterFrameSep=\skip54
+\fb@frw=\dimen159
+\fb@frh=\dimen160
+\FrameRule=\dimen161
+\FrameSep=\dimen162
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/graphicx.sty
+Package: graphicx 2021/09/16 v1.2d Enhanced LaTeX Graphics (DPC,SPQR)
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/graphics.sty
+Package: graphics 2022/03/10 v1.4e Standard LaTeX Graphics (DPC,SPQR)
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/trig.sty
+Package: trig 2021/08/11 v1.11 sin cos tan (DPC)
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics-cfg/graphics.cfg
+File: graphics.cfg 2016/06/04 v1.11 sample graphics configuration
+)
+Package graphics Info: Driver file: pdftex.def on input line 107.
+)
+\Gin@req@height=\dimen163
+\Gin@req@width=\dimen164
+)
+\cslhangindent=\skip55
+\csllabelwidth=\skip56
+\cslentryspacingunit=\skip57
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/tools/calc.sty
+Package: calc 2023/07/08 v4.3 Infix arithmetic (KKT,FJ)
+\calc@Acount=\count283
+\calc@Bcount=\count284
+\calc@Adimen=\dimen165
+\calc@Bdimen=\dimen166
+\calc@Askip=\skip58
+\calc@Bskip=\skip59
+LaTeX Info: Redefining \setlength on input line 80.
+LaTeX Info: Redefining \addtolength on input line 81.
+\calc@Ccount=\count285
+\calc@Cskip=\skip60
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/babel.sty
+Package: babel 2024/02/07 v24.2 The Babel package
+\babel@savecnt=\count286
+\U@D=\dimen167
+\l@unhyphenated=\language6
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/txtbabel.def)
+\bbl@readstream=\read3
+\bbl@dirlevel=\count287
+Package babel Info: You haven't specified a language as a class or package
+(babel)             option. I'll load 'nil'. Reported on input line 4258.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/nil.ldf
+Language: nil 2024/02/07 v24.2 Nil language
+\l@nil=\language7
+))
+\everypar=\toks28
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/babel/locale/pl/babel-polish.tex)
+Package babel Info: Importing data for polish
+(babel)             from babel-pl.ini. Reported on input line 127.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/ragged2e/ragged2e.sty
+Package: ragged2e 2023/06/22 v3.6 ragged2e Package
+
+LaTeX Warning: Command \@arrayparboxrestore  has changed.
+               Check if current package is valid.
+
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/footmisc/footmisc.sty
+Package: footmisc 2023/07/05 v6.0f a miscellany of footnote facilities
+\FN@temptoken=\toks29
+\footnotemargin=\dimen168
+\@outputbox@depth=\dimen169
+Package footmisc Info: Declaring symbol style bringhurst on input line 696.
+Package footmisc Info: Declaring symbol style chicago on input line 704.
+Package footmisc Info: Declaring symbol style wiley on input line 713.
+Package footmisc Info: Declaring symbol style lamport-robust on input line 724.
+Package footmisc Info: Declaring symbol style lamport* on input line 744.
+Package footmisc Info: Declaring symbol style lamport*-robust on input line 765.
+)
+\CenteringLeftskip=\skip61
+\RaggedLeftLeftskip=\skip62
+\RaggedRightLeftskip=\skip63
+\CenteringRightskip=\skip64
+\RaggedLeftRightskip=\skip65
+\RaggedRightRightskip=\skip66
+\CenteringParfillskip=\skip67
+\RaggedLeftParfillskip=\skip68
+\RaggedRightParfillskip=\skip69
+\JustifyingParfillskip=\skip70
+\CenteringParindent=\skip71
+\RaggedLeftParindent=\skip72
+\RaggedRightParindent=\skip73
+\JustifyingParindent=\skip74
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count288
+\float@exts=\toks30
+\float@box=\box55
+\@float@everytoks=\toks31
+\@floatcapt=\box56
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/nowidow/nowidow.sty
+Package: nowidow 2011/09/20 1.0 Easily prevent widows and orphans
+Package: nowidow 
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/placeins/placeins.sty
+Package: placeins 2005/04/18  v 2.2
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/fancyhdr/fancyhdr.sty
+Package: fancyhdr 2022/11/09 v4.1 Extensive control of page headers and footers
+\f@nch@headwidth=\skip75
+\f@nch@O@elh=\skip76
+\f@nch@O@erh=\skip77
+\f@nch@O@olh=\skip78
+\f@nch@O@orh=\skip79
+\f@nch@O@elf=\skip80
+\f@nch@O@erf=\skip81
+\f@nch@O@olf=\skip82
+\f@nch@O@orf=\skip83
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/setspace/setspace.sty
+Package: setspace 2022/12/04 v6.7b set line spacing
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/chngcntr/chngcntr.sty
+Package: chngcntr 2018/04/09 v1.1a change counter resetting
+Package chngcntr Info: \counterwithout already defined.
+(chngcntr)             Quitting chngcntr on input line 21.
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/bookmark/bookmark.sty
+Package: bookmark 2023-12-10 v1.31 PDF bookmarks (HO)
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
+Package: hyperref 2024-01-20 v7.01h Hypertext links for LaTeX
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty
+Package: kvdefinekeys 2019-12-19 v1.6 Define keys (HO)
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty
+Package: pdfescape 2019/12/09 v1.15 Implements pdfTeX's escape features (HO)
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty
+Package: pdftexcmds 2020-06-27 v0.33 Utility functions of pdfTeX for LuaTeX (HO)
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty
+Package: infwarerr 2019/12/03 v1.5 Providing info/warning/error messages (HO)
+)
+Package pdftexcmds Info: \pdf@primitive is available.
+Package pdftexcmds Info: \pdf@ifprimitive is available.
+Package pdftexcmds Info: \pdfdraftmode found.
+)) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty
+Package: hycolor 2020-01-27 v1.10 Color options for hyperref/bookmark (HO)
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/auxhook/auxhook.sty
+Package: auxhook 2019-12-17 v1.6 Hooks for auxiliary files (HO)
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty
+Package: nameref 2023-11-26 v2.56 Cross-referencing by name of section
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty
+Package: refcount 2019/12/15 v3.6 Data extraction from label references (HO)
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty
+Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
+)
+\c@section@level=\count289
+)
+\@linkdim=\dimen170
+\Hy@linkcounter=\count290
+\Hy@pagecounter=\count291
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def
+File: pd1enc.def 2024-01-20 v7.01h Hyperref: PDFDocEncoding definition (HO)
+Now handling font encoding PD1 ...
+... no UTF-8 mapping file for font encoding PD1
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty
+Package: intcalc 2019/12/15 v1.3 Expandable calculations with integers (HO)
+)
+\Hy@SavedSpaceFactor=\count292
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def
+File: puenc.def 2024-01-20 v7.01h Hyperref: PDF Unicode definition (HO)
+Now handling font encoding PU ...
+... no UTF-8 mapping file for font encoding PU
+)
+Package hyperref Info: Option `unicode' set `true' on input line 4062.
+Package hyperref Info: Hyper figures OFF on input line 4179.
+Package hyperref Info: Link nesting OFF on input line 4184.
+Package hyperref Info: Hyper index ON on input line 4187.
+Package hyperref Info: Plain pages OFF on input line 4194.
+Package hyperref Info: Backreferencing OFF on input line 4199.
+Package hyperref Info: Implicit mode ON; LaTeX internals redefined.
+Package hyperref Info: Bookmarks ON on input line 4446.
+\c@Hy@tempcnt=\count293
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/url/url.sty
+\Urlmuskip=\muskip17
+Package: url 2013/09/16  ver 3.4  Verb mode for urls, etc.
+)
+LaTeX Info: Redefining \url on input line 4784.
+\XeTeXLinkMargin=\dimen171
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty
+Package: bitset 2019/12/09 v1.3 Handle bit-vector datatype (HO)
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty
+Package: bigintcalc 2019/12/15 v1.5 Expandable calculations on big integers (HO)
+))
+\Fld@menulength=\count294
+\Field@Width=\dimen172
+\Fld@charsize=\dimen173
+Package hyperref Info: Hyper figures OFF on input line 6063.
+Package hyperref Info: Link nesting OFF on input line 6068.
+Package hyperref Info: Hyper index ON on input line 6071.
+Package hyperref Info: backreferencing OFF on input line 6078.
+Package hyperref Info: Link coloring OFF on input line 6083.
+Package hyperref Info: Link coloring with OCG OFF on input line 6088.
+Package hyperref Info: PDF/A mode OFF on input line 6093.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/atbegshi-ltx.sty
+Package: atbegshi-ltx 2021/01/10 v1.0c Emulation of the original atbegshi
+package with kernel methods
+)
+\Hy@abspage=\count295
+\c@Item=\count296
+\c@Hfootnote=\count297
+)
+Package hyperref Info: Driver (autodetected): hpdftex.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def
+File: hpdftex.def 2024-01-20 v7.01h Hyperref driver for pdfTeX
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/atveryend-ltx.sty
+Package: atveryend-ltx 2020/08/19 v1.0a Emulation of the original atveryend package
+with kernel methods
+)
+\Fld@listcount=\count298
+\c@bookmark@seq@number=\count299
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty
+Package: rerunfilecheck 2022-07-10 v1.10 Rerun checks for auxiliary files (HO)
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty
+Package: uniquecounter 2019/12/15 v1.4 Provide unlimited unique counter (HO)
+)
+Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 285.
+)
+\Hy@SectionHShift=\skip84
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/bookmark/bkm-pdftex.def
+File: bkm-pdftex.def 2023-12-10 v1.31 bookmark driver for pdfTeX and luaTeX (HO)
+\BKM@id=\count300
+))
+Package hyperref Info: Option `colorlinks' set `true' on input line 156.
+LaTeX Font Info:    Trying to load font information for T1+lmr on input line 161.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmr.fd
+File: t1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def
+File: l3backend-pdftex.def 2024-02-20 L3 backend support: PDF output (pdfTeX)
+\l__color_backend_stack_int=\count301
+\l__pdf_internal_box=\box57
+) (./00_praca_UE_index.aux
+
+LaTeX Warning: Label `label1' multiply defined.
+
+)
+\openout1 = `00_praca_UE_index.aux'.
+
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 161.
+LaTeX Font Info:    ... okay on input line 161.
+LaTeX Info: Redefining \microtypecontext on input line 161.
+Package microtype Info: Applying patch `item' on input line 161.
+Package microtype Info: Applying patch `toc' on input line 161.
+Package microtype Info: Applying patch `eqnum' on input line 161.
+Package microtype Info: Applying patch `footnote' on input line 161.
+Package microtype Info: Applying patch `verbatim' on input line 161.
+Package microtype Info: Generating PDF output.
+Package microtype Info: Character protrusion enabled (level 2).
+Package microtype Info: Using protrusion set `basicmath'.
+Package microtype Info: Automatic font expansion enabled (level 2),
+(microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
+Package microtype Info: Using default expansion set `alltext-nott'.
+LaTeX Info: Redefining \showhyphens on input line 161.
+Package microtype Info: No adjustment of tracking.
+Package microtype Info: No adjustment of interword spacing.
+Package microtype Info: No adjustment of character kerning.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/microtype/mt-cmr.cfg
+File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman (RS)
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+[Loading MPS to PDF converter (version 2006.09.02).]
+\scratchcounter=\count302
+\scratchdimen=\dimen174
+\scratchbox=\box58
+\nofMPsegments=\count303
+\nofMParguments=\count304
+\everyMPshowfont=\toks32
+\MPscratchCnt=\count305
+\MPscratchDim=\dimen175
+\MPnumerator=\count306
+\makeMPintoPDFobject=\count307
+\everyMPtoPDFconversion=\toks33
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/epstopdf-pkg/epstopdf-base.sty
+Package: epstopdf-base 2020-01-24 v2.11 Base part for package epstopdf
+Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 485.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/latexconfig/epstopdf-sys.cfg
+File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Live
+))
+*geometry* driver: auto-detecting
+*geometry* detected driver: pdftex
+*geometry* verbose mode - [ preamble ] result:
+* driver: pdftex
+* paper: <default>
+* layout: <same size as paper>
+* layoutoffset:(h,v)=(0.0pt,0.0pt)
+* modes: 
+* h-part:(L,W,R)=(86.72377pt, 440.84746pt, 86.72377pt)
+* v-part:(T,H,B)=(86.72377pt, 621.52245pt, 86.72377pt)
+* \paperwidth=614.295pt
+* \paperheight=794.96999pt
+* \textwidth=440.84746pt
+* \textheight=621.52245pt
+* \oddsidemargin=14.45378pt
+* \evensidemargin=14.45378pt
+* \topmargin=-22.54622pt
+* \headheight=12.0pt
+* \headsep=25.0pt
+* \topskip=12.0pt
+* \footskip=30.0pt
+* \marginparwidth=44.0pt
+* \marginparsep=10.0pt
+* \columnsep=10.0pt
+* \skip\footins=10.8pt plus 4.0pt minus 2.0pt
+* \hoffset=0.0pt
+* \voffset=0.0pt
+* \mag=1000
+* \@twocolumnfalse
+* \@twosidefalse
+* \@mparswitchfalse
+* \@reversemarginfalse
+* (1in=72.27pt=25.4mm, 1cm=28.453pt)
+
+Package ragged2e Info: ABD: executing \RaggedRight on input line 161.
+Package hyperref Info: Link coloring ON on input line 161.
+<Rysunki/Logo/UEW_poziom_RGB_kolor_1.png, id=4, 3010.24625pt x 775.89874pt>
+File: Rysunki/Logo/UEW_poziom_RGB_kolor_1.png Graphic file (type png)
+<use Rysunki/Logo/UEW_poziom_RGB_kolor_1.png>
+Package pdftex.def Info: Rysunki/Logo/UEW_poziom_RGB_kolor_1.png  used on input line 170.
+(pdftex.def)             Requested size: 440.81517pt x 113.62125pt.
+[1
+
+{c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc} <./Rysunki/Logo/UEW_poziom_RGB_kolor_1.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[2]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[3] (./00_praca_UE_index.toc
+LaTeX Font Info:    Trying to load font information for OT1+lmr on input line 7.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ot1lmr.fd
+File: ot1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OML+lmm on input line 7.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omllmm.fd
+File: omllmm.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMS+lmsy on input line 7.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omslmsy.fd
+File: omslmsy.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Trying to load font information for OMX+lmex on input line 7.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/omxlmex.fd
+File: omxlmex.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <12> on input line 7.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <8> on input line 7.
+LaTeX Font Info:    External font `lmex10' loaded for size
+(Font)              <6> on input line 7.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 7.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg
+File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
+)
+LaTeX Font Info:    Trying to load font information for U+msb on input line 7.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+) (c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg
+File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
+))
+\tf@toc=\write4
+\openout4 = `00_praca_UE_index.toc'.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[4]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[5]
+<Rysunki/etapy_pracy_badawczej.png, id=63, 666.49pt x 373.89688pt>
+File: Rysunki/etapy_pracy_badawczej.png Graphic file (type png)
+<use Rysunki/etapy_pracy_badawczej.png>
+Package pdftex.def Info: Rysunki/etapy_pracy_badawczej.png  used on input line 302.
+(pdftex.def)             Requested size: 440.85089pt x 247.3147pt.
+<Rysunki/uklad_pracy_badawczej.png, id=65, 625.83812pt x 508.90125pt>
+File: Rysunki/uklad_pracy_badawczej.png Graphic file (type png)
+<use Rysunki/uklad_pracy_badawczej.png>
+Package pdftex.def Info: Rysunki/uklad_pracy_badawczej.png  used on input line 313.
+(pdftex.def)             Requested size: 440.8626pt x 358.48811pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[6 <./Rysunki/etapy_pracy_badawczej.png>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[7 <./Rysunki/uklad_pracy_badawczej.png>]
+LaTeX Font Info:    Trying to load font information for TS1+lmr on input line 347.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmr.fd
+File: ts1lmr.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[8{c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}]
+<Rysunki/publikacje_rocznie.png, id=96, 396.98312pt x 231.86626pt>
+File: Rysunki/publikacje_rocznie.png Graphic file (type png)
+<use Rysunki/publikacje_rocznie.png>
+Package pdftex.def Info: Rysunki/publikacje_rocznie.png  used on input line 434.
+(pdftex.def)             Requested size: 440.85637pt x 257.49133pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[9 <./Rysunki/publikacje_rocznie.png (PNG copy)>]
+<Rysunki/ilosc_opublikowanych_artykulow.png, id=110, 403.00563pt x 214.8025pt>
+File: Rysunki/ilosc_opublikowanych_artykulow.png Graphic file (type png)
+<use Rysunki/ilosc_opublikowanych_artykulow.png>
+Package pdftex.def Info: Rysunki/ilosc_opublikowanych_artykulow.png  used on input line 449.
+(pdftex.def)             Requested size: 440.84781pt x 234.97243pt.
+<Rysunki/ilosc_pub_graf.png, id=112, 713.66624pt x 398.99063pt>
+File: Rysunki/ilosc_pub_graf.png Graphic file (type png)
+<use Rysunki/ilosc_pub_graf.png>
+Package pdftex.def Info: Rysunki/ilosc_pub_graf.png  used on input line 462.
+(pdftex.def)             Requested size: 440.84593pt x 246.46451pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[10 <./Rysunki/ilosc_opublikowanych_artykulow.png (PNG copy)>]
+<Rysunki/liczba_czasopism.png, id=121, 396.48125pt x 234.8775pt>
+File: Rysunki/liczba_czasopism.png Graphic file (type png)
+<use Rysunki/liczba_czasopism.png>
+Package pdftex.def Info: Rysunki/liczba_czasopism.png  used on input line 474.
+(pdftex.def)             Requested size: 440.8556pt x 261.1651pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[11 <./Rysunki/ilosc_pub_graf.png (PNG copy)>]
+<Rysunki/figures/unnamed-chunk-19-1.pdf, id=129, 433.62pt x 433.62pt>
+File: Rysunki/figures/unnamed-chunk-19-1.pdf Graphic file (type pdf)
+<use Rysunki/figures/unnamed-chunk-19-1.pdf>
+Package pdftex.def Info: Rysunki/figures/unnamed-chunk-19-1.pdf  used on input line 489.
+(pdftex.def)             Requested size: 433.63878pt x 433.63878pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[12 <./Rysunki/liczba_czasopism.png (PNG copy)>]
+<Rysunki/figures/unnamed-chunk-20-1.pdf, id=137, 433.62pt x 433.62pt>
+File: Rysunki/figures/unnamed-chunk-20-1.pdf Graphic file (type pdf)
+<use Rysunki/figures/unnamed-chunk-20-1.pdf>
+Package pdftex.def Info: Rysunki/figures/unnamed-chunk-20-1.pdf  used on input line 500.
+(pdftex.def)             Requested size: 433.63878pt x 433.63878pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[13 <./Rysunki/figures/unnamed-chunk-19-1.pdf>]
+<Rysunki/polska_subject.png, id=151, 924.45375pt x 259.7203pt>
+File: Rysunki/polska_subject.png Graphic file (type png)
+<use Rysunki/polska_subject.png>
+Package pdftex.def Info: Rysunki/polska_subject.png  used on input line 512.
+(pdftex.def)             Requested size: 440.84103pt x 123.8519pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[14 <./Rysunki/figures/unnamed-chunk-20-1.pdf>]
+<Rysunki/rodzaje_przeglondow.png, id=165, 765.86125pt x 547.04375pt>
+File: Rysunki/rodzaje_przeglondow.png Graphic file (type png)
+<use Rysunki/rodzaje_przeglondow.png>
+Package pdftex.def Info: Rysunki/rodzaje_przeglondow.png  used on input line 534.
+(pdftex.def)             Requested size: 440.84593pt x 314.88994pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[15 <./Rysunki/polska_subject.png (PNG copy)>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[16 <./Rysunki/rodzaje_przeglondow.png (PNG copy)>]
+<Rysunki/google_scholar.png, id=180, 543.02875pt x 261.47687pt>
+File: Rysunki/google_scholar.png Graphic file (type png)
+<use Rysunki/google_scholar.png>
+Package pdftex.def Info: Rysunki/google_scholar.png  used on input line 583.
+(pdftex.def)             Requested size: 440.86176pt x 212.28186pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[17 <./Rysunki/google_scholar.png (PNG copy)>]
+<Rysunki/semantic_scholar.png, id=190, 982.67125pt x 229.35687pt>
+File: Rysunki/semantic_scholar.png Graphic file (type png)
+<use Rysunki/semantic_scholar.png>
+Package pdftex.def Info: Rysunki/semantic_scholar.png  used on input line 604.
+(pdftex.def)             Requested size: 440.84848pt x 102.89465pt.
+<Rysunki/graf_semantic_scholar.png, id=193, 1040.88875pt x 451.6875pt>
+File: Rysunki/graf_semantic_scholar.png Graphic file (type png)
+<use Rysunki/graf_semantic_scholar.png>
+Package pdftex.def Info: Rysunki/graf_semantic_scholar.png  used on input line 623.
+(pdftex.def)             Requested size: 440.83919pt x 191.29955pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[18 <./Rysunki/semantic_scholar.png (PNG copy)>]
+<Rysunki/lens.png, id=204, 983.675pt x 393.47pt>
+File: Rysunki/lens.png Graphic file (type png)
+<use Rysunki/lens.png>
+Package pdftex.def Info: Rysunki/lens.png  used on input line 645.
+(pdftex.def)             Requested size: 440.84851pt x 176.33939pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[19 <./Rysunki/graf_semantic_scholar.png (PNG copy)> <./Rysunki/lens.png (PNG copy)>]
+<Rysunki/scopus.png, id=213, 1583.41562pt x 629.35126pt>
+File: Rysunki/scopus.png Graphic file (type png)
+<use Rysunki/scopus.png>
+Package pdftex.def Info: Rysunki/scopus.png  used on input line 663.
+(pdftex.def)             Requested size: 440.84062pt x 175.21841pt.
+<Rysunki/web_of_science.png, id=216, 456.70625pt x 470.25688pt>
+File: Rysunki/web_of_science.png Graphic file (type png)
+<use Rysunki/web_of_science.png>
+Package pdftex.def Info: Rysunki/web_of_science.png  used on input line 691.
+(pdftex.def)             Requested size: 308.59792pt x 317.75412pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[20 <./Rysunki/scopus.png (PNG copy)>]
+<Rysunki/researchgate.png, id=225, 1311.90125pt x 712.6625pt>
+File: Rysunki/researchgate.png Graphic file (type png)
+<use Rysunki/researchgate.png>
+Package pdftex.def Info: Rysunki/researchgate.png  used on input line 704.
+(pdftex.def)             Requested size: 440.83585pt x 239.47472pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[21 <./Rysunki/web_of_science.png (PNG copy)>]
+<Rysunki/bazy_biblograficzne.png, id=233, 714.16812pt x 504.38437pt>
+File: Rysunki/bazy_biblograficzne.png Graphic file (type png)
+<use Rysunki/bazy_biblograficzne.png>
+Package pdftex.def Info: Rysunki/bazy_biblograficzne.png  used on input line 720.
+(pdftex.def)             Requested size: 440.85083pt x 311.35283pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[22 <./Rysunki/researchgate.png (PNG copy)>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[23 <./Rysunki/bazy_biblograficzne.png (PNG copy)>]
+<Rysunki/python.png, id=246, 365.86688pt x 131.49126pt>
+File: Rysunki/python.png Graphic file (type png)
+<use Rysunki/python.png>
+Package pdftex.def Info: Rysunki/python.png  used on input line 781.
+(pdftex.def)             Requested size: 352.69646pt x 126.75783pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.782 \caption{Program Python \label{python}}
+                                             
+<Rysunki/ranking_programow.png, id=249, 1074.51437pt x 456.70625pt>
+File: Rysunki/ranking_programow.png Graphic file (type png)
+<use Rysunki/ranking_programow.png>
+Package pdftex.def Info: Rysunki/ranking_programow.png  used on input line 792.
+(pdftex.def)             Requested size: 440.84886pt x 187.3762pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.793 ...gram√≥w TIOBE Index \label{ranking_prog}}
+                                                  
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[24 <./Rysunki/python.png (PNG copy)>]
+<Rysunki/r_logo_svg.png, id=262, 1927.2pt x 1493.58pt>
+File: Rysunki/r_logo_svg.png Graphic file (type png)
+<use Rysunki/r_logo_svg.png>
+Package pdftex.def Info: Rysunki/r_logo_svg.png  used on input line 817.
+(pdftex.def)             Requested size: 88.16118pt x 68.3249pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.3}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.818 ...tion{Logo programu R. \label{r_logo.svg}}
+                                                  
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[25 <./Rysunki/ranking_programow.png (PNG copy)> <./Rysunki/r_logo_svg.png>]
+<Rysunki/r_studio.png, id=277, 380.42125pt x 133.49875pt>
+File: Rysunki/r_studio.png Graphic file (type png)
+<use Rysunki/r_studio.png>
+Package pdftex.def Info: Rysunki/r_studio.png  used on input line 846.
+(pdftex.def)             Requested size: 132.2555pt x 46.41154pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.4}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.847 \caption{Logo RStudio\label{rstudio}}
+                                           
+<Rysunki/rstudio_edytor.png, id=279, 1927.2pt x 1084.05pt>
+File: Rysunki/rstudio_edytor.png Graphic file (type png)
+<use Rysunki/rstudio_edytor.png>
+Package pdftex.def Info: Rysunki/rstudio_edytor.png  used on input line 857.
+(pdftex.def)             Requested size: 440.83534pt x 247.96988pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.5}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.858 \caption{RStudio\label{rstudio_edytor}}
+                                             
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[26 <./Rysunki/r_studio.png>]
+<Rysunki/r_markdown.png, id=291, 211.54031pt x 81.30376pt>
+File: Rysunki/r_markdown.png Graphic file (type png)
+<use Rysunki/r_markdown.png>
+Package pdftex.def Info: Rysunki/r_markdown.png  used on input line 872.
+(pdftex.def)             Requested size: 176.34016pt x 67.77486pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.6}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.873 \caption{Rmarkdown \label{rmarkdown}}
+                                           
+<Rysunki/LaTeX.png, id=295, 280.04625pt x 106.89937pt>
+File: Rysunki/LaTeX.png Graphic file (type png)
+<use Rysunki/LaTeX.png>
+Package pdftex.def Info: Rysunki/LaTeX.png  used on input line 892.
+(pdftex.def)             Requested size: 176.34459pt x 67.31432pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.7}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.893 \caption{LaTeX\label{latex}}
+                                  
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[27 <./Rysunki/rstudio_edytor.png (PNG copy)> <./Rysunki/r_markdown.png (PNG copy)>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[28 <./Rysunki/LaTeX.png (PNG copy)>]
+LaTeX Font Info:    Trying to load font information for T1+lmtt on input line 936.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/t1lmtt.fd
+File: t1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+LaTeX Font Info:    Font shape `T1/lmtt/bx/n' in size <12> not available
+(Font)              Font shape `T1/lmtt/b/n' tried instead on input line 937.
+<Rysunki/figures/unnamed-chunk-27-1.png, id=315, 995.72pt x 746.79pt>
+File: Rysunki/figures/unnamed-chunk-27-1.png Graphic file (type png)
+<use Rysunki/figures/unnamed-chunk-27-1.png>
+Package pdftex.def Info: Rysunki/figures/unnamed-chunk-27-1.png  used on input line 943.
+(pdftex.def)             Requested size: 440.85298pt x 330.63972pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[29 <./Rysunki/figures/unnamed-chunk-27-1.png>]
+<Rysunki/wyniki_wyszukiwania/GS_elemental_sulphur_fertilization.png, id=326, 826.58812pt x 496.85625pt>
+File: Rysunki/wyniki_wyszukiwania/GS_elemental_sulphur_fertilization.png Graphic file (type png)
+<use Rysunki/wyniki_wyszukiwania/GS_elemental_sulphur_fertilization.png>
+Package pdftex.def Info: Rysunki/wyniki_wyszukiwania/GS_elemental_sulphur_fertilization.png  used on input line 992.
+(pdftex.def)             Requested size: 440.85179pt x 264.99287pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.993 ...e frazy s≈Ç√≥w w GS \label{GS_elemental}}
+                                                  
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[30]
+<Rysunki/figures/unnamed-chunk-28-1.png, id=332, 995.72pt x 372.39125pt>
+File: Rysunki/figures/unnamed-chunk-28-1.png Graphic file (type png)
+<use Rysunki/figures/unnamed-chunk-28-1.png>
+Package pdftex.def Info: Rysunki/figures/unnamed-chunk-28-1.png  used on input line 1009.
+(pdftex.def)             Requested size: 440.85298pt x 164.87544pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[31 <./Rysunki/wyniki_wyszukiwania/GS_elemental_sulphur_fertilization.png (PNG copy)> <./Rysunki/figures/unnamed-chunk-28-1.png>]
+Overfull \hbox (50.81552pt too wide) in paragraph at lines 1025--1027
+[]\T1/lmr/m/n/12 (-20) zestawienia bbsza-rÛw dzie-dzin ba-daw-czych: Al-low: /ci-ta-tions?view_op=list_classic_articles 
+ []
+
+LaTeX Font Info:    Trying to load font information for TS1+lmtt on input line 1087.
+(c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/lm/ts1lmtt.fd
+File: ts1lmtt.fd 2015/05/01 v1.6.1 Font defs for Latin Modern
+)
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[32]
+<Rysunki/figures/unnamed-chunk-29-1.pdf, id=353, 469.755pt x 325.215pt>
+File: Rysunki/figures/unnamed-chunk-29-1.pdf Graphic file (type pdf)
+<use Rysunki/figures/unnamed-chunk-29-1.pdf>
+Package pdftex.def Info: Rysunki/figures/unnamed-chunk-29-1.pdf  used on input line 1095.
+(pdftex.def)             Requested size: 440.84581pt x 305.20094pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[33]
+<Rysunki/figures/unnamed-chunk-30-1.pdf, id=359, 469.755pt x 325.215pt>
+File: Rysunki/figures/unnamed-chunk-30-1.pdf Graphic file (type pdf)
+<use Rysunki/figures/unnamed-chunk-30-1.pdf>
+Package pdftex.def Info: Rysunki/figures/unnamed-chunk-30-1.pdf  used on input line 1108.
+(pdftex.def)             Requested size: 440.84581pt x 305.20094pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[34 <./Rysunki/figures/unnamed-chunk-29-1.pdf>]
+Underfull \vbox (badness 1052) detected at line 1144
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[35 <./Rysunki/figures/unnamed-chunk-30-1.pdf>]
+<Rysunki/figures/unnamed-chunk-31-1.pdf, id=387, 469.755pt x 325.215pt>
+File: Rysunki/figures/unnamed-chunk-31-1.pdf Graphic file (type pdf)
+<use Rysunki/figures/unnamed-chunk-31-1.pdf>
+Package pdftex.def Info: Rysunki/figures/unnamed-chunk-31-1.pdf  used on input line 1146.
+(pdftex.def)             Requested size: 440.84581pt x 305.20094pt.
+<Rysunki/figures/unnamed-chunk-32-1.pdf, id=388, 469.755pt x 325.215pt>
+File: Rysunki/figures/unnamed-chunk-32-1.pdf Graphic file (type pdf)
+<use Rysunki/figures/unnamed-chunk-32-1.pdf>
+Package pdftex.def Info: Rysunki/figures/unnamed-chunk-32-1.pdf  used on input line 1153.
+(pdftex.def)             Requested size: 440.84581pt x 305.20094pt.
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[36 <./Rysunki/figures/unnamed-chunk-31-1.pdf>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[37 <./Rysunki/figures/unnamed-chunk-32-1.pdf>]
+Overfull \hbox (1473.38248pt too wide) in paragraph at lines 1205--1205
+[]\T1/lmtt/m/n/12 ##   0%|          | 0/5 [00:00<?, ?it/s] 20%|##        | 1/5 [00:00<00:03,  1.05it/s] 40%|####      | 2/5 [00:01<00:01,  2.12it/s] 60%|######    | 3/5 [00:01<00:01,  1.97it/s] 80%|########  | 4/5 [00:01<00:00,  2.74it/s]100%|##########| 5/5 [00:01<00:00,  3.53it/s]100%|##########| 5/5 [00:01<00:00,  2.60it/s][] 
+ []
+
+
+Overfull \hbox (608.90306pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## Paper                                                                                                                                                              Link[] 
+ []
+
+
+Overfull \hbox (1442.52847pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## -----------------------------------------------------------------------------------------------------------------------------------------------------------------  -------------------------------------------------------------------------------------------------------------------------------------------[] 
+ []
+
+
+Overfull \hbox (1442.51447pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## The effect of elemental sulfur fertilization on plant yields and soil properties                                                                                   https://scholar.google.com/citations?view_op=view_citation&hl=en&user=RNDE9-wAAAAJ&pagesize=100&citation_for_view=RNDE9-wAAAAJ:xtRiw3GOFMkC[] 
+ []
+
+
+Overfull \hbox (1454.86447pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## The Effect of Various Types of Biochar Mixed with Mineral Fertilization on the Development and Ionome of Winter Wheat (Triticum aestivum L.) Seedlings and Soil ...  https://scholar.google.com/citations?view_op=view_citation&hl=en&user=RNDE9-wAAAAJ&pagesize=100&citation_for_view=RNDE9-wAAAAJ:abG-DnoFyZgC[] 
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[38]
+Overfull \hbox (1442.51447pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## Maize and wheat response to drought stress under varied sulphur fertilisation                                                                                      https://scholar.google.com/citations?view_op=view_citation&hl=en&user=RNDE9-wAAAAJ&pagesize=100&citation_for_view=RNDE9-wAAAAJ:KxtntwgDAa4C[] 
+ []
+
+
+Overfull \hbox (1442.51447pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## Sulfur application alleviates chromium stress in maize and wheat                                                                                                   https://scholar.google.com/citations?view_op=view_citation&hl=en&user=RNDE9-wAAAAJ&pagesize=100&citation_for_view=RNDE9-wAAAAJ:b0M2c_1WBrUC[] 
+ []
+
+
+Overfull \hbox (1442.50746pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## Content of selenium in arable soils near Wroclaw                                                                                                                   https://scholar.google.com/citations?view_op=view_citation&hl=en&user=RNDE9-wAAAAJ&pagesize=100&citation_for_view=RNDE9-wAAAAJ:9yKSN-GCB0IC[] 
+ []
+
+
+Overfull \hbox (1442.51447pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## Wp™yw terminu siewu przewÛdkowych odmian pszenicy uprawianych na glebie py™owo-ilastej na plon i parametry morfologiczne ro±lin                                    https://scholar.google.com/citations?view_op=view_citation&hl=en&user=RNDE9-wAAAAJ&pagesize=100&citation_for_view=RNDE9-wAAAAJ:IjCSPb-OGe4C[] 
+ []
+
+
+Overfull \hbox (1442.51447pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## Wp™yw nawoªenia siark° elementarn° na plon i sk™ad chemiczny ro±lin oraz w™a±ciwo±ci chemiczne gleby                                                               https://scholar.google.com/citations?view_op=view_citation&hl=en&user=RNDE9-wAAAAJ&pagesize=100&citation_for_view=RNDE9-wAAAAJ:u5HHmVD_uO8C[] 
+ []
+
+
+Overfull \hbox (1442.51447pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## The effect of phosphorus and potassium precision fertilization upon changes in the content of the soluble form of these elements in soil.                          https://scholar.google.com/citations?view_op=view_citation&hl=en&user=RNDE9-wAAAAJ&pagesize=100&citation_for_view=RNDE9-wAAAAJ:HoB7MX3m0LUC[] 
+ []
+
+
+Overfull \hbox (1442.50746pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## Wplyw nawozenia siarka elementarna na zawartosc mikroelementow w roslinach i glebach. Cz. II. Mangan i zelazo                                                      https://scholar.google.com/citations?view_op=view_citation&hl=en&user=RNDE9-wAAAAJ&pagesize=100&citation_for_view=RNDE9-wAAAAJ:M3ejUd6NZC8C[] 
+ []
+
+
+Overfull \hbox (1442.51447pt too wide) in paragraph at lines 1229--1229
+[]\T1/lmtt/m/n/12 ## Zawartosc mikroelementow w ziarnie i slomie wybranych odmian pszenicy ozimej                                                                                       https://scholar.google.com/citations?view_op=view_citation&hl=en&user=RNDE9-wAAAAJ&pagesize=100&citation_for_view=RNDE9-wAAAAJ:d1gkVwhDpl0C[] 
+ []
+
+<Rysunki/profil_pub_wynik_csv.png, id=420, 1397.72188pt x 705.63625pt>
+File: Rysunki/profil_pub_wynik_csv.png Graphic file (type png)
+<use Rysunki/profil_pub_wynik_csv.png>
+Package pdftex.def Info: Rysunki/profil_pub_wynik_csv.png  used on input line 1250.
+(pdftex.def)             Requested size: 440.83923pt x 222.55653pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.2}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.1252 \label{zestawienie_profil_pub}}
+                                      
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[39 <./Rysunki/profil_pub_wynik_csv.png (PNG copy)>]
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[40]
+<Rysunki/reproducibility_court.png, id=433, 563.4651pt x 338.9463pt>
+File: Rysunki/reproducibility_court.png Graphic file (type png)
+<use Rysunki/reproducibility_court.png>
+Package pdftex.def Info: Rysunki/reproducibility_court.png  used on input line 1335.
+(pdftex.def)             Requested size: 220.42113pt x 132.59193pt.
+
+pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.1338 Horst}) \label{reproducibility_court}}
+                                             
+pdfTeX warning (ext4): destination with the same identifier (name{figure.1}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.1338 Horst}) \label{reproducibility_court}}
+                                             
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[41 <./Rysunki/reproducibility_court.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 1360--1364
+$\T1/lmr/m/n/12 (+7) raz -[] w -[] czolowej -[] dwudziestce -[] ranking -[] najpopularniejszych -[] jezykow -[] programowania -[]$
+ []
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[42] (./00_praca_UE_index.lof)
+\tf@lof=\write5
+\openout5 = `00_praca_UE_index.lof'.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 14.49998pt, for example:
+(fancyhdr)                \setlength{\headheight}{14.49998pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-2.49998pt}.
+
+[43] (./00_praca_UE_index.aux)
+ ***********
+LaTeX2e <2023-11-01> patch level 1
+L3 programming layer <2024-02-20>
+ ***********
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
+Here is how much of TeX's memory you used:
+ 16641 strings out of 476062
+ 275818 string characters out of 5790809
+ 1943190 words of memory out of 5000000
+ 38210 multiletter control sequences out of 15000+600000
+ 607399 words of font info for 131 fonts, out of 8000000 for 9000
+ 34 hyphenation exceptions out of 8191
+ 83i,12n,93p,1014b,646s stack positions out of 10000i,1000n,20000p,200000b,200000s
+<c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb><c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/Grzegorz/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
+Output written on 00_praca_UE_index.pdf (43 pages, 4696634 bytes).
+PDF statistics:
+ 605 PDF objects out of 1000 (max. 8388607)
+ 492 compressed objects within 5 object streams
+ 134 named destinations out of 1000 (max. 500000)
+ 26904 words of extra memory for PDF output out of 29859 (max. 10000000)
+

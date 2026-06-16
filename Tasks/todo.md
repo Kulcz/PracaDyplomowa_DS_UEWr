@@ -1,6 +1,32 @@
 # TODO: PracaDyplomowa_DS_UEWr
 
-## ⏩ STAN NA 2026-06-13 — start następnej sesji tutaj
+## ⏩ STAN NA 2026-06-16 — start następnej sesji tutaj
+
+**Sesja 2026-06-16: naprawa matchu URK + oś jakości + forma. Praca przeliczona end-to-end, PDF+DOCX AKTUALNE.**
+
+**1. Naprawa matchu URK (bug w `clean_name_for_search`):**
+- URK doklejają afiliację po przecinku („Jan Kowalski, prof. URK", 58/162) → zapytanie „..., URK" zwracało 0 kandydatów (0/58 accepted).
+- Fix w `03_openalex_match.R`: `str_split_fixed(x, ",", 2)[,1]` PRZED usuwaniem tytułów.
+- **URK 47,5% → 77,8%**, ogółem 68,8% → **79,4% (367/462)**. Backup: `Dane/openalex/author_match.csv.bak_preURKfix`.
+- Przeliczony cały pipeline `03→13`. Zmieniły się: sieć (367/630, giant 265/72%, Q=0,856, NMI ucz 0,58), modele (RF AUC 0,968; próg Youdena 0,054; bal.acc 0,87), dynamika OpenAlex (URK z 3,2% ostatnie → 4,2% środek). NIEzmienione: klastrowanie k=2, ANOVA/korelacje, dynamika Omega (skrypt 12).
+- **Rewizja narracji 4.4:** odwrócenie OA↔CRIS już NIE tłumaczone słabym matchem URK (bo naprawiony). Nowe: OA zlewa wszystkie w pas ~4%, CRIS rozwarstwia 1,2–5,4%; SGGW z lidera OA na dno CRIS. Mocniejszy argument metodyczny.
+
+**2. Oś jakości (odpowiedź na krytykę „tautologii" sum_IF):**
+- `Skrypty/R/14_model_jakosc.R` — target FWCI>1 (niekumulatywny) + wiek akademicki. AUC ~0,81 (vs 0,97 model ilościowy). Ważność: struktura współpracy (avg_authors_per_pub, n_unique_coauthors) ≫ wiek/produktywność/stanowisko. → jakość NIE zależy od stażu.
+- `Skrypty/R/07b_klastrowanie_k3.R` — wariant k=3 obok głównego k=2. Klaster 3 = „rising stars" (n=88, mało prac, najwyższy IF/pub 2,68 i FWCI 2,32, młoda kadra).
+- Wpisane: P1 (tabela k=3), P3 (podsekcja model jakościowy), Dyskusja, Metody, Ograniczenia.
+
+**3. Forma + recenzje (Gemini/Codex):**
+- Diagram przepływu danych: `Wykresy/praca/pipeline.dot` → `fig_00_pipeline.png` (graphviz, działa w PDF i DOCX). Rozbudowany podrozdział „Procedura pozyskania danych".
+- Dendrogram Warda wstawiony do P1, ostre zdanie o survivorship w Ograniczeniach.
+
+**Nowe skrypty:** `07b`, `13_fig_dynamika_porownanie.R` (wcześniej fig_06 powstawał ad-hoc bez skryptu!), `14`.
+
+**Otwarte / nie zrobione (świadomie):** diagnoza UWM (teraz najsłabszy match 67,1%); ewent. milestone commit (do decyzji użytkownika).
+
+---
+
+## STAN NA 2026-06-13
 
 **Pipeline danych 02→03→04→05 kompletny.** Master: `profiles_features.csv` (462×30; 318 z OA).
 **`renv::snapshot()` zrobiony** (lockfile zsync z R 4.6, +seriation/vegan/corrr). **06 zrefaktorowany i uruchomiony** ✓

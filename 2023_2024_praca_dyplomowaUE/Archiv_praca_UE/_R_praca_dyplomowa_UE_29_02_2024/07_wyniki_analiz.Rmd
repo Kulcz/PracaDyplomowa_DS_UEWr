@@ -1,0 +1,96 @@
+---
+output: pdf_document
+---
+
+# Wyniki analiz
+
+
+```{r echo=TRUE}
+
+# library(reticulate)
+# 
+# # Import and run a Python file
+# py_run_file("Skrypty/test_skryptu.py")
+
+```
+
+Przykład wyszukania tytułu publikacji poprzez jej DOI (Digital Object Identifier), czyli unikalny identyfikator:
+
+```{python echo=TRUE}
+
+# from semanticscholar import SemanticScholar
+# sch = SemanticScholar()
+# paper = sch.get_paper('10.1016/j.jafr.2024.101013')
+# paper.title
+
+```
+
+Przykład wyszukania autora publikacji poprzez jego numer identyfikujący:
+
+```{python}
+
+# from semanticscholar import SemanticScholar
+# sch = SemanticScholar()
+# author = sch.get_author(113275711)
+# author.name
+
+```
+
+Wyszukanie autora publikacji poprzez jego dane Imię i Nazwisko:
+
+```{python echo=TRUE}
+
+# from semanticscholar import SemanticScholar
+# sch = SemanticScholar()
+# results = sch.search_author('Grzegorz Kulczycki')
+# print(f'{results.total} results.', f'First occurrence: {results[0].name}.')
+
+
+```
+
+
+```{python echo=TRUE}
+
+# # Skrypt ze strony 
+# 
+# import pandas as pd
+# import requests
+# from bs4 import BeautifulSoup as bs
+# from tqdm import tqdm
+# 
+# pd.set_option('display.max_columns', None)
+# pd.set_option('display.max_colwidth', None)
+# 
+# big_df = pd.DataFrame()
+# headers = {
+#     'accept-language': 'en-US,en;q=0.9, pl-PL',
+#     'x-requested-with': 'XHR',
+#     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36'
+# }
+# s = requests.Session()
+# s.headers.update(headers)
+# 
+# payload = {'json': '1'}
+# 
+# for x in tqdm(range(0, 500, 100)):
+#     url = f'https://scholar.google.com/citations?hl=en&user=RNDE9-wAAAAJ&hl&cstart={x}&pagesize=100'
+#     r = s.post(url, data=payload)
+#     soup = bs(r.json()['B'], 'html.parser')
+#     works = [(x.get_text(), 'https://scholar.google.com' + x.get('href')) for x in soup.select('a') if 'javascript:void(0)' not in x.get('href') and len(x.get_text()) > 7]
+#     df = pd.DataFrame(works, columns = ['Paper', 'Link'])
+#     big_df = pd.concat([big_df, df], axis=0, ignore_index=True)
+# 
+# print(big_df)
+# 
+# csv_file_path = 'output.csv'
+# big_df.to_csv(csv_file_path)
+# print(f"DataFrame successfully saved to {csv_file_path}")
+
+```
+
+Wynik wyszukiwania zapisywany jest do pliku csv (rys. \ref{zestawienie_profil_pub}), dane z tego pliku można wykorzystać do dalszych analiz i wizualizacji.
+
+![Zestawienie publikacji i linków dla wybranego id naukowca \label{zestawienie_profil_pub}](Rysunki/profil_pub_wynik_csv.png){width="100%"}
+
+
+

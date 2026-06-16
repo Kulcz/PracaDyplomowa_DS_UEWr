@@ -1,0 +1,11 @@
+---
+output: pdf_document
+
+---
+
+
+
+
+Składam serdeczne podziękowania dla promotora pracy dyplomowej **dr Ryszarda Zygałę** za zaangażowanie i merytoryczną pomoc.
+
+

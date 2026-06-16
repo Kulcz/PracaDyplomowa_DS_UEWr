@@ -8,12 +8,16 @@ Hierarchia:
 - UPPoznanParser(BaseParser) - DSpace REST API (osobny modul up_poznan.py).
 - UPLublinParser(BaseParser) - OpenUP HTML scraping (osobny modul up_lublin.py).
 
-Strategia metodyczna (decyzja 2026-05-25):
-Z CRIS uczelni ciagniemy TYLKO TOZSAMOSC (profil, tytul, stanowisko, jednostka,
-wydzial, orcid, opcjonalnie scopus_id, polon_id). Wszystkie metryki bibliometryczne
-(h-index, FWCI, cited_by_count, n_pub) liczymy z OpenAlex jednolicie dla wszystkich
-6 uczelni. Omega-PSIR scraper i tak wyciaga sum_IF/sum_MEiN/h-index z UI - traktujemy
-to jako cross-check do OpenAlex (QA flag), nie jako primary source.
+Strategia metodyczna (FINAL 2026-05-26, rewizja decyzji z 2026-05-25):
+Omega-PSIR jest ZRODLEM PODSTAWOWYM metryk bibliometrycznych. Z CRIS ciagniemy
+TOZSAMOSC (profil, tytul, stanowisko, jednostka, wydzial, orcid, scopus_id, polon_id)
+ORAZ lokalne agregaty (sum_IF, sum_SNIP, sum_MEiN, h_index_wos/scopus, n_pub).
+OpenAlex pelni role UZUPELNIAJACA (FWCI, cited_by_count, sieci wspolautorstwa) i
+cross-checku QA dla metryk lokalnych. Wczesniejsza wersja ("OpenAlex jako primary,
+Omega-PSIR jako cross-check") zostala zrewidowana po tescie kompletnosci 2026-05-26:
+Omega-PSIR to srednio 2-3x bogatszy katalog (polskie czasopisma, monografie,
+materialy konferencyjne nieindeksowane w Scopus/WoS), wiec dla porownan
+miedzyuczelnianych jest wiarygodniejszy niz globalny indeks.
 """
 from __future__ import annotations
 

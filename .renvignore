@@ -1,0 +1,11 @@
+# Katalogi NIE należące do aktywnego pipeline analizy (02-14 + praca.qmd).
+# Bez tego renv skanuje ~1700 plików i raportuje pakiety ze starych skryptów
+# (NDVI/NDRE z 2023_2024, scholar/wordcloud/tm z pilota) jako "used".
+
+2023_2024_praca_dyplomowaUE/
+pilot_UPWr/
+.venv/
+Skrypty/R/_archive/
+Skrypty/Python/_archive/
+Dane/openalex/cache/
+Dashboard/network_files/

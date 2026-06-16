@@ -83,13 +83,13 @@ author_id, url, error
 
 Pola których dana uczelnia nie eksponuje → `None`/pusta komórka (przewidywane braki opisane niżej).
 
-### Strategia metodyczna (decyzja 2026-05-25)
+### Strategia metodyczna (FINAL 2026-05-26, rewizja decyzji z 2026-05-25)
 
-Z CRIS uczelni ciągniemy **tylko tożsamość** (kto, gdzie pracuje, ORCID/POL-on/Scopus ID, dyscyplina). Wszystkie metryki bibliometryczne (`h-index`, `FWCI`, `cited_by_count`, `n_pub`, `mean citation impact`) liczymy z **OpenAlex jednolicie dla wszystkich 6 uczelni** w `Skrypty/R/04_openalex_works.R` i `05_features.R`.
+**Omega-PSIR jest źródłem podstawowym** metryk bibliometrycznych. Z CRIS ciągniemy tożsamość (kto, gdzie pracuje, ORCID/POL-on/Scopus ID, stanowisko) **oraz lokalne agregaty** (`sum_IF`, `sum_SNIP`, `sum_MEiN`, `h_index_wos/scopus`, `n_pub`). OpenAlex pełni rolę **uzupełniającą** (`FWCI`, `cited_by_count`, sieci współautorstwa) i cross-checku QA dla metryk lokalnych (`Skrypty/R/04_openalex_works.R`, `05_features.R`).
 
 Skutki:
-- `h_index_scopus`, `h_index_wos`, `sum_IF`, `sum_SNIP` z Omega-PSIR są wyciągane **bonusowo** — traktujemy jako cross-check do OpenAlex (QA flag), nie jako primary source.
-- `sum_MEiN` (polska metryka, nieobecna w OpenAlex) bierzemy gdzie jest (UPWr, URK, UWM, UP Lublin); w analizie międzyuczelnianej trzeba to uwzględnić lub pominąć.
+- Wcześniejsza wersja („OpenAlex jako primary, Omega-PSIR jako cross-check") została zrewidowana po teście kompletności 2026-05-26: Omega-PSIR to średnio 2-3× bogatszy katalog (polskie czasopisma, monografie, materiały konferencyjne nieindeksowane w Scopus/WoS).
+- `sum_MEiN` (polska metryka, nieobecna w OpenAlex) bierzemy gdzie jest (UPWr, URK, UWM; SGGW nie eksponuje w UI → 100% NA); w analizie międzyuczelnianej ograniczono ją do 3 uczelni.
 
 ### Różnice per uczelnia (źródła danych)
 

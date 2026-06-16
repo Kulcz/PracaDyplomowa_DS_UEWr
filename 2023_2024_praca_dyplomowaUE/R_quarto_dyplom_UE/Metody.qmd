@@ -1,0 +1,3 @@
+# Metody badań {numbered}
+
+![Zobrazowanie jednego z rodzajów przeglądu literatury - przegląd systematyczny (www.cebm.ox.ac.uk) ](Rysunki/systematic review.jpg){fig-alt="systematic review." fig-align="center" width="30%"}

@@ -1,0 +1,108 @@
+# Pole id_4 LCI - anliza dla 1 odmiany ilość poletek n=99 {numbered}
+
+```{r include=FALSE}
+
+source("Skrypty/R_LCI_id_4_jedna_odmiana.R", local = knitr::knit_global())
+
+```
+
+Analiza zależności suchej masy oraz LCI 
+
+<br>
+
+## Rozkłady badanych cech
+
+<br>
+
+
+```{r echo=FALSE}
+#| tbl-cap: "Charakterystyka badanych cech"
+
+zmienne_opis_LCI
+
+```
+
+
+```{r echo=FALSE, fig.height=7, fig.width=5, fig.asp = 1.2}
+#| fig.cap = "Rozkład zmiennej LCI"
+
+LCI_boxplot
+
+```
+
+
+```{r echo=FALSE, fig.height=7, fig.width=5, fig.asp = 1}
+#| fig.cap = "Rozkład zmiennej sucha masa"
+
+SM_boxplot_LCI
+
+```
+
+\newpage
+
+## Zależność LCI i suchej masy
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height=7, fig.width=5, fig.asp = 1 }
+#| fig.cap = "Zalezność LCI i suchej masy w terminie 22.05.2023"
+
+gg_LCI_22_05_2023
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height=7, fig.width=5, fig.asp = 1 }
+#| fig.cap = "Zalezność LCI i suchej masy w terminie 29.06.2023"
+
+gg_LCI_29_06_2023 
+
+```
+
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height=7, fig.width=5, fig.asp = 1 }
+#| fig.cap = "Zalezność LCI i suchej masy w terminie 04.07.2023"
+
+gg_LCI_04_07_2023 
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height=7, fig.width=5, fig.asp = 1 }
+#| fig.cap = "Zalezność LCI i suchej masy w terminie 18.08.2023"
+
+gg_LCI_18_08_2023 
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height=7, fig.width=5, fig.asp = 1 }
+#| fig.cap = "Zalezność LCI i suchej masy w terminie 25.08.2023"
+
+gg_LCI_25_08_2023
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height=7, fig.width=5, fig.asp = 1 }
+#| fig.cap = "Zalezność LCI i suchej masy w terminie 01.09.2023"
+
+gg_LCI_01_09_2023
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.height=7, fig.width=5, fig.asp = 1 }
+#| fig.cap = "Zalezność LCI i suchej masy w terminie 21.09.2023"
+
+gg_LCI_21_09_2023
+
+```
+
+\newpage
+
+## Tabela macierzy korelacji
+
+<br>
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+#| tbl-cap: "Macierz korelacji"
+
+tabela_flex_LCI
+
+```

@@ -7,10 +7,10 @@
 # Decyzje metodyczne (2026-06-13):
 #  - Krawedzie (coauthorship_edges.csv) sa kluczowane OpenAlex ID; master nie
 #    ma openalex_id -> dolaczamy go z author_match.csv (match_accepted) po
-#    author_id. Wezly = profile ZMATCHOWANE w OpenAlex (318).
+#    author_id. Wezly = profile ZMATCHOWANE w OpenAlex (367).
 #  - Zmienna grupujaca: stanowisko + uczelnia (dawniej dyscyplina - usunieta).
-#  - URK ma slaby match OpenAlex (~48%) -> jest niedoreprezentowany w sieci;
-#    do raportu "Ograniczenia".
+#  - UWM ma najslabszy match OpenAlex (67.1%) -> jest niedoreprezentowany
+#    w sieci; do raportu "Ograniczenia".
 # Input:  Dane/openalex/{coauthorship_edges,author_match}.csv + master/profiles_features.csv
 # Output: Wykresy/sieci/*.png, output/network_metrics.rds, Dashboard/network.html
 # ============================================================

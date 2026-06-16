@@ -6,7 +6,8 @@
 #
 # Decyzje metodyczne (2026-06-13):
 #  - Zmienna grupujaca: stanowisko / uczelnia (dyscyplina usunieta).
-#  - Fig 1: heatmap n per (uczelnia × stanowisko) - proba analityczna 06.
+#  - (fig_01 'proba analityczna' usunieta 2026-06-16: dublowala Tabele 1 w pracy
+#    i liczyla n warunkowo na h_index_wos, co rozjezdzalo sie z pelnym n tabeli.)
 #  - Fig 2: metryki pelnego pokrycia (h_index_wos, sum_IF, n_pub), bez sum_MEiN
 #    (SGGW=NA); facet metryka ~ uczelnia, os = stanowisko.
 #  - Fig 5: community × uczelnia (ARI/NMI uczelnia to glowny wynik warstwy 4).
@@ -54,31 +55,6 @@ eda     <- try_load("eda_summary.rds")
 clust   <- try_load("clusters.rds")
 mdl     <- try_load("model_results.rds")
 net     <- try_load("network_metrics.rds")
-
-# ============================================================
-# Fig 1: Próba analityczna (n per uczelnia × stanowisko)
-# ============================================================
-if (!is.null(eda)) {
-  n_komorka <- eda$opisowe %>%
-    filter(metryka == "h_index_wos") %>%   # metryka pelnego pokrycia -> n realne
-    mutate(stanowisko = factor(stanowisko, levels = STANOWISKA),
-           uczelnia   = factor(uczelnia, levels = c("upwr","sggw","urk","uwm"))) %>%
-    select(uczelnia, stanowisko, n)
-
-  p1 <- ggplot(n_komorka, aes(x = uczelnia, y = stanowisko, fill = n)) +
-    geom_tile() +
-    geom_text(aes(label = n), color = "white", fontface = "bold", size = 4) +
-    scale_fill_gradient(low = "#9DB0CE", high = "#1F3864") +
-    scale_y_discrete(labels = stan_labs) +
-    labs(title = "Liczebność próby analitycznej (uczelnia × stanowisko)",
-         subtitle = "n wg h-index (WoS); asystenci wykluczeni z analizy 2-czynnikowej",
-         x = NULL, y = NULL, fill = "n") +
-    theme_praca
-
-  ggsave(file.path(PLOT_DIR, "fig_01_proba.png"),
-         p1, width = 8, height = 4, dpi = 300)
-  cat("[OK] fig_01_proba.png\n")
-}
 
 # ============================================================
 # Fig 2: Boxploty metryk pełnego pokrycia (uczelnia × stanowisko)

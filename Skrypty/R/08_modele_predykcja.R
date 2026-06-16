@@ -8,8 +8,9 @@
 #  - Target high_impact liczony GLOBALNIE w calej probie (1 dyscyplina),
 #    nie per dyscyplina (czynnik usuniety po zmianie koncepcji proby).
 #  - Predyktory strukturalne: stanowisko, uczelnia, n_pub (bez dyscyplina).
-#  - Predyktory OpenAlex (opcjonalne) maja braki (URK ~48% match) -> recipe
-#    imputuje median/unknown; do interpretacji SHAP brac z ostroznoscia.
+#  - Predyktory OpenAlex (opcjonalne) maja braki dla osob niezmatchowanych
+#    (match ogolem 367/462 = 79.4%) -> recipe imputuje median/unknown;
+#    do interpretacji SHAP brac z ostroznoscia.
 # Input:  Dane/master/profiles_features.csv
 # Output: Wykresy/modele/*.png, output/model_results.rds
 # ============================================================

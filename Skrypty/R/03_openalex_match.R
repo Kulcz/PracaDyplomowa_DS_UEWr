@@ -76,6 +76,10 @@ best_match <- function(name, candidates) {
 # z czystym "Jan Kowalski" niż z prefiksami tytulow naukowych.
 clean_name_for_search <- function(x) {
   if (is.na(x) || !nzchar(x)) return(NA_character_)
+  # URK doklejaja afiliacje/tytul po przecinku, np. "Maciej Gastol, prof. URK".
+  # Bierzemy tylko czesc przed pierwszym przecinkiem (imie+nazwisko), inaczej
+  # sufiks ", URK" zanieczyszcza zapytanie do OpenAlex i zbija Jaro-Winklera < 0.85.
+  x <- str_split_fixed(x, ",", 2)[, 1]
   x <- str_replace_all(x, "(?i)\\b(prof|dr|hab|inz|inż|mgr|lic|emer|m\\.sc|ph\\.?d)\\.?", "")
   x <- str_squish(x)
   if (!nzchar(x)) NA_character_ else x

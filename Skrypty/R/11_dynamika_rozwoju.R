@@ -6,8 +6,9 @@
 # PRODUKTYWNOSCI (output/rok)? Definicja przyjeta przez uzytkownika.
 #
 # UWAGA - to PROTOTYP na danych OpenAlex. Ograniczenia (jawne):
-#  - Bias pokrycia: URK match 47.5% (77 osob) vs SGGW 100 / UPWr 94 / UWM 47.
-#    Liczby BEZWZGLEDNE per uczelnia sa wiec nieporownywalne. Dlatego:
+#  - Bias pokrycia: match per uczelnia SGGW 89.3 / UPWr 79.7 / URK 77.8 /
+#    UWM 67.1% (URK naprawiony z 47.5%). Liczby BEZWZGLEDNE per uczelnia sa
+#    wiec nieporownywalne. Dlatego:
 #    (a) normalizujemy per zmatchowany autor (output intensity),
 #    (b) glowny wniosek o TEMPIE opieramy na wzroscie WZGLEDNYM (index = 100
 #        w okresie bazowym) i na CAGR z regresji log-liniowej - te miary sa

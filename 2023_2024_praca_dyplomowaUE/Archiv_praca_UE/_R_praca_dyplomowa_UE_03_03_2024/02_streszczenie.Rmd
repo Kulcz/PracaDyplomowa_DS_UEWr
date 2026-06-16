@@ -1,0 +1,6 @@
+---
+output: pdf_document
+---
+
+W projekcie przedstawiono możliwości wykorzystana narzędzi data science do bibliometrycznego przeglądu literatury naukowej. Do analizy wykorzystano dwie bazy danych **Google Scholar** oraz **Semantic Scholar**.
+Wykonane analizy potwierdzają dużą skuteczność i użyteczność zastosowanych narzędzi data science. Narzędzia te w istotny sposób przyspieszają i zwiększają efektywność przeprowadzenia przeglądu literatury naukowej w porównaniu z tradycyjnymi metodami ich wykonywania. 
