@@ -45,3 +45,9 @@ Thumbs.db
 # === CACHE / ARTEFAKTY NIE-WERSJONOWANE ===
 # Cache OpenAlex (odtwarzalny ze skryptu 03/04, ~8 MB drobnych RDS)
 Dane/openalex/cache/
+
+# === PLIKI TYMCZASOWE rsync / pCloud ===
+# Atomowy zapis (temp + rename) tworzy ukryte pliki .nazwa.ext.XXXXXX
+# z 6-znakowym losowym sufiksem. Auto-sync (spa) zlapal je 2026-06-17
+# na PRACA i zacommitowal 27 sztuk (commit 043f192) -> blokada push.
+.*.[A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9][A-Za-z0-9]
