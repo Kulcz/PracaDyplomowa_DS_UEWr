@@ -27,7 +27,22 @@ library(emmeans)
 library(multcomp)
 library(multcompView)
 library(car)
-library(dunn.test)
+library(rstatix)   # dunn_test - poprawna implementacja (patrz nizej)
+
+# UWAGA: pakiet dunn.test (v1.4.0) MYLI etykiety porownan z wartosciami Z, gdy
+# poziomy faktora nie sa w kolejnosci alfabetycznej (a interaction(uczelnia,
+# stanowisko) i poziomy stanowisk takie nie sa). Skutkowalo to blednym CLD
+# w Tabeli 2. Uzywamy rstatix::dunn_test (zweryfikowany wzgledem srednich rang
+# i pairwise.wilcox). Metoda zadeklarowana w pracy (test Dunna + Bonferroni)
+# pozostaje ta sama; zmienia sie tylko rzetelna implementacja.
+#
+# Helper: z wyniku rstatix::dunn_test buduje litery grup jednorodnych (CLD).
+# Nazwy grup (komorki "upwr.adiunkt", stanowiska "profesor uczelni") nie
+# zawieraja "-", wiec uzywamy "-" jako separatora par dla multcompLetters.
+cld_from_dunn <- function(dt) {
+  pv <- setNames(dt$p.adj, paste(dt$group1, dt$group2, sep = "-"))
+  multcompLetters(pv, threshold = 0.05)$Letters
+}
 
 stopifnot(file_exists(here("Dane", "master", "profiles_features.csv")))
 df <- read_csv(here("Dane", "master", "profiles_features.csv"), show_col_types = FALSE)
@@ -214,25 +229,9 @@ for (m in metryki) {
     cat(sprintf("Kruskal-Wallis: chi2 = %.2f, df = %d, p = %.6g\n",
                 kw$statistic, kw$parameter, kw$p.value))
 
-    dunn_res <- dunn.test(df_m[[m]], df_m$komorka,
-                          method = "bonferroni", altp = TRUE, kw = FALSE)
-
-    # Budujemy macierz p i CLD przez multcompLetters
-    levs <- levels(droplevels(df_m$komorka))
-    pmat <- matrix(1, length(levs), length(levs), dimnames = list(levs, levs))
-    for (i in seq_along(dunn_res$comparisons)) {
-      pair <- strsplit(dunn_res$comparisons[i], " - ")[[1]]
-      if (all(pair %in% levs)) {
-        pmat[pair[1], pair[2]] <- dunn_res$altP.adjusted[i]
-        pmat[pair[2], pair[1]] <- dunn_res$altP.adjusted[i]
-      }
-    }
-
-    pair_vec <- setNames(
-      as.vector(pmat[lower.tri(pmat)]),
-      apply(combn(levs, 2), 2, paste, collapse = "-")
-    )
-    cld_letters <- multcompLetters(pair_vec, threshold = 0.05)
+    dunn_res <- df_m %>%
+      dunn_test(as.formula(paste(m, "~ komorka")), p.adjust.method = "bonferroni")
+    cld_letters <- cld_from_dunn(dunn_res)
 
     medians <- df_m %>%
       group_by(uczelnia, stanowisko) %>%
@@ -240,8 +239,8 @@ for (m in metryki) {
       mutate(komorka = interaction(uczelnia, stanowisko, drop = TRUE))
 
     cld_result <- data.frame(
-      komorka = names(cld_letters$Letters),
-      .group  = as.character(cld_letters$Letters),
+      komorka = names(cld_letters),
+      .group  = as.character(cld_letters),
       stringsAsFactors = FALSE
     ) %>%
       left_join(medians, by = "komorka")
@@ -257,6 +256,77 @@ cat("\n=== PODSUMOWANIE TESTOW ===\n")
 for (m in names(test_info))
   cat(sprintf("  %-38s : %s  [%d uczelni]\n", metryki_labels[m], test_info[[m]],
               length(metryka_uczelnie[[m]])))
+
+# ---------- 4b. Post-hoc MIEDZY STANOWISKAMI w obrebie kazdej uczelni ----------
+# Na potrzeby figury do pracy. Dla kazdej pary (metryka x uczelnia) liczymy
+# Kruskal-Wallis + Dunn-Bonferroni na 3 stanowiskach i budujemy CLD; litery
+# a/b/c resetuja sie w kazdej uczelni i pokazuja WPROST roznice miedzy
+# stanowiskami (pytanie 2), w odroznieniu od globalnego cld_all na 12 komorkach
+# (konserwatywny, czesto jedna grupa). Wspolna litera = brak istotnej roznicy.
+cld_within <- data.frame()
+for (m in metryki) {
+  for (u in levels(df$uczelnia)) {
+    d <- df %>%
+      filter(uczelnia == u, !is.na(.data[[m]]), !is.na(stanowisko)) %>%
+      mutate(stanowisko = droplevels(stanowisko))
+    levs <- levels(d$stanowisko)
+    if (length(levs) < 2 || nrow(d) < 6) next
+
+    if (length(levs) == 2) {
+      # multcompLetters wymaga >=2 grup; przy 2 stanowiskach 1 porownanie wprost
+      dn <- d %>% dunn_test(as.formula(paste(m, "~ stanowisko")),
+                            p.adjust.method = "bonferroni")
+      lett <- if (dn$p.adj[1] < 0.05) setNames(c("a", "b"), c(dn$group1[1], dn$group2[1]))
+              else setNames(c("a", "a"), c(dn$group1[1], dn$group2[1]))
+    } else {
+      dn <- d %>% dunn_test(as.formula(paste(m, "~ stanowisko")),
+                            p.adjust.method = "bonferroni")
+      lett <- cld_from_dunn(dn)
+    }
+    cld_within <- bind_rows(cld_within, data.frame(
+      metryka    = unname(metryki_labels[m]),
+      uczelnia   = u,
+      stanowisko = names(lett),
+      .group     = as.character(lett),
+      stringsAsFactors = FALSE))
+  }
+}
+cat(sprintf("[CLD wewn.] policzono litery stanowisk w obrebie uczelni dla %d metryk\n",
+            length(unique(cld_within$metryka))))
+
+# ---------- 4c. Post-hoc MIEDZY UCZELNIAMI w obrebie kazdego stanowiska --------
+# Symetria do 4b: dla kazdej pary (metryka x stanowisko) KW + Dunn-Bonferroni na
+# uczelniach -> DUZE litery (A/B/C) na figurze. Kontroluja stanowisko, wiec
+# pokazuja roznice miedzy uczelniami niezalezne od skladu stanowisk (inaczej niz
+# efekt glowny uczelni, ktory mieszalby sie z proporcja stanowisk). Wspolna
+# litera = brak istotnej roznicy miedzy uczelniami przy danym stanowisku.
+cld_ucz_within <- data.frame()
+for (m in metryki) {
+  for (s in levels(df$stanowisko)) {
+    d <- df %>%
+      filter(stanowisko == s, !is.na(.data[[m]]), !is.na(uczelnia)) %>%
+      mutate(uczelnia = droplevels(uczelnia))
+    levs <- levels(d$uczelnia)
+    if (length(levs) < 2 || nrow(d) < 8) next
+
+    dn <- d %>% dunn_test(as.formula(paste(m, "~ uczelnia")),
+                          p.adjust.method = "bonferroni")
+    if (length(levs) == 2) {
+      lett <- if (dn$p.adj[1] < 0.05) setNames(c("a", "b"), c(dn$group1[1], dn$group2[1]))
+              else setNames(c("a", "a"), c(dn$group1[1], dn$group2[1]))
+    } else {
+      lett <- cld_from_dunn(dn)
+    }
+    cld_ucz_within <- bind_rows(cld_ucz_within, data.frame(
+      metryka    = unname(metryki_labels[m]),
+      stanowisko = s,
+      uczelnia   = names(lett),
+      .group     = toupper(as.character(lett)),  # DUZE litery
+      stringsAsFactors = FALSE))
+  }
+}
+cat(sprintf("[CLD ucz.] policzono litery uczelni w obrebie stanowisk dla %d metryk\n",
+            length(unique(cld_ucz_within$metryka))))
 
 # ---------- 5. Boxploty (metryka x uczelnia, os = stanowisko) z literami CLD ----------
 df_box <- df %>%
@@ -305,6 +375,8 @@ saveRDS(
     opisowe_kategoria = opisowe_kategoria,
     test_info         = test_info,
     cld_all           = cld_all,
+    cld_within        = cld_within,
+    cld_ucz_within    = cld_ucz_within,
     anova_tables      = anova_tables,
     correlations      = cor_m,
     metryka_uczelnie  = metryka_uczelnie

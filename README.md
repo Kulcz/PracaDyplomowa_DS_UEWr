@@ -73,6 +73,6 @@ Z Omega-PSIR ciągniemy **tożsamość** (kto, gdzie, ORCID) + **lokalne metryki
 
 OpenAlex używamy jako **uzupełnienie**: FWCI (field-weighted citation impact, niepoliczalny lokalnie), `cited_by_count`, lista współautorów do sieci współautorstwa, oraz **QA cross-check** dla metryk lokalnych.
 
-## Powiązany projekt
+## Pilotaż metodyczny
 
-Fundament metodyczny: `~/Analiza_projekty/UPWr_bibliometria` — wcześniejsza analiza WPT UPWr (145 profili, scraper + ANOVA + raport Quarto).
+Fundament metodyczny: katalog `pilot_UPWr/` (wchłonięty 2026-05-31 dawny samodzielny projekt `UPWr_bibliometria`), wcześniejsza analiza WPT UPWr (145 profili, scraper + ANOVA + raport Quarto). Korzysta z parasola środowiskowego tego projektu (brak własnego env/git).

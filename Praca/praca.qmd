@@ -9,7 +9,7 @@ format:
     papersize: a4
     geometry:
       - margin=2.5cm
-    fontsize: 11pt
+    fontsize: 12pt
     toc: true
     toc-depth: 3
     number-sections: true
@@ -40,7 +40,7 @@ library(flextable)
 
 # Jednolity styl tabel pracy. Czcionka zgodna z dokumentem:
 # PDF -> Latin Modern Roman (szeryfowa), DOCX -> Aptos.
-ft_praca <- function(df, fsize = 9) {
+ft_praca <- function(df, fsize = 10) {
   tbl_font <- if (knitr::is_latex_output()) "Latin Modern Roman" else "Aptos"
   ft <- flextable(df)
   ft <- font(ft, fontname = tbl_font, part = "all")
@@ -79,7 +79,7 @@ Niniejsza praca analizuje dorobek bibliometryczny pracowników naukowych dyscypl
 
 Omega-PSIR jest systemem klasy CRIS (*Current Research Information System*), opracowanym na Politechnice Warszawskiej w ramach prac nad Bazą Wiedzy PW. System powstał w zespole Politechniki Warszawskiej w ramach projektu SYNAT (finansowanego przez NCBiR), którego celem było zbudowanie otwartej infrastruktury repozytoryjno-informacyjnej dla polskiej nauki; pierwsze wdrożenie produkcyjne uruchomiono na PW w 2012 roku [@koperwas2015omega]. Pełni funkcję repozytorium instytucjonalnego oraz narzędzia wspierającego zarządzanie informacją o działalności naukowej uczelni: gromadzi dane o publikacjach, projektach, patentach, raportach, rozprawach doktorskich, metrykach bibliometrycznych i afiliacjach pracowników. Jest to jeden z najczęściej stosowanych systemów tego typu w polskim szkolnictwie wyższym, dostosowany do krajowego systemu ewaluacji nauki. Jego znaczenie dla niniejszej pracy polega na tym, że udostępnia porównywalne, uczelniane agregaty dorobku naukowego w jednolitej strukturze danych [@omegapsir2024].
 
-Kryterium doboru próby jest **jednolitość systemu informacji o nauce**: wszystkie cztery uczelnie korzystają z polskiego CRIS-u Omega-PSIR, co zapewnia identyczną procedurę pozyskania danych, te same kategorie pól bibliometrycznych i porównywalność wskaźników. W doborze próby ważniejsza od jednorodności kategorii ewaluacyjnej była porównywalność samego źródła danych. Różne systemy CRIS mogą mieć odmienne zasady gromadzenia publikacji, co może prowadzić do nieporównywalnych metryk. Pokazał to test kompletności wykonany na etapie projektowania badania: DSpace-CRIS Uniwersytetu Przyrodniczego w Poznaniu obejmował tylko około 10–15 % dorobku widocznego w systemach Omega-PSIR. 
+Kryterium doboru próby jest **jednolitość systemu informacji o nauce**: wszystkie cztery uczelnie korzystają z polskiego CRIS-u Omega-PSIR, co zapewnia identyczną procedurę pozyskania danych, te same kategorie pól bibliometrycznych i porównywalność wskaźników. W doborze próby ważniejsza od jednorodności kategorii ewaluacyjnej była porównywalność samego źródła danych. Różne systemy CRIS mogą mieć odmienne zasady gromadzenia publikacji, co może prowadzić do nieporównywalnych metryk. Pokazał to test kompletności wykonany na etapie projektowania badania: DSpace-CRIS Uniwersytetu Przyrodniczego w Poznaniu obejmował tylko około 10–15 % dorobku widocznego w systemach Omega-PSIR.
 Kategorii ewaluacyjnej MEiN nie analizowano jako osobnej zmiennej, ponieważ w tej próbie jest ona **idealnie współliniowa z uczelnią**: tylko UWM ma kategorię B+, a pozostałe trzy uczelnie mają kategorię A. Nie można więc rozstrzygnąć, czy ewentualne różnice wynikają z kategorii, czy ze specyfiki danej uczelni. Z tego powodu kategorię MEiN potraktowano **wyłącznie opisowo**, a wynikające z tego ograniczenie omówiono w rozdziale Dyskusja.
 
 Pominięto Uniwersytet Przyrodniczy w Poznaniu (kategoria A, DSpace) z powodu niekompletności jego CRIS-u oraz Zachodniopomorski Uniwersytet Technologiczny w Szczecinie (kategoria A) ze względu na brak publicznie dostępnego CRIS-u. Uniwersytet Przyrodniczy w Lublinie (B+) został pominięty ze względu na własny system OpenUP o asymetrycznej metodyce ekstrakcji.
@@ -102,7 +102,11 @@ Pominięto Uniwersytet Przyrodniczy w Poznaniu (kategoria A, DSpace) z powodu ni
 
 - **OpenAlex API** [@openalex2022], źródło uzupełniające, dostarcza danych, których nie ma w Omega-PSIR: FWCI (Field-Weighted Citation Impact), czyli liczbę cytowań pracy porównaną ze światową średnią w jej dziedzinie, której nie da się policzyć z danych jednej uczelni [@waltman2016review]; liczbę cytowań publikacji; listę współautorów potrzebną do analizy sieci współpracy; oraz niezależne porównanie (kontrolę jakości) metryk pobranych z Omega-PSIR.
 
-W pracy analizowano zagregowane wskaźniki bibliometryczne przypisane do poszczególnych autorów, takie jak sumaryczny IF, sumaryczna punktacja MEiN, h-index i liczba publikacji. Należy zaznaczyć, że wskaźniki te służą jako przybliżenie indywidualnego dorobku naukowego, a nie jako odtworzenie oficjalnej ewaluacji jakości działalności naukowej. Oficjalna ewaluacja prowadzona jest na poziomie uczelni i dyscypliny, uwzględnia udziały jednostkowe autorów oraz limity slotów publikacyjnych (3-krotność liczby N), a jej podstawą nie jest Impact Factor, lecz punktacja ministerialna czasopism [@rozp_ewaluacja2022]. Wskaźniki wykorzystane w tej pracy wybrano dlatego, że są dostępne w porównywalnej formie dla badanych uczelni i pozwalają opisać profil bibliometryczny naukowca.
+W pracy analizowano zagregowane wskaźniki bibliometryczne przypisane do poszczególnych autorów, takie jak sumaryczny IF, sumaryczna punktacja MEiN, h-index i liczba publikacji.
+
+Należy zaznaczyć, że wskaźniki te służą jako przybliżenie indywidualnego dorobku naukowego, a nie jako odtworzenie oficjalnej ewaluacji jakości działalności naukowej. Oficjalna ewaluacja prowadzona jest na poziomie uczelni i dyscypliny, uwzględnia udziały jednostkowe autorów oraz limity slotów publikacyjnych (3-krotność liczby N), a jej podstawą nie jest Impact Factor, lecz punktacja ministerialna czasopism [@rozp_ewaluacja2022].
+
+Wskaźniki wykorzystane w tej pracy wybrano dlatego, że są dostępne w porównywalnej formie dla badanych uczelni i pozwalają opisać profil bibliometryczny naukowca.
 
 ## Procedura pozyskania danych
 
@@ -122,14 +126,14 @@ Po oczyszczeniu danych z Omega-PSIR uzupełniono je informacjami z OpenAlex. Naj
 
 Dane z Omega-PSIR i OpenAlex połączono w jeden zbiór analityczny (`profiles_features.csv`). Osobno, na potrzeby analizy dynamiki publikacyjnej, pobrano pełne listy publikacji z systemu Omega-PSIR dla wszystkich zeskrapowanych osób (491, przed odsianiem), wraz z rokiem publikacji i punktacją. Dane między skryptami Python i R przekazywano w formacie CSV.
 
-![Schemat przepływu danych: od czterech instancji Omega-PSIR przez scraping (Python) i przetwarzanie (R) z uzupełnieniem OpenAlex do zbioru analitycznego i warstw modelowania.](../Wykresy/praca/fig_00_pipeline.png){#fig-pipeline width=70%}
+![Schemat przepływu danych: od czterech instancji Omega-PSIR przez scraping (Python) i przetwarzanie (R) z uzupełnieniem OpenAlex do zbioru analitycznego i warstw modelowania.](../Wykresy/praca/fig_00_pipeline.png){#fig-pipeline width=100%}
 
 ## Metody analityczne
 
-- EDA + statystyka klasyczna: analiza 2-czynnikowa uczelnia × stanowisko z automatycznym doborem testu (2-czynnikowa ANOVA + Tukey HSD przy spełnionych założeniach; Kruskal-Wallis na komórkach interakcji + test Dunna z korektą Bonferroniego przy ich naruszeniu). Poziom *asystent* (n = 26, nieobecny w UWM i UPWr) wykluczono z analizy interakcji. Metryki oparte na punktacji MEiN analizowano na trzech uczelniach (SGGW nie eksponuje sum_MEiN w API, 100 % braków danych).
-- PCA + klastrowanie k-means (walidacja silhouette + gap statistic): typologia profili bibliometrycznych. Cechy o pełnym pokryciu czterech uczelni (h-index WoS, sumaryczny IF, IF na publikację, liczba publikacji), z pominięciem metryk MEiN, które wykluczyłyby całą próbę SGGW. Obok rozwiązania głównego (k z sylwetki) zbadano wariant eksploracyjny k = 3.
-- Modelowanie predykcyjne: Random Forest [@breiman2001] + XGBoost [@chen2016] (CV 5-fold + wartości SHAP [@lundberg2017] do interpretacji ważności cech). Zbudowano dwa modele o rozłącznych celach: **ilościowy** (wysoki sumaryczny impact, kumulatywny) oraz **jakościowy** (wysoka intensywność cytowań niezależna od dorobku: FWCI > 1, czyli powyżej światowej średniej w dziedzinie). W modelu jakościowym dołączono jawnie cechę **wieku akademickiego** (lata od pierwszej publikacji wg OpenAlex), by sprawdzić, czy jakość daje się sprowadzić do stażu.
-- Analiza sieci współautorstwa: igraph + wykrywanie wspólnot algorytmem Louvain [@blondel2008] z oceną modularności [@newman2006]: mapowanie wspólnot międzyuczelnianych.
+- *Analiza opisowa i statystyczna:* obejmowała porównanie wskaźników między uczelniami i stanowiskami. Założenia parametryczne sprawdzono testami Shapiro-Wilka (normalność reszt modelu w układzie dwuczynnikowym) i Levene'a (jednorodność wariancji); ponieważ dla wszystkich sześciu metryk zostały one naruszone, zastosowano **ścieżkę nieparametryczną**: ogólny test Kruskala-Wallisa dla 12 grup utworzonych przez połączenie uczelni i stanowisk, a następnie, dla metryk z istotnym wynikiem tego testu, post-hoc Dunna z korektą Bonferroniego. Należy zaznaczyć, że Kruskal-Wallis na komórkach porównuje 12 grup łącznie i nie rozdziela formalnie efektów głównych od interakcji. Grupy jednorodne (compact letter display) wyznaczano metodą `multcompLetters` na macierzy istotności porównań parami. Pomocniczo, na potrzeby ryciny rozkładów, ten sam test Dunna z korektą Bonferroniego przeprowadzono w dwóch symetrycznych wariantach jednoczynnikowych: w obrębie każdej uczelni osobno (porównanie stanowisk, małe litery CLD) oraz w obrębie każdego stanowiska osobno (porównanie uczelni, duże litery CLD); każdy wariant kontroluje drugi czynnik, ilustrując różnice między stanowiskami i między uczelniami niezależnie od siebie. Poziom *asystent* (n = 26, nieobecny w UWM i UPWr) wykluczono z analizy interakcji. Metryki oparte na punktacji MEiN analizowano na trzech uczelniach (SGGW nie eksponuje sum_MEiN w API, 100 % braków danych).
+- *Analiza PCA i klastrowanie k-means:* podział naukowców na grupy o podobnych profilach bibliometrycznych. Cechy o pełnym pokryciu czterech uczelni (h-index WoS, sumaryczny IF, IF na publikację, liczba publikacji), z pominięciem metryk MEiN, które wykluczyłyby całą próbę SGGW. Obok rozwiązania głównego (k z sylwetki) zbadano wariant eksploracyjny k = 3.
+- *Modelowanie predykcyjne:* do przewidywania wysokiego impactu zastosowano modele Random Forest [@breiman2001] i XGBoost [@chen2016]. Ich jakość oceniono w 5-krotnej walidacji krzyżowej, a znaczenie cech opisano za pomocą wartości SHAP [@lundberg2017]. Zbudowano dwa modele o rozłącznych celach: **ilościowy** (wysoki sumaryczny impact, kumulatywny) oraz **jakościowy** (wysoka intensywność cytowań niezależna od dorobku: FWCI > 1, czyli powyżej światowej średniej w dziedzinie). W modelu jakościowym dołączono jawnie cechę **wieku akademickiego** (lata od pierwszej publikacji wg OpenAlex), by sprawdzić, czy jakość daje się sprowadzić do stażu.
+- *Analiza sieci współautorstwa:* sprawdzono, którzy badacze publikują razem i czy tworzą większe grupy współpracy. Do wykrycia takich grup zastosowano algorytm Louvain [@blondel2008], a modularność [@newman2006] wykorzystano do oceny, jak wyraźnie sieć dzieli się na wspólnoty. Dzięki temu można było sprawdzić, czy współpraca przebiega głównie w obrębie jednej uczelni, czy także między uczelniami.
 
 ## Narzędzia i środowisko obliczeniowe
 
@@ -169,6 +173,9 @@ ft <- set_header_labels(ft,
 ft <- add_footer_lines(ft, values = c(
   "Dopasow. OpenAlex = odsetek osób uczelni powiązanych z rekordem autora w bazie OpenAlex (po identyfikatorze ROR i nazwisku).",
   "* wartości podane jako mediany (na pełnej liczebności uczelni); h-index wg WoS."))
+# add_footer_lines dodaje wiersze PO ft_praca, wiec nie dziedzicza rodziny czcionki:
+# nakladamy ja ponownie, by stopka byla spojna z tekstem glownym.
+ft <- font(ft, fontname = if (knitr::is_latex_output()) "Latin Modern Roman" else "Aptos", part = "footer")
 ft <- fontsize(ft, size = 7, part = "footer")
 ft <- width(ft, width = c(0.60, 0.42, 0.32, 0.56, 0.56, 0.56, 0.56, 0.74, 0.62, 0.50, 0.56))
 ft <- set_table_properties(ft, layout = "fixed")
@@ -179,43 +186,71 @@ W analizie 2-czynnikowej uwzględniono 420 osób posiadających określone stano
 
 ## Struktura korelacyjna wskaźników (pytanie 2)
 
-Wskaźniki bibliometryczne układają się w dwa słabo skorelowane wymiary: **wielkości dorobku** (h-index WoS, sumaryczny IF, punktacja MEiN, liczba publikacji; wzajemne korelacje 0,82–0,95) oraz **intensywności jakościowej** (IF na publikację). Korelacja sumarycznego IF z punktacją MEiN wynosi r = 0,95; punktacja ministerialna jest niemal liniową funkcją sumarycznego IF, co potwierdza, że oba wskaźniki mierzą zbliżony konstrukt. Istotny jest ujemny związek liczby publikacji z IF na publikację (r = -0,37): naukowcy o największej produktywności mają przeciętnie niższy IF przypadający na pojedynczą pracę, sygnał klasycznego kompromisu ilość–jakość.
+Wskaźniki bibliometryczne układają się wzdłuż dwóch słabo skorelowanych osi, których strukturę przedstawia @fig-korelacje. Pierwszą jest **wielkość dorobku**, w obrębie której najściślej powiązane są trzy metryki skumulowanego impactu: h-index WoS, sumaryczny IF i punktacja MEiN (wzajemne korelacje 0,82–0,95). Korelacja sumarycznego IF z punktacją MEiN wynosi r = 0,95; punktacja ministerialna jest niemal liniową funkcją sumarycznego IF, co potwierdza, że oba wskaźniki mierzą zbliżony konstrukt. **Liczba publikacji** należy do tej samej osi wielkości, lecz wiąże się z metrykami impactu jedynie umiarkowanie (r = 0,36–0,44), odzwierciedla bowiem objętość dorobku, a nie jego skumulowane oddziaływanie. Drugą, w przybliżeniu ortogonalną osią jest **intensywność jakościowa** (IF na publikację), słabo skorelowana z metrykami wielkości; jej ujemny związek z liczbą publikacji (r = -0,37) wskazuje na klasyczny kompromis ilość–jakość: naukowcy o największej produktywności mają przeciętnie niższy IF przypadający na pojedynczą pracę.
 
-## Różnicowanie wskaźników: uczelnia × stanowisko (pytanie 2)
+![Macierz korelacji Pearsona sześciu wskaźników bibliometrycznych. Wyraźny blok metryk skumulowanego impactu (h-index, sumaryczny IF, punktacja MEiN; r 0,82–0,95) kontrastuje z liczbą publikacji, powiązaną z nim tylko umiarkowanie (r 0,36–0,44), oraz z IF na publikację, tworzącym odrębną oś jakości, ujemnie skorelowaną z liczbą publikacji.](../Wykresy/praca/fig_01b_korelacje.png){#fig-korelacje width=100%}
 
-Dla wszystkich sześciu analizowanych metryk testy Shapiro-Wilka i Levene'a odrzuciły założenia normalności rozkładu reszt i jednorodności wariancji (rozkłady bibliometryczne są silnie prawoskośne), wobec czego zastosowano ścieżkę nieparametryczną: **test Kruskala-Wallisa na komórkach interakcji uczelnia × stanowisko z testem post-hoc Dunna i korektą Bonferroniego**. @fig-metryki przedstawia rozkłady trzech metryk o pełnym pokryciu.
+## Różnice we wskaźnikach bibliometrycznych według uczelni i stanowiska (pytanie 2)
 
-![Rozkłady kluczowych metryk bibliometrycznych w układzie uczelnia × stanowisko.](../Wykresy/praca/fig_02_metryki_box.png){#fig-metryki width=90%}
+Dla sześciu analizowanych wskaźników sprawdzono, czy można zastosować klasyczne testy parametryczne. Testy Shapiro-Wilka i Levene'a pokazały jednak, że dane nie spełniają ich założeń: rozkłady nie są normalne, a wariancje w grupach nie są równe. Z tego powodu zastosowano testy nieparametryczne: test Kruskala-Wallisa oraz, w przypadku istotnych różnic, test post-hoc Dunna z korektą Bonferroniego.
 
-Stanowisko różnicuje wskaźniki monotonicznie i konsekwentnie we wszystkich czterech uczelniach: mediany rosną w sekwencji adiunkt → profesor uczelni → profesor. Po konserwatywnej korekcie Bonferroniego dla porównań wielokrotnych (12 komórek) istotne różnice między komórkami ujawniły się jednak tylko dla trzech metryk (@tbl-roznicowanie):
+Decyzję tę uzasadnia także kształt rozkładów pokazany na @fig-rozklady. Większość wskaźników bibliometrycznych ma rozkłady silnie prawoskośne: wiele osób ma niskie lub umiarkowane wartości, a niewielka grupa osiąga bardzo wysokie wyniki. Wyjątkiem jest wskaźnik IF / MEiN, którego rozkład jest bardziej symetryczny, ale także dla niego testy wykazały naruszenie założeń testów parametrycznych.
+
+![Rozkłady (gęstości jądrowe) sześciu wskaźników bibliometrycznych w całej próbie. Przewaga długich prawych ogonów i położenie mediany (czerwona linia przerywana) poniżej średniej potwierdzają silną prawoskośność, uzasadniającą wybór testów nieparametrycznych.](../Wykresy/praca/fig_01c_rozklady.png){#fig-rozklady width=100%}
+
+Wyniki tego porównania dla trzech metryk o pełnym pokryciu pokazano na @fig-hindex, @fig-sumif i @fig-npub jako wykresy pudełkowe z oznaczeniami grup jednorodnych. Na każdym z nich naniesiono dwa niezależne zestawy grup jednorodnych (CLD): **małe niebieskie litery** nad pudełkami porównują stanowiska w obrębie każdej uczelni, a **DUŻE zielone litery** pod pudełkami porównują uczelnie w obrębie każdego stanowiska (czyta się je, zestawiając pudełka tego samego koloru między uczelniami); wspólna litera oznacza brak istotnej różnicy.
+
+![Wykres pudełkowy h-index (WoS) w dwuczynnikowym układzie uczelnia × stanowisko; oznaczenia grup jednorodnych (CLD) opisano w tekście powyżej.](../Wykresy/praca/fig_02a_hindex.png){#fig-hindex width=100%}
+
+![Wykres pudełkowy sumarycznego Impact Factor w dwuczynnikowym układzie uczelnia × stanowisko; oznaczenia grup jednorodnych (CLD) jak na @fig-hindex.](../Wykresy/praca/fig_02b_sumif.png){#fig-sumif width=100%}
+
+![Wykres pudełkowy liczby publikacji w dwuczynnikowym układzie uczelnia × stanowisko; oznaczenia grup jednorodnych (CLD) jak na @fig-hindex.](../Wykresy/praca/fig_02c_npub.png){#fig-npub width=100%}
+
+Wyniki pokazują, że wskaźniki bibliometryczne są silniej związane ze stanowiskiem niż z uczelnią. We wszystkich czterech uczelniach widoczny jest podobny układ: najniższe wartości mają adiunkci, wyższe profesorowie uczelni, a najwyższe profesorowie.
+
+Porównania post-hoc wykonane osobno w obrębie każdej uczelni pokazują, że adiunkci najczęściej różnią się istotnie od obu grup profesorskich. Natomiast profesorowie uczelni i profesorowie zwyczajni różnią się między sobą rzadziej.
+
+Porównania między uczelniami w obrębie tego samego stanowiska dają słabsze różnice. Oznacza to, że osoby na podobnym stanowisku mają zwykle podobne wskaźniki niezależnie od uczelni. Nieliczne różnice między uczelniami dotyczą głównie liczby publikacji, która była najniższa w UPWr.
+
+Analizę przeprowadzono w dwóch krokach. Najpierw zastosowano test Kruskala-Wallisa dla układu uczelnia × stanowisko, a następnie, tam gdzie różnice były istotne, wykonano test post-hoc Dunna z korektą Bonferroniego. Test ogólny był istotny dla pięciu z sześciu analizowanych metryk. Jedynym wyjątkiem był wskaźnik IF / MEiN, dla którego nie stwierdzono istotnych różnic (p = 0,075). Pełne wyniki przedstawia @tbl-roznicowanie.
 
 ```{r}
 #| label: tbl-roznicowanie
-#| tbl-cap: "Istotność różnic między komórkami uczelnia × stanowisko dla sześciu metryk."
+#| tbl-cap: "Ogólny test Kruskala-Wallisa i grupy jednorodne z post-hoc (Dunn-Bonferroni) dla różnic w układzie uczelnia × stanowisko."
 df <- data.frame(
   Metryka = c("Liczba publikacji", "IF na publikację", "Sumaryczna punktacja MEiN (3 uczelnie)",
               "h-index (WoS)", "Sumaryczny IF", "IF / MEiN"),
-  Test = "Kruskal-Wallis + Dunn",
-  CLD = c("5", "5", "3", "1", "1", "1"),
-  Roznicowanie = c("istotne", "istotne", "istotne",
-                   "brak istotnych różnic między komórkami",
-                   "brak istotnych różnic między komórkami",
-                   "brak istotnych różnic między komórkami"),
+  chi2 = c("169,6 (11)", "54,7 (11)", "108,6 (8)", "118,6 (11)", "108,8 (11)", "14,3 (8)"),
+  p   = c("< 0,001", "< 0,001", "< 0,001", "< 0,001", "< 0,001", "0,075"),
+  CLD = c("8", "5", "6", "6", "6", "1"),
+  Roznicowanie = c("istotne", "istotne", "istotne", "istotne", "istotne",
+                   "brak różnic"),
   check.names = FALSE, stringsAsFactors = FALSE
 )
-ft <- ft_praca(df)
-ft <- set_header_labels(ft, CLD = "Liczba grup jednorodnych (CLD)", Roznicowanie = "Różnicowanie")
-ft <- align(ft, j = c(2, 4), align = "left", part = "body")
-ft <- width(ft, width = c(2.1, 1.5, 1.2, 1.5))
+ft <- ft_praca(df, fsize = 9)
+ft <- set_header_labels(ft, chi2 = "H (df)*", p = "p (Kruskal-Wallis)",
+  CLD = "Grupy jednorodne", Roznicowanie = "Istotność testu")
+ft <- align(ft, j = 5, align = "left", part = "body")
+ft <- add_footer_lines(ft, values =
+  "* H to statystyka Kruskala-Wallisa (rozkład chi-kwadrat o df stopniach swobody).")
+# add_footer_lines dodaje wiersz PO ft_praca, wiec nie dziedziczy rodziny czcionki:
+ft <- font(ft, fontname = if (knitr::is_latex_output()) "Latin Modern Roman" else "Aptos", part = "footer")
+ft <- fontsize(ft, size = 8, part = "footer")
+ft <- width(ft, width = c(1.85, 0.95, 0.85, 1.10, 1.05))
 ft <- set_table_properties(ft, layout = "fixed")
 ft
 ```
 
-Brak istotnych różnic dla h-index i sumarycznego IF przy widocznym trendzie wynika z dużej rozproszenia rozkładów i konserwatywności korekty Bonferroniego na 12 komórkach; kierunkowy wzrost z rangą jest wyraźny, lecz nie osiąga istotności w porównaniach parami.
+Najwięcej różnic między grupami widać dla liczby publikacji. Ta metryka podzieliła badanych na 8 grup jednorodnych, czyli najlepiej odróżniała poszczególne kombinacje uczelni i stanowiska. Wyraźne różnice wystąpiły także dla h-index, sumarycznego IF i punktacji MEiN.
 
-## Typologia profili bibliometrycznych (pytanie 1)
+Jedynym wskaźnikiem, dla którego nie stwierdzono istotnych różnic, był IF / MEiN (p = 0,075). Wynika to z jego konstrukcji: jako iloraz dwóch silnie skorelowanych wielkości znosi on efekt skali dorobku, więc nie różnicuje wyraźnie badanych grup.
 
-Analiza głównych składowych na czterech standaryzowanych cechach pełnego pokrycia (n = 449) wykazała, że dwie pierwsze składowe wyjaśniają **87,9 % wariancji** (PC1: 54,1 %, PC2: 33,8 %). Walidacja liczby klastrów metodą sylwetki wskazała rozwiązanie **dwuklastrowe**.
+Podsumowując, wraz z wyższym stanowiskiem rosną wartości większości wskaźników bibliometrycznych. Zależność ta była istotna statystycznie dla pięciu z sześciu analizowanych metryk.
+
+
+## Typy profili bibliometrycznych badaczy (pytanie 1)
+
+Analiza głównych składowych na czterech standaryzowanych cechach pełnego pokrycia (h-index WoS, sumaryczny IF, IF na publikację, liczba publikacji; n = 449) wykazała, że dwie pierwsze składowe wyjaśniają **87,9 % wariancji** (PC1: 54,1 %, PC2: 33,8 %). Liczbę klastrów dobrano metodą sylwetki, która dla każdego obiektu mierzy, jak dobrze pasuje on do własnego klastra w porównaniu z najbliższym sąsiednim; jako optymalną wybiera się liczbę klastrów o najwyższym średnim dopasowaniu. Wskazała ona rozwiązanie **dwuklastrowe**.
 
 ![Klastrowanie k-means w przestrzeni PCA (lewy panel) oraz standaryzowane centroidy klastrów (prawy panel).](../Wykresy/praca/fig_03_klastrowanie.png){#fig-klastry width=95%}
 
@@ -374,7 +409,7 @@ Rozbieżność nie jest przypadkowa i, co istotne, nie da się jej zbyć artefak
 # Wnioski
 
 1. **Typologia (pytanie 1).** Wśród naukowców dyscypliny rolnictwo i ogrodnictwo wyróżniają się dwa odróżnialne typy profili bibliometrycznych: nieliczny rdzeń wysokoproduktywny (ok. 23 % populacji) oraz pozostała większość. Typologia ta jest jednorodna dla wszystkich czterech uczelni.
-2. **Różnicowanie (pytanie 2).** Stanowisko różnicuje wskaźniki bibliometryczne monotonicznie i jednolicie międzyuczelnianie (adiunkt < profesor uczelni < profesor); uczelnia różnicuje je słabo. Po konserwatywnej korekcie wielokrotnych porównań istotność osiągają wskaźniki produktywnościowe (liczba publikacji, punktacja MEiN) i intensywność jakościowa (IF na publikację).
+2. **Różnicowanie (pytanie 2).** Stanowisko różnicuje wskaźniki bibliometryczne monotonicznie i jednolicie międzyuczelnianie (adiunkt < profesor uczelni < profesor); uczelnia różnicuje je słabo. Po konserwatywnej korekcie wielokrotnych porównań istotność osiąga pięć z sześciu metryk (liczba publikacji, h-index, sumaryczny IF, punktacja MEiN oraz IF na publikację); jedynie złożony wskaźnik IF / MEiN nie różnicuje komórek. W obrębie każdej uczelni adiunkci stanowią grupę istotnie odrębną od obu poziomów profesorskich.
 3. **Predykcja (pytanie 3).** Wysoki impact daje się przewidzieć z cech strukturalnych z wysoką zdolnością dyskryminacyjną (AUC ok. 0,97); kluczowe są produktywność i kapitał sieciowy, a nie pozycja formalna. Zdolność dyskryminacyjna jest wysoka, lecz użyteczność klasyfikacyjna zależy od doboru progu decyzyjnego, a przy zaledwie 46 przypadkach pozytywnych i pojedynczym podziale na zbiór uczący i testowy (czułość 1,00, zbalansowana trafność 0,87 po kalibracji progu Youdena) wymaga potwierdzenia na niezależnej próbie.
 4. **Sieci (pytanie 4).** Sieć współautorstwa jest silnie zmodularyzowana (Q = 0,856), a wspólnoty pokrywają się głównie z afiliacją uczelnianą (NMI = 0,58), nie ze stanowiskiem. Współpraca ma charakter przede wszystkim wewnątrzinstytucjonalny; wspólnoty międzyuczelniane są nieliczne.
 

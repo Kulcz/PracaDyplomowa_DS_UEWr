@@ -57,7 +57,13 @@ mdl     <- try_load("model_results.rds")
 net     <- try_load("network_metrics.rds")
 
 # ============================================================
-# Fig 2: Boxploty metryk pełnego pokrycia (uczelnia × stanowisko)
+# Fig 2 (a-c): Boxploty metryk pelnego pokrycia, OSOBNO per metryka
+#   (uczelnia x stanowisko). 3 osobne pliki -> czytelniej + latwiejsze
+#   formatowanie pracy (kazda figura wstawiana niezaleznie).
+#   Litery CLD (z eda_summary.rds, Dunn-Bonferroni; skrypt 06):
+#     male (nad)  = stanowiska w obrebie uczelni      (cld_within)
+#     DUZE (pod)  = uczelnie w obrebie stanowiska      (cld_ucz_within)
+#   Wspolna litera = brak istotnej roznicy.
 # ============================================================
 feat_path <- here("Dane", "master", "profiles_features.csv")
 if (file_exists(feat_path)) {
@@ -68,30 +74,133 @@ if (file_exists(feat_path)) {
     ) %>%
     filter(!is.na(stanowisko))
 
-  metryki_key  <- c("h_index_wos", "sum_IF", "n_pub")
   metryki_labs <- c(h_index_wos = "h-index (WoS)", sum_IF = "Sumaryczny IF",
                     n_pub = "Liczba publikacji")
+  fig_files <- c(h_index_wos = "fig_02a_hindex.png", sum_IF = "fig_02b_sumif.png",
+                 n_pub = "fig_02c_npub.png")
+  ucz_labs <- c(upwr = "UPWr", sggw = "SGGW", urk = "URK", uwm = "UWM")
+  DODGE <- 0.8
 
-  df_long <- df_feat %>%
-    pivot_longer(all_of(metryki_key), names_to = "metryka", values_to = "y") %>%
-    filter(!is.na(y)) %>%
-    mutate(metryka = factor(metryki_labs[metryka], levels = unname(metryki_labs)))
+  for (mk in names(metryki_labs)) {
+    mlab <- metryki_labs[[mk]]
+    d1 <- df_feat %>% filter(!is.na(.data[[mk]])) %>%
+      transmute(uczelnia, stanowisko, y = .data[[mk]])
 
-  p2 <- ggplot(df_long, aes(x = stanowisko, y = y, fill = stanowisko)) +
-    geom_boxplot(outlier.size = 0.5, alpha = 0.85) +
-    facet_grid(metryka ~ uczelnia, scales = "free_y", switch = "y") +
-    scale_fill_manual(values = paleta_stan, labels = stan_labs) +
-    scale_x_discrete(labels = stan_labs) +
-    labs(title = "Metryki bibliometryczne: uczelnia × stanowisko",
-         x = NULL, y = NULL, fill = "Stanowisko") +
+    # male litery: stanowiska w obrebie uczelni (nad gornym wasem)
+    small_layer <- NULL
+    if (!is.null(eda) && !is.null(eda$cld_within)) {
+      cldw <- eda$cld_within %>% filter(metryka == mlab) %>%
+        mutate(uczelnia   = factor(uczelnia, levels = c("upwr","sggw","urk","uwm")),
+               stanowisko = factor(stanowisko, levels = STANOWISKA))
+      cld_plot <- d1 %>% group_by(uczelnia, stanowisko) %>%
+        summarise(q75 = quantile(y, 0.75), iqr = IQR(y), vmax = max(y), .groups = "drop") %>%
+        mutate(y_lab = pmin(q75 + 1.5 * iqr, vmax) + 0.05 * max(vmax)) %>%
+        left_join(cldw, by = c("uczelnia", "stanowisko"))
+      small_layer <- geom_text(
+        data = cld_plot, aes(x = uczelnia, y = y_lab, label = .group, group = stanowisko),
+        position = position_dodge(width = DODGE), vjust = 0, size = 4.2,
+        fontface = "bold", color = "#08519C", inherit.aes = FALSE)  # NIEBIESKIE = stanowiska
+    }
+
+    # DUZE litery: uczelnie w obrebie stanowiska (pasek pod boxami)
+    big_layer <- NULL
+    if (!is.null(eda) && !is.null(eda$cld_ucz_within)) {
+      cldu <- eda$cld_ucz_within %>% filter(metryka == mlab) %>%
+        mutate(uczelnia   = factor(uczelnia, levels = c("upwr","sggw","urk","uwm")),
+               stanowisko = factor(stanowisko, levels = STANOWISKA),
+               y_lo = min(d1$y) - 0.08 * diff(range(d1$y)))
+      big_layer <- geom_text(
+        data = cldu, aes(x = uczelnia, y = y_lo, label = .group, group = stanowisko),
+        position = position_dodge(width = DODGE), vjust = 1, size = 4.6,
+        fontface = "bold", color = "#1B7837", inherit.aes = FALSE)  # ZIELONE = uczelnie
+    }
+
+    p <- ggplot(d1, aes(x = uczelnia, y = y, fill = stanowisko)) +
+      geom_boxplot(outlier.size = 0.5, alpha = 0.85, position = position_dodge(width = DODGE)) +
+      small_layer + big_layer +
+      scale_fill_manual(values = paleta_stan, labels = stan_labs) +
+      scale_x_discrete(labels = ucz_labs) +
+      labs(title = mlab,
+           subtitle = "małe NIEBIESKIE (nad): stanowiska w obrębie uczelni; DUŻE ZIELONE (pod): uczelnie w obrębie stanowiska",
+           x = NULL, y = NULL, fill = "Stanowisko") +
+      theme_praca +
+      theme(legend.position = "bottom",
+            plot.title      = element_text(face = "bold", size = 16),
+            plot.subtitle   = element_text(color = "grey40", size = 11, margin = margin(b = 8)),
+            axis.text.x     = element_text(size = 14, face = "bold"),
+            axis.text.y     = element_text(size = 13),
+            legend.text     = element_text(size = 13),
+            legend.title    = element_text(size = 14),
+            legend.key.size = unit(0.9, "lines"))
+
+    ggsave(file.path(PLOT_DIR, fig_files[[mk]]), p, width = 8.5, height = 5.4, dpi = 300)
+    cat(sprintf("[OK] %s\n", fig_files[[mk]]))
+  }
+}
+
+# ============================================================
+# Fig 1b: Macierz korelacji metryk (podrozdzial "Struktura korelacyjna")
+#   Uporzadkowana tak, by uwidocznic blok skumulowanego impactu
+#   {h-index, sum_IF, sum_MEiN} (r 0,82-0,95) oraz luzno z nim zwiazane
+#   n_pub (objetosc) i if_per_pub (os jakosci, ujemnie z n_pub).
+# ============================================================
+if (!is.null(eda) && !is.null(eda$correlations)) {
+  ord <- c("h_index_wos", "sum_IF", "sum_MEiN", "n_pub", "if_per_pub", "if_to_mein")
+  lab <- c(h_index_wos = "h-index (WoS)", sum_IF = "Sum. IF", sum_MEiN = "Sum. MEiN",
+           n_pub = "Liczba publ.", if_per_pub = "IF / publ.", if_to_mein = "IF / MEiN")
+  cm <- eda$correlations[ord, ord]
+  cor_long <- as.data.frame(as.table(cm)) %>%
+    setNames(c("x", "y", "r")) %>%
+    mutate(x = factor(lab[as.character(x)], levels = unname(lab[ord])),
+           y = factor(lab[as.character(y)], levels = rev(unname(lab[ord]))))
+  p_cor <- ggplot(cor_long, aes(x, y, fill = r)) +
+    geom_tile(color = "white", linewidth = 0.6) +
+    geom_text(aes(label = sprintf("%.2f", r)), size = 4.2) +
+    scale_fill_gradient2(low = "#3C5488", mid = "white", high = "#E64B35",
+                         midpoint = 0, limits = c(-1, 1)) +
+    coord_fixed() +
+    labs(title = "Macierz korelacji wskaźników bibliometrycznych",
+         x = NULL, y = NULL, fill = "r") +
     theme_praca +
-    theme(legend.position = "bottom",
-          strip.placement = "outside",
-          axis.text.x = element_text(angle = 30, hjust = 1))
+    theme(axis.text.x  = element_text(angle = 30, hjust = 1, size = 12),
+          axis.text.y  = element_text(size = 12),
+          plot.title   = element_text(face = "bold", size = 15))
+  ggsave(file.path(PLOT_DIR, "fig_01b_korelacje.png"), p_cor,
+         width = 8, height = 6.8, dpi = 300)
+  cat("[OK] fig_01b_korelacje.png\n")
+}
 
-  ggsave(file.path(PLOT_DIR, "fig_02_metryki_box.png"),
-         p2, width = 11, height = 8, dpi = 300)
-  cat("[OK] fig_02_metryki_box.png\n")
+# ============================================================
+# Fig 1c: Gestosci 6 metryk (uzasadnienie sciezki nieparametrycznej)
+#   Silna prawoskosnosc -> odrzucenie normalnosci (Shapiro) i jednorodnosci
+#   wariancji (Levene). Linia = mediana (mediana << srednia = prawoskosnosc).
+# ============================================================
+if (file_exists(feat_path)) {
+  metr6 <- c(n_pub = "Liczba publikacji", h_index_wos = "h-index (WoS)",
+             sum_IF = "Sumaryczny IF", sum_MEiN = "Sum. punktacja MEiN",
+             if_per_pub = "IF na publikację", if_to_mein = "IF / MEiN")
+  dens <- read_csv(feat_path, show_col_types = FALSE) %>%
+    pivot_longer(all_of(names(metr6)), names_to = "metryka", values_to = "y") %>%
+    filter(!is.na(y)) %>%
+    mutate(metryka = factor(metr6[metryka], levels = unname(metr6)))
+  med <- dens %>% group_by(metryka) %>% summarise(mediana = median(y), .groups = "drop")
+
+  p_dens <- ggplot(dens, aes(x = y)) +
+    geom_density(fill = "#4DBBD5", color = "#2C7FB8", alpha = 0.55, linewidth = 0.5) +
+    geom_vline(data = med, aes(xintercept = mediana),
+               linetype = "dashed", color = "#E64B35", linewidth = 0.6) +
+    facet_wrap(~ metryka, ncol = 3, scales = "free") +
+    labs(title = "Rozkłady wskaźników bibliometrycznych w całej próbie",
+         subtitle = "Silna prawoskośność uzasadnia ścieżkę nieparametryczną; czerwona linia = mediana",
+         x = NULL, y = "Gęstość") +
+    theme_praca +
+    theme(plot.title    = element_text(face = "bold", size = 15),
+          plot.subtitle = element_text(color = "grey40", size = 10, margin = margin(b = 8)),
+          strip.text    = element_text(face = "bold", size = 11),
+          axis.text     = element_text(size = 9))
+  ggsave(file.path(PLOT_DIR, "fig_01c_rozklady.png"), p_dens,
+         width = 9, height = 5.2, dpi = 300)
+  cat("[OK] fig_01c_rozklady.png\n")
 }
 
 # ============================================================
