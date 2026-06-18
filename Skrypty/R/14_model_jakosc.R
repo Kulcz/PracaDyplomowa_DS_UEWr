@@ -47,7 +47,7 @@ match <- read_csv(here("Dane", "openalex", "author_match.csv"), show_col_types =
 # ---------- 1. Wiek akademicki (odporny) ----------
 # Start kariery = 5. percentyl lat publikacji autora (odporny na bledne
 # atrybucje pojedynczych bardzo starych prac w OpenAlex), po odsianiu lat < 1950.
-REF_YEAR <- 2025L
+REF_YEAR <- as.integer(format(Sys.Date(), "%Y"))  # rok bieżący (spójnie z 12_dynamika_omega.R)
 career <- pubs %>%
   filter(!is.na(publication_year), publication_year >= 1950, publication_year <= REF_YEAR) %>%
   group_by(anchor_author_id) %>%

@@ -71,6 +71,8 @@ Polski system oceny nauki opiera się na okresowej **ewaluacji jakości działal
 
 Punktem odniesienia dla całego systemu jest urzędowa **klasyfikacja dziedzin i dyscyplin naukowych**; analizowana w niniejszej pracy dyscyplina *rolnictwo i ogrodnictwo* należy do dziedziny nauk rolniczych [@rozp_dyscypliny2025]. Ocena w ewaluacji opiera się na trzech kryteriach: (I) poziomie naukowym prowadzonej działalności, mierzonym punktacją ministerialną publikacji i patentów, (II) efektach finansowych badań naukowych oraz (III) wpływie działalności naukowej na funkcjonowanie społeczeństwa i gospodarki. Wagi kryteriów różnią się między dziedzinami; dla nauk rolniczych Kryterium I waży 50 %, Kryterium II 35 %, a Kryterium III 15 % oceny [@rozp_ewaluacja2022; @rozp_ewaluacja_nowela2025]. Kryterium I, dominujące w naukach rolniczych, ma charakter bibliometryczny: liczbę punktów wyznacza się z udziałów jednostkowych autorów w publikacjach, w ramach limitu slotów publikacyjnych proporcjonalnego do liczby pracowników danej dyscypliny (liczby N).
 
+Rozporządzenie klasyfikacyjne wymienia dyscypliny wyłącznie z nazwy, nie wyznaczając formalnie ich zakresu przedmiotowego [@rozp_dyscypliny2025]. *Rolnictwo i ogrodnictwo* jest jedną z czterech dyscyplin dziedziny nauk rolniczych (obok nauk leśnych, technologii żywności i żywienia oraz zootechniki i rybactwa) i powstało przy reformie klasyfikacji z 2018 r. ze scalenia węższych, wcześniej odrębnych dyscyplin, przede wszystkim agronomii i ogrodnictwa. Jej merytoryczny trzon stanowią nauki o roślinie uprawnej i o środowisku jej wzrostu: produkcja roślinna i agrotechnika, ogrodnictwo (warzywnictwo, sadownictwo, rośliny ozdobne), gleboznawstwo i żywienie roślin, ochrona roślin, hodowla i genetyka roślin, łąkarstwo oraz kształtowanie i ochrona agrocenoz. Poza zakresem dyscypliny pozostają produkcja zwierzęca (przypisana do zootechniki i rybactwa) oraz przetwórstwo płodów rolnych (technologia żywności i żywienia), co czyni *rolnictwo i ogrodnictwo* przede wszystkim roślinno-środowiskowym segmentem nauk rolniczych.
+
 Ponieważ ewaluacja nauki w dużej mierze opiera się na wskaźnikach bibliometrycznych, takich jak punktacja ministerialna, cytowania i liczba publikacji, indywidualne profile dorobku naukowców są ważnym przedmiotem analizy. Niniejsza praca nie odtwarza oficjalnego algorytmu ewaluacji, który działa na poziomie uczelni i dyscypliny. Analizuje natomiast zróżnicowanie indywidualnych profili bibliometrycznych pracowników prowadzących działalność naukową w tej samej dyscyplinie, a kategorię naukową uczelni traktuje jako zmienną opisową.
 
 ## Cel pracy
@@ -156,17 +158,17 @@ dat <- data.frame(
   Uczelnia   = c("UPWr", "SGGW", "URK", "UWM", "Razem"),
   Kat        = c("A", "A", "A", "B+", "A+B+"),
   n          = c("118", "112", "162", "70", "462"),
+  Asystent   = c("1", "10", "15", "0", "26"),
   Adiunkt    = c("47", "59", "47", "17", "170"),
   ProfUcz    = c("30", "30", "59", "34", "153"),
   Profesor   = c("27", "13", "38", "19", "97"),
-  Asystent   = c("1", "10", "15", "0", "26"),
   MatchOA    = c("79,7 %", "89,3 %", "77,8 %", "67,1 %", "79,4 %"),
   LiczbaPubl = c("99", "46", "54", "82", "62"),
   SumIF      = c("46,1", "50,2", "46,1", "68,8", "49,0"),
   hindex     = c("8", "8", "9", "10", "9"),
   check.names = FALSE, stringsAsFactors = FALSE
 )
-ft <- ft_praca(dat, fsize = 8)
+ft <- ft_praca(dat, fsize = 9)
 ft <- set_header_labels(ft,
   Kat = "Kat.", ProfUcz = "Prof. ucz.", MatchOA = "Dopasow. OpenAlex",
   LiczbaPubl = "Liczba publ.*", SumIF = "Sum. IF*", hindex = "h-index*")
@@ -176,7 +178,7 @@ ft <- add_footer_lines(ft, values = c(
 # add_footer_lines dodaje wiersze PO ft_praca, wiec nie dziedzicza rodziny czcionki:
 # nakladamy ja ponownie, by stopka byla spojna z tekstem glownym.
 ft <- font(ft, fontname = if (knitr::is_latex_output()) "Latin Modern Roman" else "Aptos", part = "footer")
-ft <- fontsize(ft, size = 7, part = "footer")
+ft <- fontsize(ft, size = 9, part = "footer")
 ft <- width(ft, width = c(0.60, 0.42, 0.32, 0.56, 0.56, 0.56, 0.56, 0.74, 0.62, 0.50, 0.56))
 ft <- set_table_properties(ft, layout = "fixed")
 ft
