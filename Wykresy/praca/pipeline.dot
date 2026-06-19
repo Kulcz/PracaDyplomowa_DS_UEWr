@@ -1,5 +1,7 @@
 // Schemat przepływu danych pracy. Render: dot -Tpng pipeline.dot -o fig_00_pipeline.png
+// (dpi=300 wpisane nizej, wiec render daje wysoka rozdzielczosc bez flagi -Gdpi)
 digraph pipeline {
+  graph [dpi=300];
   rankdir=TB;
   bgcolor="white";
   node [shape=box, style="rounded,filled", fontname="DejaVu Sans", fontsize=11, margin="0.18,0.10"];
@@ -16,25 +18,25 @@ digraph pipeline {
   }
 
   // --- Scraping Python ---
-  SCRAPE [label="Scraper Python (Playwright)\nETAP 1: paginator → author_id\nETAP 2: profile + metryki", fillcolor="#fde9c9"];
-  PUBS   [label="Scraper list publikacji\n(scrape_publications.py)\nrok + punkty per pozycja", fillcolor="#fde9c9"];
+  SCRAPE [label="Scraping profili (Python, Playwright)\nETAP 1: zbieranie autorów\nETAP 2: profile + metryki", fillcolor="#fde9c9"];
+  PUBS   [label="Scraping list publikacji\nrok + punkty per pozycja", fillcolor="#fde9c9"];
 
-  RAW [label="Surowe CSV per uczelnia\n(Dane/raw)", fillcolor="#eeeeee"];
+  RAW [label="Surowe dane per uczelnia", fillcolor="#eeeeee"];
 
   // --- Pipeline R ---
-  CLEAN [label="02 Czyszczenie (R)\nstandaryzacja, deduplikacja\n→ 462 osoby", fillcolor="#d8ecd8"];
-  MATCH [label="03 Matching OpenAlex (R)\nROR + Jaro-Winkler ≥ 0,85\n→ 79,4% dopasowania", fillcolor="#d8ecd8"];
-  WORKS [label="04 Works OpenAlex (R)\nFWCI, cytowania, współautorzy", fillcolor="#d8ecd8"];
-  FEAT  [label="05 Feature engineering (R)", fillcolor="#d8ecd8"];
+  CLEAN [label="Czyszczenie i ujednolicenie\nstandaryzacja, deduplikacja\n→ 462 osoby", fillcolor="#d8ecd8"];
+  MATCH [label="Dopasowanie do OpenAlex\nROR + Jaro-Winkler ≥ 0,85\n→ 79,4% dopasowania", fillcolor="#d8ecd8"];
+  WORKS [label="Publikacje z OpenAlex\nFWCI, cytowania, współautorzy", fillcolor="#d8ecd8"];
+  FEAT  [label="Inżynieria cech", fillcolor="#d8ecd8"];
 
   OA [label="OpenAlex API", shape=cylinder, fillcolor="#e7d9f0"];
 
-  MASTER [label="Master dataset\nprofiles_features.csv (462 × 30)", fillcolor="#cfe2cf", penwidth=2];
-  PUBYEARS [label="pub_years.csv\n(491 osób, 100% próby)", fillcolor="#cfe2cf", penwidth=2];
+  MASTER [label="Zbiór analityczny\n462 osoby × 30 cech", fillcolor="#cfe2cf", penwidth=2];
+  PUBYEARS [label="Listy publikacji per rok\n491 osób (100% próby)", fillcolor="#cfe2cf", penwidth=2];
 
   // --- Warstwy analityczne ---
-  ANALYS [label="Warstwy analityczne (R)\n06 EDA/ANOVA  ·  07 klastrowanie/PCA\n08 modele RF/XGBoost  ·  09 sieci współautorstwa", fillcolor="#f6d7d7"];
-  DYN [label="Dynamika rozwoju (R)\n11 OpenAlex  ·  12 Omega-PSIR", fillcolor="#f6d7d7"];
+  ANALYS [label="Warstwy analityczne\nEDA + Kruskal-Wallis  ·  klastrowanie / PCA\nmodele RF / XGBoost  ·  sieci współautorstwa", fillcolor="#f6d7d7"];
+  DYN [label="Dynamika rozwoju\nOpenAlex  ·  Omega-PSIR", fillcolor="#f6d7d7"];
 
   // --- Krawędzie ---
   UPWR -> SCRAPE; SGGW -> SCRAPE; URK -> SCRAPE; UWM -> SCRAPE;

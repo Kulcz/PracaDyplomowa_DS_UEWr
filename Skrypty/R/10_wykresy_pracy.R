@@ -209,33 +209,31 @@ if (file_exists(feat_path)) {
 if (!is.null(clust)) {
   library(factoextra)
 
+  # Czytelna legenda: klaster o najwyzszej sredniej centroidzie = "wysoki dorobek".
+  centers_mean <- rowMeans(clust$kmeans$centers)
+  hi    <- which.max(centers_mean)
+  lo    <- setdiff(seq_along(centers_mean), hi)
+  lab_hi <- sprintf("%d: wysoki dorobek", hi)
+  lab_lo <- sprintf("%s: pozostali", paste(lo, collapse = ","))
+  klaster_lab <- factor(ifelse(clust$kmeans$cluster == hi, lab_hi, lab_lo),
+                        levels = c(lab_hi, lab_lo))
+
   p3a <- fviz_pca_ind(
     clust$pca,
     geom = "point",
-    pointshape = 21, pointsize = 2,
-    fill.ind = factor(clust$kmeans$cluster),
+    pointshape = 21, pointsize = 1.8, alpha.ind = 0.5,
+    fill.ind = klaster_lab,
     palette = "Set2",
-    addEllipses = TRUE, ellipse.type = "convex",
+    addEllipses = TRUE, ellipse.type = "convex", ellipse.alpha = 0.08,
     legend.title = "Klaster"
   ) + labs(title = sprintf("PCA + klastry k-means (k = %d)", clust$k_opt)) +
       theme_praca
 
-  centr_std <- as.data.frame(clust$kmeans$centers) %>%
-    mutate(klaster = factor(seq_len(nrow(clust$kmeans$centers)))) %>%
-    pivot_longer(-klaster, names_to = "cecha", values_to = "z")
-
-  p3b <- ggplot(centr_std, aes(x = klaster, y = cecha, fill = z)) +
-    geom_tile() +
-    geom_text(aes(label = sprintf("%.1f", z)), size = 3) +
-    scale_fill_gradient2(low = "#3C5488", mid = "white", high = "#E64B35", midpoint = 0) +
-    labs(title = "Centroidy klastrów (z-score)",
-         x = "Klaster", y = NULL, fill = "z") +
-    theme_praca
-
-  ggsave(file.path(PLOT_DIR, "fig_03_klastrowanie.png"),
-         p3a + p3b + plot_layout(widths = c(1.4, 1)),
-         width = 13, height = 6, dpi = 300)
-  cat("[OK] fig_03_klastrowanie.png\n")
+  # Heatmapa centroidow (dawny fig_03b) usunieta 2026-06-18: redundantna z
+  # Tabela 3 (centroidy w skali oryginalnej) i wierszem "Pula" Tabeli 4 (z-score).
+  ggsave(file.path(PLOT_DIR, "fig_03a_klastry.png"), p3a,
+         width = 8, height = 6, dpi = 300)
+  cat("[OK] fig_03a_klastry.png\n")
 }
 
 # ============================================================
@@ -253,21 +251,131 @@ if (!is.null(mdl)) {
     scale_fill_manual(values = c(RF = "#3C5488", XGB = "#E64B35")) +
     ylim(0, 1.05) +
     labs(title = "Metryki test set: RF vs XGBoost",
-         subtitle = "klasy niezbalansowane (10% high-impact) — niska czułość mimo wysokiego AUC",
+         subtitle = "klasy niezbalansowane (10% high-impact): niska czułość mimo wysokiego AUC",
          x = NULL, y = "Wartość", fill = "Model") +
     theme_praca
 
-  p4b <- mdl$vip_rf %>% slice_max(Importance, n = 10) %>%
-    ggplot(aes(x = reorder(Variable, Importance), y = Importance)) +
-    geom_col(fill = "#3C5488") + coord_flip() +
-    labs(title = "RF: ważność permutacyjna (top 10)",
-         x = NULL, y = "Importance") +
-    theme_praca
+  # Opisowe etykiety predyktorow zamiast surowych nazw technicznych:
+  etykiety_zmiennych <- c(
+    n_pub                       = "Liczba publikacji",
+    n_unique_coauthors          = "Liczba unikalnych współautorów",
+    avg_authors_per_pub         = "Średnia liczba autorów na publikację",
+    mean_fwci                   = "Średni FWCI",
+    uczelnia_upwr               = "Uczelnia: UPWr",
+    stanowisko_profesor         = "Stanowisko: profesor",
+    uczelnia_uwm                = "Uczelnia: UWM",
+    stanowisko_profesor.uczelni = "Stanowisko: profesor uczelni",
+    uczelnia_urk                = "Uczelnia: URK",
+    stanowisko_unknown          = "Stanowisko: brak danych"
+  )
 
-  ggsave(file.path(PLOT_DIR, "fig_04_modele.png"),
-         p4a + p4b + plot_layout(widths = c(1, 1.2)),
-         width = 13, height = 5.5, dpi = 300)
-  cat("[OK] fig_04_modele.png\n")
+  # Kategoria cechy (kolor) - wprost ilustruje teze: produktywnosc i wspolpraca
+  # waza wiecej niz cechy formalne (uczelnia, stanowisko).
+  kat_zmiennych <- c(
+    n_pub                       = "Produktywność",
+    n_unique_coauthors          = "Współpraca i cytowania",
+    avg_authors_per_pub         = "Współpraca i cytowania",
+    mean_fwci                   = "Współpraca i cytowania",
+    uczelnia_upwr               = "Cechy formalne",
+    stanowisko_profesor         = "Cechy formalne",
+    uczelnia_uwm                = "Cechy formalne",
+    stanowisko_profesor.uczelni = "Cechy formalne",
+    uczelnia_urk                = "Cechy formalne",
+    stanowisko_unknown          = "Cechy formalne"
+  )
+  poziomy_kat <- c("Produktywność", "Współpraca i cytowania",
+                   "Cechy formalne")
+
+  p4b <- mdl$vip_rf %>% slice_max(Importance, n = 10) %>%
+    mutate(
+      Kategoria = factor(dplyr::coalesce(kat_zmiennych[as.character(Variable)], "Inne"),
+                         levels = poziomy_kat),
+      Variable  = dplyr::coalesce(etykiety_zmiennych[as.character(Variable)],
+                                  as.character(Variable))
+    ) %>%
+    ggplot(aes(x = reorder(Variable, Importance), y = Importance, fill = Kategoria)) +
+    geom_col() + coord_flip() +
+    scale_fill_manual(values = c(
+      "Produktywność"                          = "#3C5488",
+      "Współpraca i cytowania"                 = "#00A087",
+      "Cechy formalne"  = "#E64B35")) +
+    labs(title = "Najważniejsze predyktory w modelu Random Forest",
+         x = NULL, y = "Ważność zmiennej", fill = "Kategoria cechy") +
+    theme_praca +
+    theme(legend.position = "bottom",
+          plot.title   = element_text(face = "bold", size = 16),
+          axis.text    = element_text(size = 13),
+          axis.title.x = element_text(size = 14),
+          legend.text  = element_text(size = 12),
+          legend.title = element_text(size = 13))
+
+  # Tylko wykres waznosci cech (p4b). Wykres metryk (p4a) pominiety:
+  # dublowal tabele tbl-modele (te same metryki, modele i liczby).
+  ggsave(file.path(PLOT_DIR, "fig_04b_waznosc.png"), p4b,
+         width = 11, height = 6.2, dpi = 300)
+  cat("[OK] fig_04b_waznosc.png\n")
+}
+
+# ============================================================
+# Fig 4c: Waznosc cech modelu JAKOSCIOWEGO (cel: mean_fwci > 1).
+#   Pokazuje, ze przy predykcji jakosci dominuja cechy wspolpracy,
+#   a wiek akademicki / liczba publikacji / cechy formalne sa nisko.
+# ============================================================
+mdl_q <- try_load("model_jakosc.rds")
+if (!is.null(mdl_q) && !is.null(mdl_q$vip_rf)) {
+  etykiety_q <- c(
+    avg_authors_per_pub         = "Średnia liczba autorów na publikację",
+    n_unique_coauthors          = "Liczba unikalnych współautorów",
+    wiek_akad                   = "Wiek akademicki",
+    n_pub                       = "Liczba publikacji",
+    uczelnia_upwr               = "Uczelnia: UPWr",
+    uczelnia_urk                = "Uczelnia: URK",
+    uczelnia_uwm                = "Uczelnia: UWM",
+    stanowisko_profesor         = "Stanowisko: profesor",
+    stanowisko_profesor.uczelni = "Stanowisko: profesor uczelni",
+    stanowisko_asystent         = "Stanowisko: asystent",
+    stanowisko_unknown          = "Stanowisko: brak danych"
+  )
+  kat_q <- c(
+    avg_authors_per_pub = "Współpraca naukowa",
+    n_unique_coauthors  = "Współpraca naukowa",
+    wiek_akad           = "Wiek akademicki",
+    n_pub               = "Produktywność",
+    uczelnia_upwr = "Cechy formalne", uczelnia_urk = "Cechy formalne",
+    uczelnia_uwm = "Cechy formalne", stanowisko_profesor = "Cechy formalne",
+    stanowisko_profesor.uczelni = "Cechy formalne", stanowisko_asystent = "Cechy formalne",
+    stanowisko_unknown = "Cechy formalne"
+  )
+  poziomy_q <- c("Współpraca naukowa", "Wiek akademicki", "Produktywność", "Cechy formalne")
+
+  p4c <- mdl_q$vip_rf %>% slice_max(Importance, n = 10) %>%
+    mutate(
+      Kategoria = factor(dplyr::coalesce(kat_q[as.character(Variable)], "Inne"),
+                         levels = poziomy_q),
+      Variable  = dplyr::coalesce(etykiety_q[as.character(Variable)],
+                                  as.character(Variable))
+    ) %>%
+    ggplot(aes(x = reorder(Variable, Importance), y = Importance, fill = Kategoria)) +
+    geom_col() + coord_flip() +
+    scale_fill_manual(values = c(
+      "Współpraca naukowa" = "#00A087",
+      "Wiek akademicki"    = "#F39B7F",
+      "Produktywność"      = "#3C5488",
+      "Cechy formalne"     = "#E64B35")) +
+    labs(title = "Najważniejsze predyktory jakości dorobku (model FWCI > 1)",
+         x = NULL, y = "Ważność zmiennej", fill = "Kategoria cechy") +
+    guides(fill = guide_legend(nrow = 2)) +
+    theme_praca +
+    theme(legend.position = "bottom",
+          plot.title   = element_text(face = "bold", size = 15),
+          axis.text    = element_text(size = 13),
+          axis.title.x = element_text(size = 14),
+          legend.text  = element_text(size = 12),
+          legend.title = element_text(size = 13))
+
+  ggsave(file.path(PLOT_DIR, "fig_04c_waznosc_jakosc.png"), p4c,
+         width = 11, height = 6.2, dpi = 300)
+  cat("[OK] fig_04c_waznosc_jakosc.png\n")
 }
 
 # ============================================================
@@ -278,28 +386,80 @@ if (!is.null(net)) {
 
   tg <- as_tbl_graph(net$graph)
 
+  ucz_labs <- c(upwr = "UPWr", sggw = "SGGW", urk = "URK", uwm = "UWM")
+
+  # Panel A: siec kolorowana UCZELNIA (legenda) - widac, ze skupiska
+  # Louvain sa jednouczelniane. Wielkosc wezla = stopien (degree).
   p5a <- ggraph(tg, layout = "stress") +
-    geom_edge_link(alpha = 0.1, color = "grey40") +
-    geom_node_point(aes(color = factor(community), size = degree),
-                    show.legend = FALSE) +
-    scale_size(range = c(0.3, 4)) +
-    labs(title = sprintf("Sieć współautorstwa (Q = %.3f)", net$modularity)) +
-    theme_void(base_size = 12) +
-    theme(plot.title = element_text(face = "bold", size = 13))
+    geom_edge_link(alpha = 0.12, color = "grey50") +
+    geom_node_point(aes(color = uczelnia, size = degree), alpha = 0.9) +
+    scale_color_manual(values = paleta_uczelnia, labels = ucz_labs, name = "Uczelnia") +
+    scale_size(range = c(1, 6), guide = "none") +
+    labs(title = sprintf("Sieć współautorstwa (modularność Q = %.3f)", net$modularity)) +
+    guides(color = guide_legend(override.aes = list(size = 5))) +
+    theme_void(base_size = 13) +
+    theme(plot.background = element_rect(fill = "white", color = NA),
+          plot.title    = element_text(face = "bold", size = 15, hjust = 0.5),
+          plot.margin   = margin(10, 10, 10, 10),
+          legend.position = "bottom",
+          legend.text   = element_text(size = 13),
+          legend.title  = element_text(size = 14))
 
+  ggsave(file.path(PLOT_DIR, "fig_05a_siec.png"), p5a,
+         width = 9, height = 8, dpi = 300)
+  cat("[OK] fig_05a_siec.png\n")
+
+  # Panel B: heatmapa spolecznosc x uczelnia. Spolecznosci uporzadkowane
+  # wg wielkosci (najwieksze u gory), etykiety 0% ukryte dla czytelnosci.
   ct <- net$crosstabs$ucz %>% as.data.frame()
-  p5b <- ggplot(ct, aes(x = uczelnia, y = factor(community), fill = pct)) +
-    geom_tile() +
-    geom_text(aes(label = sprintf("%.0f%%", 100 * pct)), size = 3) +
-    scale_fill_gradient(low = "white", high = "#E64B35") +
-    labs(title = sprintf("Społeczność × uczelnia (ARI = %.3f)", net$ari$ucz),
-         x = NULL, y = "Społeczność", fill = "%") +
-    theme_praca
+  sizes <- ct %>% group_by(community) %>% summarise(n = sum(Freq), .groups = "drop")
+  lev <- sizes %>% arrange(n) %>% pull(community) %>% as.character()
+  size_lookup <- setNames(sizes$n, as.character(sizes$community))
+  ct <- ct %>%
+    group_by(community) %>%
+    mutate(typ = if (sum(pct > 0) > 1) "Mieszana (współpraca międzyuczelniana)"
+                 else "Jednouczelniana") %>%
+    ungroup() %>%
+    mutate(
+      community = factor(as.character(community), levels = lev),
+      typ = factor(typ, levels = c("Jednouczelniana", "Mieszana (współpraca międzyuczelniana)")),
+      lab = ifelse(pct > 0, sprintf("%.0f%%", 100 * pct), "")
+    )
+  n_comm <- length(lev)
+  # Kolor wg typu spolecznosci: czerwien = jednouczelniana, turkus = mieszana
+  # (wspolpraca miedzy uczelniami). Intensywnosc (alpha) = udzial uczelni.
+  p5b <- ggplot(ct, aes(x = uczelnia, y = community)) +
+    geom_tile(data = function(d) dplyr::filter(d, pct > 0),
+              aes(fill = typ, alpha = pct), color = "grey70", linewidth = 0.3) +
+    # wyraziste poziome linie rozdzielajace spolecznosci (wiersze)
+    geom_hline(yintercept = seq(0.5, n_comm + 0.5, by = 1),
+               color = "grey45", linewidth = 0.5) +
+    geom_text(aes(label = lab), size = 4.4) +
+    scale_fill_manual(values = c(
+      "Jednouczelniana"                        = "#E64B35",
+      "Mieszana (współpraca międzyuczelniana)" = "#00A087"),
+      name = "Typ społeczności") +
+    scale_alpha(range = c(0.35, 1), guide = "none") +
+    scale_x_discrete(labels = ucz_labs) +
+    scale_y_discrete(labels = function(x) paste0("nr ", x, "  (", size_lookup[x], " osób)")) +
+    labs(title = "Zgodność społeczności współautorstwa z uczelnią",
+         subtitle = sprintf("każdy wiersz to jedna społeczność (od najmniejszej u dołu); wartość = udział danej uczelni\nARI = %.3f, NMI = %.3f",
+                            net$ari$ucz, net$nmi$ucz),
+         x = NULL, y = "Społeczność (liczba członków)") +
+    guides(fill = guide_legend(nrow = 2, override.aes = list(alpha = 1))) +
+    theme_praca +
+    theme(plot.title    = element_text(face = "bold", size = 18),
+          plot.subtitle = element_text(size = 13, color = "grey40", margin = margin(b = 8)),
+          axis.text.y   = element_text(size = 15),
+          axis.text.x   = element_text(size = 17, face = "bold"),
+          axis.title.y  = element_text(size = 15),
+          legend.position = "bottom",
+          legend.text   = element_text(size = 13),
+          legend.title  = element_text(size = 14))
 
-  ggsave(file.path(PLOT_DIR, "fig_05_siec.png"),
-         p5a + p5b + plot_layout(widths = c(1.4, 1)),
-         width = 14, height = 7, dpi = 300)
-  cat("[OK] fig_05_siec.png\n")
+  ggsave(file.path(PLOT_DIR, "fig_05b_spolecznosci.png"), p5b,
+         width = 10.5, height = 12, dpi = 300)
+  cat("[OK] fig_05b_spolecznosci.png\n")
 }
 
 # ============================================================

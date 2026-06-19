@@ -48,6 +48,7 @@ run_step("06_eda_anova.R", "06 EDA + testy")
 # ---- Warstwa 2: klastrowanie ----
 run_step("07_klastrowanie_pca.R", "07 klastrowanie k=2 + PCA")
 run_step("07b_klastrowanie_k3.R", "07b wariant k=3")
+run_step("07c_klastrowanie_per_uczelnia.R", "07c replikacja per uczelnia + ARI")
 
 # ---- Warstwa 3: modele ----
 run_step("08_modele_predykcja.R", "08 model ilosciowy (high_impact)")

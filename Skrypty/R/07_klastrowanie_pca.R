@@ -149,11 +149,9 @@ ggsave(file.path(PLOT_DIR, "06_centroidy_heatmap.png"), p_centroidy,
 hc <- hclust(dist(X), method = "ward.D2")
 df$klaster_ward <- factor(cutree(hc, k = k_opt))
 
-p_dend <- fviz_dend(hc, k = k_opt, cex = 0.4, color_labels_by_k = TRUE,
-                    rect = TRUE, show_labels = FALSE) +
-  labs(title = sprintf("Dendrogram Warda (k = %d)", k_opt))
-ggsave(file.path(PLOT_DIR, "07_dendrogram_ward.png"), p_dend,
-       width = 12, height = 6, dpi = 200)
+# Dendrogram (07_dendrogram_ward.png) usuniety z pracy 2026-06-18: malo czytelny
+# przy 449 lisciach; zgodnosc k-means vs Ward raportowana liczbowo (Cramer's V).
+# Obiekt hc nadal liczony - sluzy do ponizszego porownania i zapisu w rds.
 
 # Zgodność k-means vs Ward (cross-table + Cramer's V)
 ct_km_ward <- table(km = df$klaster, ward = df$klaster_ward)
