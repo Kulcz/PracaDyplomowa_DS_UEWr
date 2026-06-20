@@ -9,6 +9,7 @@ Modułowy zestaw scraperów Bazy Wiedzy / CRIS dla polskich uczelni przyrodniczy
 ```
 Skrypty/Python/
 ├── scrape.py              # entry point CLI (dispatch po --uni → parser.run(args))
+├── scrape_publications.py # pełne listy publikacji + rok wydania (warstwa dynamiki, skrypt R 12)
 └── scrapers/
     ├── __init__.py        # REGISTRY: 6 parserów (4 core Omega-PSIR + 2 historyczne)
     ├── base.py            # BaseParser (ABC) + OmegaPsirBaseParser + helpery
