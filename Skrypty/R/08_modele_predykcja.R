@@ -88,6 +88,12 @@ rec <- recipe(form_full, data = train) %>%
   step_zv(all_predictors())
 
 # ---------- 5. Model specs ----------
+# Asymetria liczby drzew RF vs XGB jest celowa:
+#  - RF: trees=500 na stalo. W lesie losowym wiecej drzew tylko stabilizuje
+#    usrednienie i nie przeucza, wiec liczby drzew sie nie stroi (500 wystarcza);
+#    stroimy mtry i min_n.
+#  - XGB: trees=tune(). W boostingu drzewa dokladaja sie sekwencyjnie, za duzo
+#    drzew = przeuczenie -> liczba drzew MUSI byc strojona razem z learn_rate.
 rf_spec <- rand_forest(mtry = tune(), trees = 500, min_n = tune()) %>%
   set_engine("ranger", importance = "permutation", num.threads = 4) %>%
   set_mode("classification")
@@ -113,7 +119,7 @@ res <- wf_set %>%
     "tune_grid",
     seed = 42,
     resamples = folds,
-    grid = 10,
+    grid = 10,            # siatka 10 losowych kombinacji hiperparametrow na model
     metrics = mset,
     control = ctrl,
     verbose = TRUE
@@ -142,6 +148,9 @@ pred_rf  <- predict(fit_rf,  test, type = "prob") %>%
 pred_xgb <- predict(fit_xgb, test, type = "prob") %>%
   bind_cols(predict(fit_xgb, test)) %>% bind_cols(test %>% select(high_impact))
 
+# event_level="second": "yes" jest DRUGIM poziomem faktora high_impact
+# (levels = no, yes) i to on jest KLASA POZYTYWNA. Bez tego yardstick liczylby
+# czulosc/swoistosc/AUC wzgledem "no" - czyli z odwrocona interpretacja metryk.
 test_metrics <- bind_rows(
   pred_rf  %>% mset(truth = high_impact, .pred_yes, estimate = .pred_class, event_level = "second") %>% mutate(model = "RF"),
   pred_xgb %>% mset(truth = high_impact, .pred_yes, estimate = .pred_class, event_level = "second") %>% mutate(model = "XGB")
@@ -205,6 +214,9 @@ ggsave(file.path(PLOT_DIR, "02_vip_rf.png"), p_vip_rf, width = 8, height = 6, dp
 
 # ---------- 11. SHAP dla XGB (natywnie) ----------
 # shapviz potrzebuje surowej macierzy X przepuszczonej przez recipe.
+# Ponowny prep() recipe jest tu BEZPIECZNY (brak data leakage): recipe ma tylko
+# kroki uczone na predyktorach (mediana, dummy, zv) i ZADNEGO kroku uczonego na
+# zmiennej celu, wiec re-prep nie przenosi informacji o targecie miedzy zbiorami.
 xgb_baked <- bake(prep(rec), new_data = test %>% select(-high_impact))
 xgb_engine <- extract_fit_engine(fit_xgb)
 sv <- shapviz(xgb_engine, X_pred = as.matrix(xgb_baked))

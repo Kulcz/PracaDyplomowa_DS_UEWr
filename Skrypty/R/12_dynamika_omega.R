@@ -77,6 +77,9 @@ ts <- ts %>% left_join(base_lvl, by = "uczelnia") %>%
 # ============================================================
 fit_cagr <- function(d, yvar = "pub_per_autor") {
   d <- d %>% filter(rok >= TREND_MIN, rok <= TREND_MAX, .data[[yvar]] > 0)
+  # Guard: prog minimalnej liczby punktow (>=4 lata) do sensownej regresji trendu.
+  # Wersja OpenAlex (11_*) nie ma tego zabezpieczenia - tu pojawia sie, bo katalog
+  # CRIS bywa rzadszy dla niektorych uczelni/kohort (np. wczesne lata UWM).
   if (nrow(d) < 4) return(tibble(cagr = NA, cagr_lo = NA, cagr_hi = NA, r2 = NA))
   m <- lm(log(d[[yvar]]) ~ d$rok)
   ci <- confint(m)[2, ]
@@ -87,6 +90,9 @@ cagr_tbl <- ts %>% group_by(uczelnia) %>% group_modify(~ fit_cagr(.x)) %>% ungro
 
 # recent vs early
 rec_early <- ts %>%
+  # Okno "recent" liczone DYNAMICZNIE: ostatnie 4 lata wzgledem przypietego YR_MAX
+  # ((YR_MAX-3):YR_MAX), inaczej niz sztywne 2021:2024 w 11_dynamika_rozwoju.R -
+  # przesuwa sie automatycznie przy zmianie roku referencyjnego.
   mutate(faza = case_when(rok %in% 2011:2014 ~ "early",
                           rok %in% (YR_MAX-3):YR_MAX ~ "recent", TRUE ~ NA)) %>%
   filter(!is.na(faza)) %>% group_by(uczelnia, faza) %>%

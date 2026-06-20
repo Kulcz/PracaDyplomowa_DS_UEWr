@@ -105,7 +105,10 @@ fit_cagr <- function(d) {
 }
 cagr_tbl <- ts %>% group_by(uczelnia) %>% group_modify(~ fit_cagr(.x)) %>% ungroup()
 
-# Recent vs early (odpornosciowo, bez modelu)
+# Recent vs early (odpornosciowo, bez modelu).
+# 2011:2014 (early) i 2021:2024 (recent) to dwa 4-letnie okna BRZEGOWE okresu
+# trendu - porownanie sredniej fazy poczatkowej do koncowej (magic numbers wpisane
+# na sztywno; w wersji Omega 12_* okno recent liczone dynamicznie od YR_MAX).
 rec_early <- ts %>%
   mutate(faza = case_when(publication_year %in% 2011:2014 ~ "early",
                           publication_year %in% 2021:2024 ~ "recent",

@@ -38,7 +38,7 @@ packages <- c(
   "writexl",
   "openxlsx",
 
-  # Statystyka klasyczna (etap EDA + ANOVA)
+  # Statystyka (etap EDA + porownania grupowe: Kruskal-Wallis/Dunn, ANOVA jako fallback)
   "emmeans",
   "multcomp",
   "multcompView",

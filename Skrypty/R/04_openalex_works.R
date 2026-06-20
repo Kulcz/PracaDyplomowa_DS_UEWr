@@ -42,6 +42,12 @@ fetch_works <- function(openalex_id) {
         filter = paste0("authorships.author.id:", openalex_id),
         `per-page` = PER_PAGE,
         cursor = cursor,
+        # select = lista pol zwracanych przez API. Ograniczamy ja do minimum
+        # potrzebnego dalej: id/rok/doi/title do identyfikacji pracy, authorships
+        # do sieci wspolautorstwa, cited_by_count do h-index. fwci (Field-Weighted
+        # Citation Impact) to pole SPECYFICZNE dla OpenAlex - znormalizowany
+        # wzgledem dziedziny i rocznika wskaznik cytowan, nie do policzenia lokalnie.
+        # Wezsze select = mniejszy payload i szybsza odpowiedz API.
         select = "id,publication_year,doi,title,authorships,cited_by_count,fwci",
         mailto = MAILTO
       ) |>
@@ -52,6 +58,10 @@ fetch_works <- function(openalex_id) {
     body <- resp_body_json(resp)
     works <- c(works, body$results)
     cursor <- body$meta$next_cursor
+    # Koniec cursor pagingu: OpenAlex zwraca next_cursor dopoki sa kolejne strony,
+    # a po ostatniej daje null. Stad is.null(cursor) = brak nastepnej strony.
+    # length(results)==0 to dodatkowy bezpiecznik na pusta ostatnia strone, by
+    # nie zapetlic sie na tym samym (potencjalnie niezmiennym) kursorze.
     if (is.null(cursor) || length(body$results) == 0) break
   }
   works
@@ -83,6 +93,9 @@ extract_publication_row <- function(w, anchor_id) {
     work_id          = w$id %||% NA_character_,
     publication_year = w$publication_year %||% NA_integer_,
     doi              = w$doi %||% NA_character_,
+    # Obciecie tytulu do 250 znakow (magic number): tytul sluzy tylko do podgladu/
+    # diagnostyki, a dlugie tytuly (zwlaszcza materialow konferencyjnych) bywaja
+    # bardzo dlugie i niepotrzebnie rozdymalyby plik publications.csv.
     title            = (w$title %||% NA_character_) |> substr(1, 250),
     n_authors        = length(auths),
     cited_by_count   = w$cited_by_count %||% NA_integer_,
@@ -95,6 +108,9 @@ extract_edge_rows <- function(w, anchor_id) {
   ids <- map_chr(auths, ~ .x$author$id %||% NA_character_) |> discard(is.na)
   if (length(ids) < 2) return(tibble())
   # nieskierowane krawędzie (anchor_id, coauthor) — agregacja do edge listy na końcu
+  # setdiff usuwa anchora z listy autorow pracy: bez tego powstalaby self-petla
+  # (anchor-anchor); zaraz przy okazji deduplikuje ewentualne powtorzenie anchora
+  # w authorships, zostawiajac tylko faktycznych wspolautorow.
   others <- setdiff(ids, anchor_id)
   if (length(others) == 0) return(tibble())
   tibble(

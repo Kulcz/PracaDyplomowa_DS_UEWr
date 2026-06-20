@@ -32,7 +32,10 @@ run_step <- function(path, label) {
 # ---- Warstwa 0: przygotowanie danych ----
 run_step("02_czyszczenie.R", "02 czyszczenie")
 
-# Kroki sieciowe (OpenAlex) - pomijane jesli artefakty juz sa
+# Kroki sieciowe (OpenAlex) - pomijane jesli artefakty juz sa.
+# match_ok i works_ok to DWA NIEZALEZNE warunki SKIP: krok 04 (works) moze sie
+# wykonac niezaleznie od istnienia artefaktu kroku 03 (match) i odwrotnie -
+# kazdy patrzy tylko na swoj wlasny plik wynikowy.
 match_ok <- file.exists(here("Dane", "openalex", "author_match.csv"))
 works_ok <- file.exists(here("Dane", "openalex", "publications.csv"))
 if (RUN_NETWORK || !match_ok) run_step("03_openalex_match.R", "03 match OpenAlex") else
@@ -42,8 +45,8 @@ if (RUN_NETWORK || !works_ok) run_step("04_openalex_works.R", "04 works OpenAlex
 
 run_step("05_features.R", "05 features (master)")
 
-# ---- Warstwa 1: EDA + statystyka ----
-run_step("06_eda_anova.R", "06 EDA + testy")
+# ---- Warstwa 1: EDA + porownania ----
+run_step("06_eda_porownania.R", "06 EDA + porownania (Kruskal-Wallis)")
 
 # ---- Warstwa 2: klastrowanie ----
 run_step("07_klastrowanie_pca.R", "07 klastrowanie k=2 + PCA")
@@ -71,8 +74,8 @@ source(here("Skrypty", "R", "validate_outputs.R"), local = new.env())
 
 # ---- Opcjonalny render pracy ----
 if (RENDER) {
-  cat("\n========== RENDER praca.qmd ==========\n")
-  system2("quarto", c("render", here("Praca", "praca.qmd")))
+  cat("\n========== RENDER praca_dyplomowa.qmd ==========\n")
+  system2("quarto", c("render", here("Praca_dyplomowa", "praca_dyplomowa.qmd")))
 }
 
 cat("\n[KONIEC] Pipeline 02-14 uruchomiony.\n")

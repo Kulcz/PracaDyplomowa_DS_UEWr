@@ -17,20 +17,29 @@ Dane/
 └── master/                # finalny dataset analityczny
 Skrypty/Python/
 ├── scrape.py              # entry point (dispatch po --uni → parser.run)
-└── scrapers/              # BaseParser + 4 parsery Omega-PSIR + 2 archiwalne (UP Poznań, UP Lublin)
+├── scrape_publications.py # pełne listy publikacji + rok (dynamika, skrypt 12)
+└── scrapers/              # BaseParser + 4 parsery Omega-PSIR (core) + 2 historyczne (UP Poznań, UP Lublin)
 Skrypty/R/
+├── 00_run_all.R               # orkiestrator: uruchamia 02–14 + walidację
 ├── 02_czyszczenie.R           # scalanie + standaryzacja + dedup
 ├── 03_openalex_match.R        # fuzzy match Omega-PSIR ↔ OpenAlex (po ROR + nazwisku)
 ├── 04_openalex_works.R        # publikacje + coauthors + FWCI + h-index z OA
-├── 05_features.R              # feature engineering
-├── 06_eda_anova.R             # warstwa 1: statystyka klasyczna (uczelnia × stanowisko)
-├── 07_klastrowanie_pca.R      # warstwa 2: typologia profili
-├── 08_modele_predykcja.R      # warstwa 3: RF + XGBoost + SHAP
+├── 05_features.R              # feature engineering (master dataset)
+├── 06_eda_porownania.R        # warstwa 1: EDA + porównania grupowe (Kruskal-Wallis; uczelnia × stanowisko)
+├── 07_klastrowanie_pca.R      # warstwa 2: typologia profili (k=2 + PCA)
+├── 07b_klastrowanie_k3.R      #   wariant eksploracyjny k=3
+├── 07c_klastrowanie_per_uczelnia.R  # replikacja per uczelnia + ARI
+├── 08_modele_predykcja.R      # warstwa 3: RF + XGBoost + SHAP (model ilościowy)
 ├── 09_sieci_wspolautorstwa.R  # warstwa 4: igraph + Louvain
-└── 10_wykresy_pracy.R         # finalne figury
+├── 10_wykresy_pracy.R         # finalne figury (fig_01–05)
+├── 11_dynamika_rozwoju.R      # warstwa dynamiki: tempo wzrostu (OpenAlex)
+├── 12_dynamika_omega.R        #   tempo wzrostu (Omega-PSIR, pełne listy publikacji)
+├── 13_fig_dynamika_porownanie.R  # figura porównania źródeł (fig_06)
+├── 14_model_jakosc.R          # model jakościowy (FWCI>1) + SHAP
+└── validate_outputs.R         # kontrola liczb pipeline vs praca
 output/                    # processed RDS, model results
 Wykresy/                   # PNG do pracy
-Praca/                     # praca.qmd + referencje.bib + praca.pdf
+Praca_dyplomowa/           # praca_dyplomowa.qmd + referencje.bib + praca_dyplomowa.pdf/docx
 ```
 
 ## Pierwsze uruchomienie

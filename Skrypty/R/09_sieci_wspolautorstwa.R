@@ -41,7 +41,12 @@ PLOT_DIR <- here("Wykresy", "sieci");    dir_create(PLOT_DIR)
 OUT_DIR  <- here("output");                dir_create(OUT_DIR)
 DASH_DIR <- here("Dashboard");             dir_create(DASH_DIR)
 
-EDGE_WEIGHT_MIN <- 2     # wycina przypadkowe wspolne pojedyncze publikacje
+# EDGE_WEIGHT_MIN: minimalna liczba wspolnych publikacji, by krawedz weszla do
+# sieci. =2 wycina przypadkowe wspolne pojedyncze publikacje. PARAMETR WRAZLIWY:
+# wartosc wprost steruje rozmiarem sieci i wielkoscia giant component - podniesienie
+# progu rzednie graf i moze rozbic skladowa glowna; przy analizach wrazliwosci
+# warto sprawdzic alternatywy (np. 1 lub 3).
+EDGE_WEIGHT_MIN <- 2
 
 # ---------- 1. Węzły: master + openalex_id z author_match ----------
 # author_match linkuje author_id (Omega-PSIR) <-> openalex_id; bierzemy
@@ -104,6 +109,12 @@ print(centr_df %>% slice_max(degree, n = 20) %>%
         select(profil, uczelnia, stanowisko, degree, betweenness))
 
 # ---------- 5. Community detection (Louvain) ----------
+# Louvain bywa NIEDETERMINISTYCZNY - wynik zalezy od kolejnosci przetwarzania
+# wezlow, a set.seed nie kontroluje w pelni wewnetrznej heurystyki C w igraph.
+# W praktyce sama WARTOSC modularnosci (Q) jest stabilna miedzy uruchomieniami;
+# moga sie nieznacznie roznic etykiety/przydzialy pojedynczych wezlow na granicach
+# spolecznosci. Uwaga: tu wagi (weight) SA uzyte - silniejsza wspolpraca mocniej
+# wiaze wezly w jedna spolecznosc.
 louvain <- cluster_louvain(g_main, weights = E(g_main)$weight)
 V(g_main)$community <- membership(louvain)
 mod <- modularity(louvain)
@@ -208,6 +219,9 @@ ggsave(file.path(PLOT_DIR, "04_siec_uczelnia.png"),
 
 # ---------- 9. Statystyki globalne + degree distribution ----------
 deg_df <- tibble(degree = V(g_main)$degree)
+# Skala log-log sluzy TYLKO wizualizacji ksztaltu rozkladu (ciezki ogon, kilka
+# silnie polaczonych hubow). NIE jest to formalne dopasowanie rozkladu potegowego
+# (brak estymacji wykladnika/testu) - swiadomie unikamy nadinterpretacji "scale-free".
 p_deg <- ggplot(deg_df, aes(x = degree)) +
   geom_histogram(bins = 40, fill = "#3C5488") +
   scale_x_log10() + scale_y_log10() +
@@ -254,6 +268,11 @@ saveRDS(
       density = edge_density(g_main),
       transitivity = transitivity(g_main, type = "global"),
       mean_degree = mean(V(g_main)$degree),
+      # weights=NA -> srednica TOPOLOGICZNA (najdluzsza najkrotsza sciezka liczona
+      # w liczbie krawedzi, wagi ignorowane). Tu interesuje nas "ile skokow
+      # wspolautorstwa" dzieli najodleglejsze wezly, a nie suma wag. W Louvain
+      # (krok 5) wagi sa uzyte, bo tam silniejsza wspolpraca ma laczyc spolecznosci;
+      # to inne pytanie badawcze niz odleglosc topologiczna.
       diameter = diameter(g_main, weights = NA)
     )
   ),

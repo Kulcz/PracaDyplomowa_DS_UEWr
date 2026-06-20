@@ -128,12 +128,20 @@ def scrape_author(page: Page, uni: str, author_id: str) -> list[dict]:
     try:
         page.goto(url, timeout=40_000, wait_until="domcontentloaded")
     except PWTimeout:
+        # SENTINEL rok = -1: blad/timeout pobrania strony (odrozniamy go od rok = 0,
+        # ktory ponizej oznacza autora bez publikacji). Po stronie R te statusy
+        # mozna odfiltrowac/zliczyc oddzielnie (nie sa to prawdziwe lata).
         return [{"uczelnia": uni, "author_id": author_id, "rok": -1,
                  "n_pub": 0, "sum_pkt": None, "capped": False}]
     time.sleep(WAIT[uni])
 
     all_entries: list[tuple[int, float | None]] = []
     capped = False
+    # Konstrukcja for...else (rzadka w Pythonie): blok 'else' wykonuje sie TYLKO
+    # gdy petla zakonczyla sie normalnie, BEZ break - czyli tu gdy przejrzano
+    # wszystkie MAX_PAGES stron nie napotykajac konca paginacji (wynik moze byc
+    # uciety -> capped = True). Jesli wyszlismy przez break (koniec stron), else sie
+    # pomija.
     for p in range(MAX_PAGES):
         html = page.content()
         entries, _ = parse_page(html)
@@ -163,6 +171,9 @@ def scrape_author(page: Page, uni: str, author_id: str) -> list[dict]:
                      "n_pub": n, "sum_pkt": spkt if has_pkt else None,
                      "capped": capped})
     if not rows:  # autor bez publikacji w zakresie
+        # SENTINEL rok = 0: profil pobrany poprawnie, ale 0 publikacji w zakresie lat
+        # (rozne od rok = -1, ktore oznacza blad/timeout pobrania). Zachowujemy
+        # wiersz, zeby autor wszedl do denominatora "n_autorow" mimo zerowego outputu.
         rows = [{"uczelnia": uni, "author_id": author_id, "rok": 0,
                  "n_pub": 0, "sum_pkt": None, "capped": capped}]
     return rows

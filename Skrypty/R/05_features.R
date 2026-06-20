@@ -16,6 +16,9 @@ profiles <- read_csv(here("Dane", "master", "profiles_clean.csv"), show_col_type
 # ---------- 1. Cechy wyprowadzone z Omega-PSIR ----------
 features <- profiles %>%
   mutate(
+    # pmax(..., 1) chroni przed dzieleniem przez 0 (osoby z n_pub=0 lub
+    # sum_MEiN=0). Mianownik wymuszony na min. 1 => dla n_pub=0 wynik = sam
+    # licznik (a nie Inf/NaN), co dla zerowego dorobku daje 0 i nie psuje agregatow.
     if_per_pub   = sum_IF   / pmax(n_pub, 1),
     mein_per_pub = sum_MEiN / pmax(n_pub, 1),
     if_to_mein   = sum_IF   / pmax(sum_MEiN, 1)   # proxy internacjonalizacji
@@ -78,6 +81,9 @@ if (file.exists(match_file) && file.exists(pubs_file)) {
   }
 
   # Flaga: czy autor w top 10% sredniego FWCI w probie
+  # UWAGA: prog (kwantyl 0.9) liczony jest W OBREBIE TEJ PROBY (462 osob z 4
+  # uczelni), wiec fwci_top10_pct = "top 10% wzgledem kolegow z proby", a NIE
+  # globalny benchmark OpenAlex (gdzie FWCI=1 to srednia swiatowa w dziedzinie).
   thr_fwci <- quantile(oa_author$mean_fwci, 0.9, na.rm = TRUE)
   oa_author <- oa_author %>%
     mutate(fwci_top10_pct = !is.na(mean_fwci) & mean_fwci >= thr_fwci)
@@ -102,11 +108,15 @@ if (file.exists(match_file) && file.exists(pubs_file)) {
 # FINAL 2026-05-26: 1 dyscyplina (rolnictwo i ogrodnictwo), 4 uczelnie Omega-PSIR
 # (UPWr A, SGGW A, URK A, UWM B+). Czynnik dyscyplina usuniety - role w analizie
 # przejmuje `stanowisko` (gradient kariery). Kategoria MEiN (A/B+) jako zmienna
-# kontrolna w 06_eda_anova.
+# kontrolna w 06_eda_porownania.
 features <- features %>%
   mutate(
     uczelnia    = factor(uczelnia, levels = c("upwr", "sggw", "urk", "uwm")),
     kategoria   = factor(ifelse(uczelnia == "uwm", "B+", "A"), levels = c("A", "B+")),
+    # Kolejnosc poziomow stanowisko jest PORZADKOWA (gradient kariery:
+    # asystent < adiunkt < profesor uczelni < profesor). Load-bearing: dalsze
+    # analizy (kontrasty, wykresy, gradient w modelach) zakladaja te kolejnosc,
+    # wiec nie zmieniac jej na alfabetyczna.
     stanowisko  = factor(stanowisko, levels = c("asystent", "adiunkt", "profesor uczelni", "profesor"))
   )
 

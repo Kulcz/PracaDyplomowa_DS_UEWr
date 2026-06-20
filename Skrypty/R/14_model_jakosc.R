@@ -52,6 +52,10 @@ career <- pubs %>%
   filter(!is.na(publication_year), publication_year >= 1950, publication_year <= REF_YEAR) %>%
   group_by(anchor_author_id) %>%
   summarise(start = floor(quantile(publication_year, 0.05, names = FALSE)), .groups = "drop") %>%
+  # Clamp wieku akademickiego do przedzialu 0-60 lat:
+  #  - pmax(...,0L): nie ma ujemnego stazu (zabezpieczenie na publikacje "z przyszlosci"),
+  #  - pmin(...,60L): cap 60 odcina artefakty - blednie przypisana w OpenAlex bardzo
+  #    stara pierwsza publikacja zawyzalaby staz do nierealnych wartosci.
   mutate(wiek_akad = pmin(pmax(REF_YEAR - start, 0L), 60L))
 
 # author_id (Omega) <-> openalex_id
@@ -64,6 +68,9 @@ age_by_author <- match %>%
 df <- df %>% left_join(age_by_author, by = "author_id")
 
 # ---------- 2. Target: high_quality = mean_fwci > 1.0 ----------
+# Prog 1.0 nie jest arbitralny: FWCI=1.0 to DEFINICYJNA wartosc odniesienia
+# (sredni swiatowy poziom cytowan w danej dziedzinie/roku/typie pracy). Zatem
+# mean_fwci > 1.0 = dorobek cytowany powyzej sredniej swiatowej.
 df_q <- df %>%
   filter(!is.na(mean_fwci)) %>%
   mutate(high_quality = factor(mean_fwci > 1.0,
@@ -95,6 +102,10 @@ rec <- recipe(form_full, data = train) %>%
   step_zv(all_predictors())
 
 # ---------- 6. Modele ----------
+# Ta sama asymetria RF/XGB co w 08: RF ma trees=500 na stalo (wiecej drzew tylko
+# stabilizuje usrednienie, nie przeucza - stroimy mtry/min_n), XGB ma trees=tune()
+# (boosting sekwencyjny przeucza przy zbyt wielu drzewach - liczbe drzew stroimy
+# razem z learn_rate).
 rf_spec <- rand_forest(mtry = tune(), trees = 500, min_n = tune()) %>%
   set_engine("ranger", importance = "permutation", num.threads = 4) %>%
   set_mode("classification")
@@ -108,6 +119,8 @@ ctrl <- control_grid(save_pred = TRUE, save_workflow = TRUE, verbose = FALSE)
 mset <- metric_set(roc_auc, accuracy, sens, spec, j_index)
 
 cat("\n=== Tuning 5-fold CV (RF + XGB) ===\n")
+# verbose=FALSE: cichy tuning (08 ma tu verbose=TRUE - drobna, swiadoma
+# niespojnosc, bez wplywu na wyniki). grid=10 jak w 08.
 res <- wf_set %>% workflow_map("tune_grid", seed = 42, resamples = folds,
                                grid = 10, metrics = mset, control = ctrl, verbose = FALSE)
 

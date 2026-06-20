@@ -190,6 +190,12 @@ def extract_metric_value(page_txt: str, label_regex: str,
                          num_regex: str = r"[0-9]+(?:[\.,][0-9]+)?",
                          max_gap: int = 120) -> str | None:
     """Fallback: etykieta i wartosc w jednej linii/bloku tekstu."""
+    # KOLEJNOSC wariantow = PRIORYTET dopasowania (zwracany pierwszy trafiony).
+    # Od najbardziej do najmniej specyficznego:
+    #  1) etykieta tuz przed wartoscia (z opcjonalnym :=)   - najpewniejsze
+    #  2) etykieta przed wartoscia w odleglosci do max_gap
+    #  3) wartosc tuz przed etykieta (uklad odwrocony)
+    #  4) wartosc przed etykieta w odleglosci do max_gap    - najslabsze
     patterns = [
         rf"(?is)(?:{label_regex})\s*[:=]?\s*({num_regex})",
         rf"(?is)(?:{label_regex}).{{0,{max_gap}}}?({num_regex})",
@@ -430,6 +436,9 @@ class OmegaPsirBaseParser(BaseParser):
 
         tytul = self.get_tytul(soup)
         profil = clean_profile_name(self.get_profile_name(soup))
+        # Deduplikacja: gdy 'profil' zaczyna sie od 'tytul', obcinamy powtorzony
+        # prefiks (Omega-PSIR czasem skleja tytul z nazwiskiem dwukrotnie, np.
+        # "prof. dr Jan Kowalski Jan Kowalski" -> profil = "Jan Kowalski").
         if tytul and profil and profil.lower().startswith(tytul.lower()):
             profil = squish(profil[len(tytul):])
 

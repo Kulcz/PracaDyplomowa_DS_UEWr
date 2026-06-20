@@ -85,7 +85,7 @@ Standardowo: auto-sync przez `spa`, brak named commitów bez wyraźnej prośby. 
 | 2 | Scraping 4 uczelni × 1 dyscyplina | ✓ |
 | 3 | Czyszczenie + matching OpenAlex (ROR-y, ORCID) | bieżący |
 | 4 | OpenAlex Works (FWCI + h-index policzone + sieci współautorstwa) | |
-| 5 | EDA + 2-czynnikowa ANOVA (uczelnia × stanowisko, kategoria jako kontrola) | |
+| 5 | EDA + 2-czynnikowe porównania uczelnia × stanowisko (Kruskal-Wallis+Dunn, bo założenia ANOVA naruszone; kategoria jako kontrola) | |
 | 6 | Klastrowanie + PCA (typologia profili bibliometrycznych) | |
 | 7 | Modele predykcyjne + SHAP | |
 | 8-9 | Sieci współautorstwa (igraph + Louvain) | |

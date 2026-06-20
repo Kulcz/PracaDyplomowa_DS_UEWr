@@ -19,6 +19,11 @@ chk <- function(label, actual, expected, tol = 0) {
   invisible(ok)
 }
 
+# UWAGA - twarde wartosci oczekiwane ponizej (462x30, 367, 449, 265, 0.856, 0.639)
+# to liczby RAPORTOWANE W PRACY (Tabela 1, opis matchu, klastrowania, sieci, modelu
+# jakosci). Sluza jako "test zgodnosci" artefaktow z tekstem pracy. Po kazdym
+# re-runie pipeline'u, ktory zmienia te liczby (nowy scraping, inny prog matchu,
+# inne k klastrow), nalezy ZAKTUALIZOWAC zarowno te wartosci, jak i tekst pracy.
 # 1) Master dataset: 462 x 30
 pf <- read_csv(here("Dane", "master", "profiles_features.csv"), show_col_types = FALSE)
 chk("profiles_features rows", nrow(pf), 462)

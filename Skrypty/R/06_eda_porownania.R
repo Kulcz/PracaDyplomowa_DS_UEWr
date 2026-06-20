@@ -1,7 +1,16 @@
 # LTeX: enabled=false
 # ============================================================
-# 06 - EDA + statystyka klasyczna (warstwa 1 z planu DS)
-# 2-czynnikowa analiza: uczelnia x stanowisko, z auto-wyborem testu.
+# 06 - EDA + porownania grupowe (warstwa 1 z planu DS)
+# 2-czynnikowy uklad: uczelnia x stanowisko, z AUTO-WYBOREM testu per metryka
+# (parametryczny ANOVA+Tukey vs nieparametryczny Kruskal-Wallis+Dunn,
+#  decyzja wg diagnostyki zalozen: Shapiro-Wilk + Levene).
+#
+# WYNIK W TEJ PROBIE: wszystkie 6 metryk naruszylo zalozenia parametryczne,
+# wiec dla KAZDEJ odpalila sie galaz NIEPARAMETRYCZNA (Kruskal-Wallis + Dunn-
+# Bonferroni). Galaz ANOVA pozostaje w kodzie jako fallback, ale NIE zostala
+# uzyta (anova_tables konczy jako pusta lista). Stad nazwa pliku zmieniona
+# z 06_eda_anova -> 06_eda_porownania (2026-06-20), by nie sugerowac, ze
+# metoda byla ANOVA.
 #
 # Decyzje metodyczne (2026-06-13):
 #  - Czynniki: uczelnia (4) x stanowisko (3: adiunkt / profesor uczelni /
@@ -179,6 +188,10 @@ for (m in metryki) {
   df_m$komorka <- interaction(df_m$uczelnia, df_m$stanowisko, drop = TRUE)
   metryka_uczelnie[[m]] <- levels(df_m$uczelnia)
 
+  # Progi minimalnej estymowalnosci modelu z interakcja: n<20 to za malo obserwacji
+  # na 2-czynnikowa ANOVE, a <4 niepustych komorek interakcji oznacza, ze interakcji
+  # uczelnia x stanowisko nie da sie sensownie oszacowac (potrzeba >=2 poziomow
+  # kazdego czynnika => co najmniej 2x2=4 komorki). Ponizej progow metryka pomijana.
   if (nrow(df_m) < 20 ||
       nlevels(df_m$uczelnia) < 2 || nlevels(df_m$stanowisko) < 2 ||
       nlevels(df_m$komorka) < 4) {
@@ -196,6 +209,10 @@ for (m in metryki) {
               paste(levels(df_m$uczelnia), collapse = ", ")))
 
   # Shapiro-Wilk na resztach (probka, jesli n > 5000 R wywala blad)
+  # UWAGA: sample() jest tu CELOWO bez set.seed - losowanie podproby jest
+  # NIEDETERMINISTYCZNE, wiec p-wartosc S-W moze sie nieznacznie wahac miedzy
+  # uruchomieniami (przy n>5000). Nie dodawac seeda: to zmienialoby losowana
+  # podprobe, a w tej probie n nie przekracza 5000, wiec galaz i tak nie wchodzi.
   res <- residuals(mod)
   res_sample <- if (length(res) > 5000) sample(res, 5000) else res
   sw <- shapiro.test(res_sample)
@@ -270,6 +287,9 @@ for (m in metryki) {
       filter(uczelnia == u, !is.na(.data[[m]]), !is.na(stanowisko)) %>%
       mutate(stanowisko = droplevels(stanowisko))
     levs <- levels(d$stanowisko)
+    # Prog n>=6: porownujemy do 3 stanowisk w obrebie 1 uczelni, wiec minimum
+    # ~2 obserwacje na grupe, by Dunn mial sens. Nizszy niz w 4c (8), bo tu
+    # grup jest co najwyzej 3 (stanowiska), a w 4c az 4 (uczelnie).
     if (length(levs) < 2 || nrow(d) < 6) next
 
     if (length(levs) == 2) {
@@ -307,6 +327,9 @@ for (m in metryki) {
       filter(stanowisko == s, !is.na(.data[[m]]), !is.na(uczelnia)) %>%
       mutate(uczelnia = droplevels(uczelnia))
     levs <- levels(d$uczelnia)
+    # Prog n>=8 (wyzszy niz 6 w 4b): tu porownujemy do 4 uczelni w obrebie
+    # 1 stanowiska, wiec wiecej grup => potrzeba wiecej obserwacji (min. ~2 na
+    # grupe), zeby Dunn-Bonferroni na 4 poziomach byl estymowalny.
     if (length(levs) < 2 || nrow(d) < 8) next
 
     dn <- d %>% dunn_test(as.formula(paste(m, "~ uczelnia")),
@@ -341,6 +364,9 @@ whisker_vals <- df_box %>%
     q75  = quantile(wartosc, 0.75, na.rm = TRUE),
     iqr  = IQR(wartosc, na.rm = TRUE),
     vmax = max(wartosc, na.rm = TRUE),
+    # Pozycja Y etykiety CLD = gorny was boxplotu wg reguly 1.5xIQR (q75+1.5*IQR),
+    # ale przyciety przez pmin do faktycznego maksimum (vmax) - was nie rysuje
+    # sie wyzej niz najwyzsza obserwacja, wiec litera siada dokladnie nad waska.
     y_w  = pmin(q75 + 1.5 * iqr, vmax),
     .groups = "drop"
   )

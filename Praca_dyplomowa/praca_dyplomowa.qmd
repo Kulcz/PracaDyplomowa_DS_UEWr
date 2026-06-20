@@ -2,7 +2,7 @@
 title: "Analiza bibliometryczna naukowców dyscypliny rolnictwo i ogrodnictwo w polskich uczelniach przyrodniczych z systemem Omega-PSIR"
 subtitle: "Praca dyplomowa: studia podyplomowe Data Science"
 author: "Grzegorz Kulczycki"
-date: today
+date: "2026-06-20"
 format:
   pdf:
     documentclass: article
@@ -106,7 +106,7 @@ Pominięto Uniwersytet Przyrodniczy w Poznaniu (kategoria A, DSpace) z powodu ni
 
 **2.** W jakim stopniu stanowisko naukowe i uczelnia różnicują ich wskaźniki bibliometryczne?
 
-**3.** Czy wysoki impact można przewidywać na podstawie cech strukturalnych, takich jak stanowisko, uczelnia, liczba publikacji i współpraca naukowa?
+**3.** Czy da się przewidzieć wysoki wpływ dorobku naukowca na podstawie jego stanowiska, uczelni, liczby publikacji i współpracy z innymi autorami?
 
 **4.** Czy sieć współautorstwa ma charakter głównie wewnątrzuczelniany, czy widoczne są także wspólnoty międzyuczelniane?
 
@@ -118,7 +118,7 @@ Pominięto Uniwersytet Przyrodniczy w Poznaniu (kategoria A, DSpace) z powodu ni
 
 - **OpenAlex API** [@openalex2022], źródło uzupełniające, dostarcza danych, których nie ma w Omega-PSIR: FWCI (Field-Weighted Citation Impact), czyli znormalizowany dziedzinowo wskaźnik cytowań odnoszący liczbę cytowań pracy do światowej średniej w jej dziedzinie (wartość 1,0 oznacza poziom średniej światowej, a wartości powyżej 1,0 wynik ją przewyższający), którego nie da się policzyć z danych jednej uczelni [@waltman2016review]; liczbę cytowań publikacji; listę współautorów potrzebną do analizy sieci współpracy; oraz niezależne porównanie (kontrolę jakości) metryk pobranych z Omega-PSIR.
 
-W pracy analizowano zagregowane wskaźniki bibliometryczne przypisane do poszczególnych autorów, takie jak sumaryczny IF, sumaryczna punktacja MEiN, h-index i liczba publikacji.
+Dla każdego autora analizowano podstawowe wskaźniki bibliometryczne, takie jak sumaryczny IF, punktacja MEiN, h-index i liczba publikacji.
 
 Należy zaznaczyć, że wskaźniki te służą jako przybliżenie indywidualnego dorobku naukowego, a nie jako odtworzenie oficjalnej ewaluacji jakości działalności naukowej; ostrożność w traktowaniu pojedynczych wskaźników jako miar jakości naukowej jest zgodna z zasadami odpowiedzialnej naukometrii [@hicksBibliometricsLeidenManifesto2015]. Oficjalna ewaluacja prowadzona jest na poziomie uczelni i dyscypliny, uwzględnia udziały jednostkowe autorów oraz limity slotów publikacyjnych (3-krotność liczby N), a jej podstawą nie jest Impact Factor, lecz punktacja ministerialna czasopism [@rozp_ewaluacja2022].
 
@@ -169,7 +169,13 @@ Wykorzystane dane pochodzą z publicznie dostępnych uczelnianych Baz Wiedzy (sy
 
 ## Charakterystyka próby
 
-Po scrapingu czterech instancji Omega-PSIR i czyszczeniu danych (usunięcie rekordów niebędących pracownikami naukowymi) próba liczyła **462 osoby**: UPWr 118, SGGW 112, URK 162, UWM 70. Dopasowanie do bazy OpenAlex (po identyfikatorze ROR uczelni i nazwisku, dopasowanie rozmyte miarą Jaro-Winklera ≥ 0,85 [@winkler1990]) powiodło się dla **367 osób (79,4 %)**: UPWr 79,7 %, SGGW 89,3 %, URK 77,8 %, UWM 67,1 %. Dopasowanie wymagało normalizacji nazw uwzględniającej charakterystyczny dla URK sufiks afiliacyjny po przecinku (np. „Jan Kowalski, prof. URK"), którego nieusunięcie zaniżało początkowo dopasowanie tej uczelni do 47,5 %; po korekcie poziom URK zrównał się z pozostałymi. Najsłabiej dopasowany pozostaje UWM (67,1 %), co przekłada się na lekkie niedoreprezentowanie tej uczelni w analizach opartych na metrykach OpenAlex (FWCI, sieci współautorstwa). Liczbę fałszywych dopasowań ograniczał filtr instytucjonalny: kandydatów z OpenAlex zawężano do autorów powiązanych z identyfikatorem ROR danej uczelni, więc dopasowanie nazwiska odbywało się wyłącznie w obrębie właściwej afiliacji.
+Po scrapingu czterech instancji Omega-PSIR i czyszczeniu danych (usunięcie rekordów niebędących pracownikami naukowymi) próba liczyła **462 osoby**: UPWr 118, SGGW 112, URK 162, UWM 70.
+
+Autorów z danych Omega-PSIR dopasowano do bazy OpenAlex na podstawie uczelni i podobieństwa nazwiska. Najpierw wyszukiwano tylko osoby powiązane z daną uczelnią, korzystając z jej identyfikatora ROR, a następnie porównywano nazwiska metodą Jaro-Winklera [@winkler1990]. Za dopasowanie uznawano wynik co najmniej 0,85.
+
+Dopasowanie udało się dla **367 z 462 osób (79,4 %)**. Najwyższy odsetek uzyskano dla SGGW (89,3 %), następnie dla UPWr (79,7 %) i URK (77,8 %). Najniższy wynik miało UWM (67,1 %), dlatego ta uczelnia jest nieco słabiej reprezentowana w analizach opartych na danych OpenAlex, takich jak FWCI i sieci współautorstwa.
+
+W przypadku URK potrzebna była dodatkowa korekta nazw. W tej bazie przy części nazwisk pojawiał się dopisek po przecinku, np. „Jan Kowalski, prof. URK". Przed jego usunięciem skuteczność dopasowania dla URK wynosiła tylko 47,5 %; po oczyszczeniu nazw wzrosła do 77,8 %. Zastosowanie filtra uczelni ograniczało ryzyko błędnych dopasowań, ponieważ nazwiska porównywano tylko wśród autorów związanych z właściwą instytucją.
 
 Zbiorczą charakterystykę próby przedstawia @tbl-proba: liczebność, kategorię ewaluacyjną MEiN, rozkład stanowisk, odsetek dopasowania do OpenAlex oraz mediany liczby publikacji, sumarycznego Impact Factor i h-index WoS, liczone na pełnej liczebności każdej uczelni. Stanowisko nieprzypisane dla 16 osób (UPWr 13, URK 3) ujęto wyłącznie w kolumnie n.
 
@@ -206,11 +212,11 @@ ft <- set_table_properties(ft, layout = "fixed")
 ft
 ```
 
-W analizie 2-czynnikowej uwzględniono 420 osób posiadających określone stanowisko z trzech kategorii (adiunkt, profesor uczelni, profesor); rozkład w układzie uczelnia × stanowisko przedstawia @tbl-proba, a najmniejsza komórka liczy 13 osób, co umożliwia estymację członu interakcji.
+W analizie porównującej uczelnie i stanowiska (analizie dwuczynnikowej) uwzględniono 420 osób z przypisanym jednym z trzech stanowisk: adiunkt, profesor uczelni lub profesor. Rozkład liczebności pokazano w @tbl-proba. Najmniejsza grupa liczyła 13 osób, więc możliwe było porównanie stanowisk między uczelniami.
 
 ## Struktura korelacyjna wskaźników (pytanie 2)
 
-Wskaźniki bibliometryczne układają się wzdłuż dwóch słabo skorelowanych osi, których strukturę przedstawia @fig-korelacje. Pierwszą jest **wielkość dorobku**, w obrębie której najściślej powiązane są trzy metryki skumulowanego impactu: h-index WoS, sumaryczny IF i punktacja MEiN (wzajemne korelacje 0,82–0,95). Korelacja sumarycznego IF z punktacją MEiN wynosi r = 0,95; punktacja ministerialna jest niemal liniową funkcją sumarycznego IF, co potwierdza, że oba wskaźniki mierzą zbliżony konstrukt. **Liczba publikacji** należy do tej samej osi wielkości, lecz wiąże się z metrykami impactu jedynie umiarkowanie (r = 0,36–0,44), odzwierciedla bowiem objętość dorobku, a nie jego skumulowane oddziaływanie. Drugą, w przybliżeniu ortogonalną osią jest **intensywność jakościowa** (IF na publikację), słabo skorelowana z metrykami wielkości; jej ujemny związek z liczbą publikacji (r = -0,37) wskazuje na klasyczny kompromis ilość–jakość: naukowcy o największej produktywności mają przeciętnie niższy IF przypadający na pojedynczą pracę.
+Wskaźniki bibliometryczne układają się wzdłuż dwóch słabo skorelowanych osi, których strukturę przedstawia @fig-korelacje. Pierwszą jest **wielkość dorobku**, w obrębie której najściślej powiązane są trzy metryki skumulowanego impactu: h-index WoS, sumaryczny IF i punktacja MEiN (wzajemne korelacje 0,82–0,95). Korelacja sumarycznego IF z punktacją MEiN wynosi r = 0,95; punktacja ministerialna jest niemal liniową funkcją sumarycznego IF, co potwierdza, że oba wskaźniki mierzą zbliżony konstrukt. **Liczba publikacji** należy do tej samej osi wielkości, lecz wiąże się z metrykami impactu jedynie umiarkowanie (r = 0,36–0,44), odzwierciedla bowiem objętość dorobku, a nie jego skumulowane oddziaływanie. Drugą, prawie niezależną osią jest jakość pojedynczej publikacji, mierzona IF na publikację. Wskaźnik ten jest słabo związany z ogólną wielkością dorobku. Jego ujemna korelacja z liczbą publikacji (r = -0,37) oznacza, że osoby publikujące najwięcej mają przeciętnie niższy IF przypadający na jedną publikację. Widać więc kompromis między liczbą publikacji a ich przeciętną jakością.
 
 ![Macierz korelacji Pearsona sześciu wskaźników bibliometrycznych. Wyraźny blok metryk skumulowanego impactu (h-index, sumaryczny IF, punktacja MEiN; r 0,82–0,95) kontrastuje z liczbą publikacji, powiązaną z nim tylko umiarkowanie (r 0,36–0,44), oraz z IF na publikację, tworzącym odrębną oś jakości, ujemnie skorelowaną z liczbą publikacji.](../Wykresy/praca/fig_01b_korelacje.png){#fig-korelacje width=100%}
 
@@ -218,7 +224,7 @@ Wskaźniki bibliometryczne układają się wzdłuż dwóch słabo skorelowanych 
 
 Dla sześciu analizowanych wskaźników sprawdzono, czy można zastosować klasyczne testy parametryczne. Testy Shapiro-Wilka i Levene'a pokazały jednak, że dane nie spełniają ich założeń: rozkłady nie są normalne, a wariancje w grupach nie są równe. Z tego powodu zastosowano testy nieparametryczne: test Kruskala-Wallisa oraz, w przypadku istotnych różnic, test post-hoc Dunna z korektą Bonferroniego.
 
-Decyzję tę uzasadnia także kształt rozkładów, który przedstawia @fig-rozklady. Większość wskaźników bibliometrycznych ma rozkłady silnie prawoskośne: wiele osób ma niskie lub umiarkowane wartości, a niewielka grupa osiąga bardzo wysokie wyniki. Wyjątkiem jest wskaźnik IF / MEiN, którego rozkład jest bardziej symetryczny, ale także dla niego testy wykazały naruszenie założeń testów parametrycznych.
+Decyzję tę uzasadnia także kształt rozkładów, który przedstawia @fig-rozklady. Większość wskaźników bibliometrycznych ma rozkłady silnie prawoskośne: wiele osób ma niskie lub umiarkowane wartości, a niewielka grupa osiąga bardzo wysokie wyniki. Te wysokie wartości odpowiadają jednak realnemu dorobkowi nielicznych, wybitnych badaczy, a nie błędom w danych, dlatego nie usuwano ich jako wartości odstających. Zastosowane testy rangowe są na takie skrajne obserwacje odporne, więc analiza nie wymagała przycinania danych. Wyjątkiem jest wskaźnik IF / MEiN, którego rozkład jest bardziej symetryczny, ale także dla niego testy wykazały naruszenie założeń testów parametrycznych.
 
 ![Rozkłady (gęstości jądrowe) sześciu wskaźników bibliometrycznych w całej próbie. Przewaga długich prawych ogonów i położenie mediany (czerwona linia przerywana) poniżej średniej potwierdzają silną prawoskośność, uzasadniającą wybór testów nieparametrycznych.](../Wykresy/praca/fig_01c_rozklady.png){#fig-rozklady width=100%}
 
@@ -312,7 +318,7 @@ Wyniki wskazują, że podział na grupę badaczy o wysokim dorobku publikacyjnym
 
 ```{r}
 #| label: tbl-replikacja
-#| tbl-cap: "Replikacja typologii w obrębie uczelni: centroidy klastra „wysoki dorobek” (k = 2 wymuszone, z-score na skali puli) i zgodność z rozwiązaniem na puli (ARI)."
+#| tbl-cap: "Porównanie klastra „wysokiego dorobku” między uczelniami (k = 2, zgodność mierzona ARI)."
 df <- data.frame(
   Uczelnia = c("UPWr", "SGGW", "URK", "UWM", "Pula"),
   hindex   = c("0,73", "1,33", "1,16", "2,53", "1,35"),
@@ -442,7 +448,7 @@ Stanowisko i uczelnia miały znacznie mniejsze znaczenie dla predykcji. Wynik te
 
 ![Najważniejsze predyktory wysokiego wpływu publikacyjnego w modelu Random Forest (ważność permutacyjna). Kolor oznacza kategorię cechy: produktywność, współpraca i cytowania oraz cechy formalne (uczelnia, stanowisko).](../Wykresy/praca/fig_04b_waznosc.png){#fig-waznosc width=100%}
 
-W odpowiedzi na pytanie 3 wyniki pokazują, że wysoki wpływ naukowy można przewidywać na podstawie cech strukturalnych badaczy. Model osiągnął bardzo dobrą zdolność rozróżniania osób o wysokim i niższym wpływie naukowym (AUC ok. 0,97).
+W odpowiedzi na pytanie 3 wyniki pokazują, że wysoki wpływ naukowy można przewidywać na podstawie cech badacza, takich jak stanowisko, uczelnia, liczba publikacji i współpraca naukowa. Model osiągnął bardzo dobrą zdolność rozróżniania osób o wysokim i niższym wpływie naukowym (AUC ok. 0,97).
 
 ### Model jakościowy: czy wysoki wpływ publikacyjny zależy tylko od stażu?
 
@@ -515,7 +521,7 @@ Taki układ może wynikać ze specyfiki nauk rolniczych. W tej dziedzinie częś
 
 ## Predyktory wysokiego wpływu publikacyjnego
 
-Modelowanie predykcyjne pokazuje, że wysoki wpływ publikacyjny, zdefiniowany jako przynależność do górnego decyla sumarycznego IF, można dobrze przewidywać na podstawie cech strukturalnych badaczy. Model osiągnął bardzo dobrą zdolność rozróżniania osób o wysokim i niższym wpływie publikacyjnym (AUC ok. 0,97). Najważniejsze znaczenie miały liczba publikacji oraz cechy współpracy naukowej, zwłaszcza liczba unikalnych współautorów i średni FWCI. Znacznie mniejsze znaczenie miały natomiast stanowisko i uczelnia.
+Modelowanie predykcyjne pokazuje, że wysoki wpływ publikacyjny, zdefiniowany jako przynależność do górnego decyla sumarycznego IF, można dobrze przewidywać na podstawie cech badacza. Model osiągnął bardzo dobrą zdolność rozróżniania osób o wysokim i niższym wpływie publikacyjnym (AUC ok. 0,97). Najważniejsze znaczenie miały liczba publikacji oraz cechy współpracy naukowej, zwłaszcza liczba unikalnych współautorów i średni FWCI. Znacznie mniejsze znaczenie miały natomiast stanowisko i uczelnia.
 
 Wynik ten sugeruje, że wysoki skumulowany wpływ publikacyjny wiąże się przede wszystkim z produktywnością oraz udziałem w sieci współpracy, a nie bezpośrednio z formalną pozycją akademicką czy afiliacją. Niska czułość modelu przy domyślnym progu klasyfikacji 0,5 wynikała głównie z niedopasowania progu do rzadkiej klasy high-impact, a nie ze słabej jakości modelu. Po obniżeniu progu na podstawie danych walidacyjnych model poprawnie identyfikował wszystkie osoby z grupy wysokiego wpływu publikacyjnego (czułość = 1,00), przy zbalansowanej trafności 0,87.
 
@@ -570,7 +576,7 @@ Różnice między uczelniami należy jednak interpretować ostrożnie, ponieważ
 
 1. Typologia profili bibliometrycznych (pytanie 1). Wśród badanych naukowców można wyróżnić dwa główne typy profili bibliometrycznych: grupę badaczy o wysokim dorobku publikacyjnym, obejmującą około 23 % próby, oraz pozostałych badaczy. Podział ten powtarza się w podobnej formie w poszczególnych uczelniach, choć nie wszędzie z taką samą stabilnością. W UPWr grupa o wysokim dorobku ma bardziej ilościowy charakter, ponieważ wyróżnia ją przede wszystkim liczba publikacji. W UWM lokalny podział jest mniej stabilny, co wynika prawdopodobnie z mniejszej liczebności próby.
 2. Różnice między stanowiskami i uczelniami (pytanie 2). Wskaźniki bibliometryczne są silniej związane ze stanowiskiem niż z uczelnią. W większości przypadków rosną one wraz z poziomem stanowiska: od adiunktów, przez profesorów uczelni, do profesorów. Uczelnia ma słabsze znaczenie. Oznacza to, że etap kariery naukowej lepiej wyjaśnia różnice w indywidualnym dorobku niż sama afiliacja uczelniana.
-3. Przewidywanie wysokiego wpływu publikacyjnego (pytanie 3). Wysoki wpływ publikacyjny można dobrze przewidywać na podstawie cech strukturalnych badaczy. Model osiągnął wysoką zdolność rozróżniania osób o wysokim i niższym wpływie publikacyjnym (AUC ok. 0,97). Najważniejsze były liczba publikacji oraz cechy współpracy naukowej, a nie formalne stanowisko czy uczelnia. Wyniki predykcyjne należy jednak traktować ostrożnie, ponieważ grupa osób o wysokim wpływie była mała (46 przypadków), a model wymagał kalibracji progu klasyfikacji.
+3. Przewidywanie wysokiego wpływu publikacyjnego (pytanie 3). Wysoki wpływ publikacyjny można dobrze przewidywać na podstawie cech badacza. Model osiągnął wysoką zdolność rozróżniania osób o wysokim i niższym wpływie publikacyjnym (AUC ok. 0,97). Najważniejsze były liczba publikacji oraz cechy współpracy naukowej, a nie formalne stanowisko czy uczelnia. Wyniki predykcyjne należy jednak traktować ostrożnie, ponieważ grupa osób o wysokim wpływie była mała (46 przypadków), a model wymagał kalibracji progu klasyfikacji.
 4. Sieć współautorstwa (pytanie 4). Sieć współautorstwa dzieli się na wyraźne grupy współpracy (Q = 0,856). Grupy te pokrywają się głównie z uczelnią (NMI = 0,58), a nie ze stanowiskiem. Oznacza to, że współpraca naukowa w badanej dyscyplinie ma przede wszystkim charakter wewnątrzuczelniany, a współprace międzyuczelniane są rzadsze.
 
 Łącznie wyniki pokazują, że indywidualny dorobek naukowców jest związany głównie z etapem kariery, natomiast współpraca naukowa przebiega przede wszystkim w obrębie uczelni. Praca potwierdza także znaczenie jednorodnego źródła danych. Wykorzystanie systemów Omega-PSIR umożliwiło porównywalne pozyskanie wskaźników bibliometrycznych z czterech uczelni, co byłoby znacznie trudniejsze przy użyciu różnych, niejednolitych repozytoriów.

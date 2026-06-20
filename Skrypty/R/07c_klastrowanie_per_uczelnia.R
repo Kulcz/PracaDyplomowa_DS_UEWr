@@ -52,6 +52,9 @@ etykiety_cech <- c(h_index_wos = "h-index WoS", sum_IF = "Sumaryczny IF",
 etykiety_ucz  <- c(upwr = "UPWr", sggw = "SGGW", urk = "URK", uwm = "UWM")
 
 # Skorygowany indeks Randa (Hubert-Arabie), niezmienniczy na etykiety.
+# Implementacja wlasna (zamiast np. mclust::adjustedRandIndex), zeby nie ciagnac
+# ciezkiej zaleznosci mclust tylko dla jednej miary; wzor HA jest krotki i
+# czytelny, a wynik identyczny.
 adj_rand <- function(a, b) {
   tab   <- table(a, b)
   comb2 <- function(x) sum(choose(x, 2))
@@ -129,6 +132,11 @@ cat("\n=== Zgodnosc z pula (ARI) i jakosc rozdzielenia (sylwetka) ===\n")
 print(summary_tab)
 
 # Diagnostyka spojnosci wzorca: czy wszystkie centroidy wysokie sa dodatnie?
+# Kryterium diagnostyczne replikacji: jesli w KAZDEJ uczelni klaster "wysoki"
+# ma dodatnie z-score na WSZYSTKICH 4 cechach, wzorzec "rdzen wysokoproduktywny"
+# odtwarza sie spojnie (TAK). Wynik NIE oznaczalby, ze przynajmniej w jednej
+# uczelni lokalny klaster "wysoki" jest na ktorejs cesze ponizej sredniej puli -
+# czyli wzorzec nie replikuje sie jednolicie.
 spojny <- all(as.matrix(centroidy[, cechy]) > 0)
 cat(sprintf("\n[WZORZEC] centroidy 'wysoki' dodatnie na wszystkich cechach we wszystkich uczelniach: %s\n",
             ifelse(spojny, "TAK", "NIE")))

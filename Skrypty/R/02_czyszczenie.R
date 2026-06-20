@@ -33,6 +33,11 @@ df_all <- raw_files %>%
   set_names(path_file) %>%
   map_dfr(read_csv, .id = "plik_zrodlowy", show_col_types = FALSE) %>%
   mutate(
+    # Leniwy kwantyfikator "+?" lapie NAJKROTSZY ciag liter/podkreslen az do
+    # lookahead "_rolnictwo_". Zachlanne "+" zjadloby tez czesc po dyscyplinie,
+    # ale tu kluczowe jest, ze przy nazwach typu "up_poznan_rolnictwo_..." leniwy
+    # wariant nie uznaje przedwczesnie "_" za koniec dopasowania (lookahead
+    # przesuwa go dalej), wiec zwraca pelne "up_poznan", a nie samo "up".
     uczelnia = str_extract(plik_zrodlowy, "^[a-z_]+?(?=_rolnictwo_)")
   )
 
@@ -46,6 +51,11 @@ df_all <- df_all %>%
   mutate(
     stanowisko_raw = stanowisko,
     stanowisko = case_when(
+      # KOLEJNOSC LOAD-BEARING: "profesor uczelni" MUSI byc przed wzorcem
+      # "^profesor", bo case_when bierze pierwsze pasujace dopasowanie. Gdyby
+      # "^profesor" bylo wyzej, "profesor uczelni" tez by go spelnil i zostalby
+      # blednie sklasyfikowany jako zwykly "profesor" (utrata rozroznienia
+      # stanowiska, kluczowego dla gradientu kariery w dalszej analizie).
       str_detect(tolower(stanowisko %||% ""), "profesor uczelni") ~ "profesor uczelni",
       str_detect(tolower(stanowisko %||% ""), "^profesor") ~ "profesor",
       str_detect(tolower(stanowisko %||% ""), "adiunkt") ~ "adiunkt",
@@ -70,6 +80,10 @@ cat(sprintf("Filtr nie-naukowcow: usunieto %d profili (%.1f%%)\n",
             n_dropped, 100*n_dropped/nrow(df_all)))
 
 # ---------- 4. Deduplikacja po (uczelnia, profil) ----------
+# Zakladamy, ze para (uczelnia, profil) jest unikalnym kluczem osoby. .keep_all
+# zachowuje wszystkie kolumny PIERWSZEGO wiersza w grupie - przy ewentualnych
+# imiennikach w tej samej uczelni zostanie tylko pierwszy (akceptowalne ryzyko
+# przy tej skali proby; bardziej szkodliwe byloby liczenie ich podwojnie).
 df_clean <- df_naukowcy %>%
   distinct(uczelnia, profil, .keep_all = TRUE) %>%
   select(-plik_zrodlowy, -any_of(c("error")))

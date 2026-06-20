@@ -1,6 +1,8 @@
 ## Scrapery CRIS uczelnianych — Python
 
-Modułowy zestaw scraperów Bazy Wiedzy / CRIS dla **6 polskich uczelni przyrodniczych** (TOP 6 ośrodków „rolnictwo i ogrodnictwo"). Trzy różne systemy źródłowe — każdy ma własny parser dziedziczący ze wspólnego interfejsu `BaseParser`.
+Modułowy zestaw scraperów Bazy Wiedzy / CRIS dla polskich uczelni przyrodniczych w dyscyplinie „rolnictwo i ogrodnictwo". Trzy różne systemy źródłowe — każdy ma własny parser dziedziczący ze wspólnego interfejsu `BaseParser`.
+
+> **Aktywny core analizy = 4 uczelnie Omega-PSIR** (UPWr, SGGW, URK, UWM). Parsery `up_poznan.py` (DSpace) i `up_lublin.py` (OpenUP) są **historyczne/pomocnicze**: pozostają w kodzie na wypadek powrotu, ale nie wchodzą do core analizy (DSpace UP Poznań niekompletny ~10–15 % dorobku, OpenUP asymetryczny metodycznie; szczegóły w głównym `CLAUDE.md`). Dane tych dwóch uczelni usunięto z repo 2026-06-20 (backup zewnętrzny). Poniższe sekcje opisujące UP Poznań / UP Lublin dotyczą więc trybu historycznego.
 
 ### Architektura
 
@@ -8,7 +10,7 @@ Modułowy zestaw scraperów Bazy Wiedzy / CRIS dla **6 polskich uczelni przyrodn
 Skrypty/Python/
 ├── scrape.py              # entry point CLI (dispatch po --uni → parser.run(args))
 └── scrapers/
-    ├── __init__.py        # REGISTRY: 6 parserów
+    ├── __init__.py        # REGISTRY: 6 parserów (4 core Omega-PSIR + 2 historyczne)
     ├── base.py            # BaseParser (ABC) + OmegaPsirBaseParser + helpery
     ├── core.py            # Playwright + paginator PrimeFaces (dla Omega-PSIR)
     ├── upwr.py            # UPWRParser    — Omega-PSIR    — label MEiN,         wait 6s
@@ -72,7 +74,7 @@ Flow per uczelnia:
 | `--max-pages` | 300 / 50 / 200 | Limit klików next (Omega / UP Poznań paginacja / UP Lublin) |
 | `--limit-profiles` | brak | Limit pobranych profili (do testów) |
 
-### Schemat CSV (ujednolicony dla wszystkich 6 uczelni)
+### Schemat CSV (ujednolicony dla wszystkich parserów)
 
 ```
 profil, tytul, stanowisko, jednostka, wydzial, orcid,

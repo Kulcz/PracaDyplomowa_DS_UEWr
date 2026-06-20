@@ -47,10 +47,15 @@ search_openalex_author <- function(name, ror) {
     req_url_query(
       search = name,
       filter = paste0("affiliations.institution.ror:", ror),
+      # 25 kandydatow na strone = pula do fuzzy matchu. Wiecej kandydatow =
+      # wyzszy recall (mniejsza szansa, ze wlasciwa osoba wypadnie poza top 25),
+      # ale tez wiecej szumu; przy filtrze ROR uczelni 25 z naddatkiem wystarcza.
       `per-page` = 25,
       mailto = MAILTO
     ) |>
     req_retry(max_tries = 3) |>
+    # Limit "polite pool" OpenAlex: z naglowkiem mailto wolno do 10 zapytan/s.
+    # req_throttle pilnuje, by nie przekroczyc tego progu (inaczej throttling 403).
     req_throttle(rate = 10 / 1)  # 10 req/s
 
   resp <- tryCatch(req_perform(req), error = function(e) NULL)
@@ -62,6 +67,10 @@ search_openalex_author <- function(name, ror) {
 best_match <- function(name, candidates) {
   if (length(candidates) == 0) return(NULL)
   names_cand <- map_chr(candidates, "display_name", .default = NA)
+  # Jaro-Winkler ("jw"): metoda dystansu odpowiednia dla nazwisk, bo premiuje
+  # zgodnosc PREFIKSU (wspolny poczatek lancucha obniza dystans mocniej niz
+  # zgodnosc na koncu). Dobra na literowki/koncowki, a imie+nazwisko zwykle
+  # zaczyna sie tak samo niezaleznie od ogonkow/transliteracji.
   d <- stringdist(tolower(name), tolower(names_cand), method = "jw")
   i <- which.min(d)
   list(
@@ -168,6 +177,10 @@ for (i in seq_len(nrow(to_process))) {
     # merge z poprzednimi (resumability)
     if (file_exists(OUT_FILE)) {
       prev <- read_csv(OUT_FILE, show_col_types = FALSE)
+      # prev przed df_partial => distinct() trzyma PIERWSZE wystapienie author_id,
+      # czyli przy kolizji STARY wynik (prev) wygrywa nad swiezym z biezacego
+      # runu. Istotne przy re-runie: aby wymusic przeliczenie profilu, trzeba go
+      # najpierw usunac z OUT_FILE, bo inaczej zachowany bedzie poprzedni rekord.
       df_partial <- bind_rows(prev, df_partial) %>%
         distinct(author_id, .keep_all = TRUE)
     }

@@ -52,14 +52,18 @@ sieci współautorstwa) i **QA cross-check**. Omega-PSIR jest średnio 2–3×
 bogatszy katalog niż OpenAlex (akceptuje polskie czasopisma, książki,
 materiały konferencyjne nieindeksowane w Scopus/WoS).
 
-**Próba zarchiwizowana w `Dane/raw/_archive/` (poza core analizą):**
+**Próba poza core analizą (dane usunięte z repo 2026-06-20 przy optymalizacji
+pod oddanie, backup zewnętrzny; parsery `up_poznan.py`/`up_lublin.py` zostają
+w kodzie na wypadek powrotu, ale nie używane w core analizie):**
 - UP Poznań (DSpace niekompletny — Potarzycki: 9 prac w DSpace vs 66 OpenAlex
-  vs 112 w wykazie). Dane finansowe/model OA — ewentualny materiał do Dyskusji.
+  vs 112 w wykazie); włączenie złamałoby porównywalność z Omega-PSIR.
 - UP Lublin (OpenUP, kategoria B+, asymetryczna metodyka).
 
-Fundament metodyczny: pilotaż **`pilot_UPWr/`** (wchłonięty 2026-05-31 dawny
-projekt `UPWr_bibliometria`) — scraper UPWr i analiza wydziału WPT. Wiele
-patternów stąd reusable. Notatki: `pilot_UPWr/CLAUDE_pilot_archiwum.md`.
+Fundament metodyczny: pilotaż `pilot_UPWr/` (dawny projekt `UPWr_bibliometria`:
+scraper UPWr + analiza wydziału WPT) — **usunięty z repo 2026-06-20 przy
+optymalizacji pod oddanie** (backup zewnętrzny). Moduł szeregów czasowych
+z pilota został uogólniony na 4 uczelnie w głównym pipelinie (skrypty 11/12
++ `scrape_publications.py`).
 
 ## Środowisko
 
@@ -87,7 +91,9 @@ Per-uczelnia różnice + strategia ekstrakcji — szczegóły w
 
 Stack: Python 3.12 + Playwright (Chromium bundled) + BeautifulSoup. Parsery
 per uczelnia w `Skrypty/Python/scrapers/{upwr,sggw,urk,uwm}.py` dziedziczą
-z `OmegaPsirBaseParser`. R-scraper zarchiwizowany w `Skrypty/R/_archive/`.
+z `OmegaPsirBaseParser`. Parsery `up_poznan.py`/`up_lublin.py` zostają w kodzie,
+ale nie używane w core analizie (4 Omega-PSIR). Stary monolityczny R-scraper
+i jego archiwum usunięte 2026-06-20 przy optymalizacji pod oddanie.
 
 1. `source .venv/bin/activate`
 2. `python Skrypty/Python/scrape.py --uni <UPWR|SGGW|URK|UWM> --dyscyplina rolnictwo_i_ogrodnictwo`
@@ -117,7 +123,7 @@ Każde twierdzenie merytoryczne weryfikuj w min. 2 niezależnych źródłach.
 | 2 | Scraping 4 uczelni × 1 dyscyplina | ✓ |
 | 3 | Czyszczenie + matching OpenAlex (ROR-y, ORCID) | bieżący |
 | 4 | OpenAlex Works (FWCI + h-index + sieci współautorstwa) | |
-| 5 | EDA + 2-czynnikowa ANOVA (uczelnia × stanowisko, kategoria jako kontrola) | |
+| 5 | EDA + 2-czynnikowe porównania uczelnia × stanowisko (Kruskal-Wallis+Dunn, bo założenia ANOVA naruszone; kategoria jako kontrola) | |
 | 6 | Klastrowanie + PCA (typologia profili bibliometrycznych) | |
 | 7 | Modele predykcyjne + SHAP | |
 | 8-9 | Sieci współautorstwa (igraph + Louvain) | |

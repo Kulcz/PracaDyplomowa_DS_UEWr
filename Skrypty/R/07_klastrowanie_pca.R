@@ -91,6 +91,8 @@ cat(sprintf("\n=== Walidacja k (zakres 2-%d) ===\n", K_MAX))
 
 p_sil <- fviz_nbclust(X, kmeans, method = "silhouette", k.max = K_MAX, nstart = 25) +
   labs(title = "Średnia szerokość sylwetki (silhouette)")
+# Gap statistic liczona i rysowana tylko POGLADOWO (porownanie metod walidacji).
+# Decyzja o k opiera sie WYLACZNIE na silhouette (argmax ponizej), nie na gap.
 p_gap <- fviz_nbclust(X, kmeans, method = "gap_stat", k.max = K_MAX,
                       nstart = 25, nboot = 50) +
   labs(title = "Statystyka luki (gap)")
@@ -98,12 +100,15 @@ p_gap <- fviz_nbclust(X, kmeans, method = "gap_stat", k.max = K_MAX,
 ggsave(file.path(PLOT_DIR, "04_walidacja_k.png"),
        p_sil + p_gap, width = 14, height = 5, dpi = 200)
 
-# Wyciagamy k optymalne z silhouette (argmax)
+# Wyciagamy k optymalne z silhouette (argmax) - to jedyne kryterium wyboru k.
 sil_data <- p_sil$data
 k_opt <- as.integer(sil_data$clusters[which.max(sil_data$y)])
 cat(sprintf("Wybrane k (max silhouette) = %d\n", k_opt))
 
 # ---------- 3. K-means + profilowanie klastrów ----------
+# nstart=50: 50 losowych startow centroidow, wybierany jest najlepszy wynik -
+# zabezpiecza przed utknieciem w lokalnym minimum (k-means jest wrazliwy na start).
+# iter.max=50: gorny limit iteracji przypisania/aktualizacji na pojedynczy start.
 km <- kmeans(X, centers = k_opt, nstart = 50, iter.max = 50)
 df$klaster <- factor(km$cluster)
 
@@ -157,6 +162,9 @@ df$klaster_ward <- factor(cutree(hc, k = k_opt))
 ct_km_ward <- table(km = df$klaster, ward = df$klaster_ward)
 cat("\n=== Cross-table: k-means vs Ward ===\n"); print(ct_km_ward)
 
+# Cramer's V - sila zwiazku dwoch zmiennych kategorialnych (0-1).
+# UWAGA: wersja surowa, BEZ korekty obciazenia Bergsmy. Przy malych tablicach
+# (niskie liczebnosci komorek) wartosc bywa zawyzona - interpretowac z ostroznoscia.
 cramers_v <- function(tab) {
   chi <- suppressWarnings(chisq.test(tab))
   n <- sum(tab)

@@ -18,6 +18,9 @@ library(here)
 library(fs)
 library(factoextra)
 
+# set.seed(42) raz na poczatku skryptu + kmeans(nstart=50) -> wynik powtarzalny.
+# (Inaczej niz w 07c, gdzie seed jest ustawiany przed KAZDYM kmeans osobno; tu
+#  jest jedno klastrowanie, wiec wystarczy pojedyncze ziarno.)
 set.seed(42)
 
 df <- read_csv(here("Dane", "master", "profiles_features.csv"), show_col_types = FALSE)
@@ -75,6 +78,9 @@ ggsave(file.path(PLOT_DIR, "08_k3_kmeans_clusters.png"), p_clust,
        width = 9, height = 7, dpi = 200)
 
 # Walidacja zewnetrzna
+# cramers_v: swiadomy duplikat funkcji z 07 (07b jest samodzielnym skryptem
+# eksploracyjnym - kopia zamiast wspolnego source/refaktoru). Wersja surowa,
+# bez korekty Bergsmy (jak w 07). NIE refaktorowac do wspolnego pliku.
 cramers_v <- function(tab) {
   chi <- suppressWarnings(chisq.test(tab)); n <- sum(tab); k <- min(dim(tab))
   sqrt(as.numeric(chi$statistic) / (n * (k - 1)))

@@ -94,6 +94,9 @@ if (file_exists(feat_path)) {
                stanowisko = factor(stanowisko, levels = STANOWISKA))
       cld_plot <- d1 %>% group_by(uczelnia, stanowisko) %>%
         summarise(q75 = quantile(y, 0.75), iqr = IQR(y), vmax = max(y), .groups = "drop") %>%
+        # Pozycja Y litery CLD: tuz nad gornym wasem boksa (q75 + 1.5*IQR, ucietym
+        # do faktycznego maksimum), plus maly margines 5% wysokosci - zabieg czysto
+        # geometryczny, zeby etykieta wisiala nad wasem a nie na nim.
         mutate(y_lab = pmin(q75 + 1.5 * iqr, vmax) + 0.05 * max(vmax)) %>%
         left_join(cldw, by = c("uczelnia", "stanowisko"))
       small_layer <- geom_text(
@@ -108,6 +111,8 @@ if (file_exists(feat_path)) {
       cldu <- eda$cld_ucz_within %>% filter(metryka == mlab) %>%
         mutate(uczelnia   = factor(uczelnia, levels = c("upwr","sggw","urk","uwm")),
                stanowisko = factor(stanowisko, levels = STANOWISKA),
+               # Pasek DUZYCH liter CLD pod boksami: wspolne Y odsuniete o 8%
+               # rozpietosci danych ponizej minimum (jeden poziom dla wszystkich).
                y_lo = min(d1$y) - 0.08 * diff(range(d1$y)))
       big_layer <- geom_text(
         data = cldu, aes(x = uczelnia, y = y_lo, label = .group, group = stanowisko),
@@ -210,6 +215,10 @@ if (!is.null(clust)) {
   library(factoextra)
 
   # Czytelna legenda: klaster o najwyzszej sredniej centroidzie = "wysoki dorobek".
+  # rowMeans (srednia po WSZYSTKICH zestandaryzowanych metrykach), a nie pojedyncza
+  # metryka - bo metryki sa silnie skorelowane (blok skumulowanego impactu) i klaster
+  # "wysoki" dominuje na calym wektorze; usrednienie jest odporne na to, ktora metryka
+  # akurat rozdziela klastry najmocniej.
   centers_mean <- rowMeans(clust$kmeans$centers)
   hi    <- which.max(centers_mean)
   lo    <- setdiff(seq_along(centers_mean), hi)
@@ -417,6 +426,9 @@ if (!is.null(net)) {
   size_lookup <- setNames(sizes$n, as.character(sizes$community))
   ct <- ct %>%
     group_by(community) %>%
+    # Klasyfikacja spolecznosci: sum(pct > 0) liczy, ILE uczelni ma niezerowy udzial
+    # w danej spolecznosci. > 1 uczelnia -> spolecznosc MIESZANA (wspolautorstwo
+    # miedzyuczelniane); dokladnie 1 uczelnia -> jednouczelniana.
     mutate(typ = if (sum(pct > 0) > 1) "Mieszana (współpraca międzyuczelniana)"
                  else "Jednouczelniana") %>%
     ungroup() %>%
