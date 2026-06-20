@@ -1,4 +1,9 @@
 """
+HISTORYCZNY - uczelnia poza proba finalna, niewykorzystywany w core analizie.
+(UP Lublin wykluczony: wlasny system OpenUP o asymetrycznej metodyce ekstrakcji,
+kategoria B+; lamalby porownywalnosc z 4 instancjami Omega-PSIR. Parser zostaje
+na wypadek powrotu - brak dla niego danych w Dane/ i nie wchodzi do pipeline'u R.)
+
 Scraper UP Lublin - open.up.lublin.pl (OpenUP, ASP.NET MVC).
 
 Hybryda Playwright (lista osob - paginator JS-driven) + httpx (profile - server-rendered HTML).

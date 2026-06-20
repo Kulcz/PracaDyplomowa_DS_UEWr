@@ -1,4 +1,9 @@
 """
+HISTORYCZNY - uczelnia poza proba finalna, niewykorzystywany w core analizie.
+(UP Poznan wykluczony: DSpace-CRIS pokazuje ~10-15% rzeczywistego dorobku;
+zlamalby porownywalnosc z 4 instancjami Omega-PSIR. Parser zostaje na wypadek
+powrotu - brak dla niego danych w Dane/ i nie wchodzi do pipeline'u R.)
+
 Scraper UP Poznan - sciencerep.up.poznan.pl (DSpace-CRIS 2023.01).
 
 Wykorzystuje DSpace REST API (JSON) - nie wymaga Playwright ani recznego filtra.

@@ -19,10 +19,14 @@ from .up_poznan import UPPoznanParser
 from .up_lublin import UPLublinParser
 
 REGISTRY: dict[str, type[BaseParser]] = {
+    # --- Core: 4 instancje Omega-PSIR (proba finalna) ---
     "UPWR": UPWRParser,
     "SGGW": SGGWParser,
     "URK": URKParser,
     "UWM": UWMParser,
+    # --- HISTORYCZNE: uczelnie poza proba finalna, niewykorzystywane w core ---
+    # Zostaja na wypadek powrotu; brak dla nich danych w Dane/, nie wchodza do
+    # pipeline'u R. UP Poznan - niekompletny DSpace; UP Lublin - OpenUP (B+).
     "UP_POZNAN": UPPoznanParser,
     "UP_LUBLIN": UPLublinParser,
 }
