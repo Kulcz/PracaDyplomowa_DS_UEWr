@@ -18,6 +18,7 @@ format:
     citecolor: RoyalBlue
     linkcolor: RoyalBlue
     urlcolor: RoyalBlue
+    toccolor: RoyalBlue
     template-partials:
       - before-body.tex
     header-includes:
