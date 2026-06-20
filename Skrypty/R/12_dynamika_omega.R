@@ -35,7 +35,7 @@ UCZ_LEVELS <- c("upwr", "sggw", "urk", "uwm")
 UCZ_LABELS <- c(upwr = "UPWr", sggw = "SGGW", urk = "URK", uwm = "UWM")
 pal <- c(upwr = "#1b9e77", sggw = "#d95f02", urk = "#7570b3", uwm = "#e7298a")
 
-YR_NOW   <- as.integer(format(Sys.Date(), "%Y"))
+YR_NOW   <- 2026L   # rok referencyjny pracy - przypiety (bylo Sys.Date()); zamraza YR_MAX=2025 i TREND_MAX=2024 zgodnie z 11_dynamika_rozwoju.R
 YR_MIN   <- 2006L; YR_MAX <- YR_NOW - 1L          # rok biezacy niepelny -> precz
 TREND_MIN <- 2008L; TREND_MAX <- YR_NOW - 2L      # okno trendu (brzeg obciety)
 BASE_YEARS <- 2008:2010

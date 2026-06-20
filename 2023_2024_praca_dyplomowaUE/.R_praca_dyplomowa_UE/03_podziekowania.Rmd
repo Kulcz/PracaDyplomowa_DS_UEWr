@@ -1,5 +1,0 @@
----
-output: pdf_document
----
-
-Składam serdeczne podziękowania dla **mgr Agnieszki Rosa** za zaangażowanie i merytoryczną pomoc.

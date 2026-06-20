@@ -1,7 +1,0 @@
- Wykonaj odczyt kontekstu projektu:
-  - cat CLAUDE.md
-  - cat README.md
-  - cat Tasks/todo.md
-
-
- 

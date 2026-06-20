@@ -24,25 +24,14 @@ Praca dyplomowa studiów podyplomowych Data Science na Uniwersytecie Ekonomiczny
 3. Zawężenie 2026-05-26: 1 dyscyplina × 4 uczelnie kategorii A (UPWr/SGGW/URK/UP Poznań)
 4. **FINAL 2026-05-26: 1 dyscyplina × 4 uczelnie Omega-PSIR** (UPWr/SGGW/URK/UWM) — po teście wykazującym dramatyczną niekompletność UP Poznań DSpace (Potarzycki: 9 prac w DSpace vs 66 OpenAlex vs 112 w wykazie autora) i bogactwo Omega-PSIR (test 6 osób: średni ratio CRIS/OA = 2.3 dla Omega-PSIR vs 0.13 dla DSpace UP Poznań).
 
-**Próba zarchiwizowana w `Dane/raw/_archive/` (nie w core analizie):**
-- UP Poznań (208 osób + 2582 publikacji ETAP 2) — DSpace niekompletny, łamałby porównywalność z Omega-PSIR. Bonus: dane finansowe i model OA per publikacja mogą posłużyć jako materiał uzupełniający w sekcji Dyskusji jeśli zostanie czas.
+**Próba poza core analizą (dane usunięte z repo 2026-06-20 przy optymalizacji, backup zewnętrzny; parsery `up_poznan.py`/`up_lublin.py` zostają w kodzie):**
+- UP Poznań (208 osób + 2582 publikacji ETAP 2) — DSpace niekompletny, łamałby porównywalność z Omega-PSIR.
 - UP Lublin (2257 osób) — OpenUP, kategoria B+, asymetryczna metodyka.
 
 **Próba pominięta (kategoria A bez publicznego CRIS):**
 - Zachodniopomorski Uniwersytet Technologiczny w Szczecinie — brak Bazy Wiedzy w publicznym API.
 
-Fundament metodyczny: pilotaż **`pilot_UPWr/`** (wchłonięty 2026-05-31 dawny projekt `UPWr_bibliometria`) — scraper UPWr i analiza wydziału WPT. Wiele patternów stąd reusable.
-
-## Pilotaż wchłonięty: `pilot_UPWr/`
-
-Dawny samodzielny projekt `UPWr_bibliometria` (1 uczelnia, wydział WPT, ~145 osób) — pierwowzór metodyki tej pracy. Scalony tu 2026-05-31 (bez własnego env/git; korzysta z parasola).
-
-- **Skrypty** (`pilot_UPWr/Skrypty/R/`): 01 scraper UPWr (RSelenium), 02 czyszczenie+analiza WPT (ANOVA/Kruskal-Wallis), 03 analiza pracowników, **04 scraper list publikacji** (Chrome headless `--dump-dom`, rok+punkty per pozycja), **06 doratowanie capped >200 poz.** (RSelenium, paginacja `.ui-paginator-next`), **05 szeregi czasowe** (publikacje/punkty rocznie, punktowane vs 0-pkt).
-- **Dane/wyniki:** `pilot_UPWr/output_bibliometria/` (m.in. `WPT_publikacje_rocznie.csv`).
-- **Raporty:** `pilot_UPWr/Raport/wydzial/raport_{WPT,szeregi_czasowe}.pdf`.
-- **Uruchamianie:** ścieżki w skryptach są względne — odpalać z cwd `pilot_UPWr/`.
-- **Do uogólnienia na 4 uczelnie:** moduł szeregów czasowych (04/06/05) — listy publikacji Omega-PSIR mają rok+punkty per pozycja; ograniczenia portalu opisane w skryptach 04/06.
-- Notatki pierwotnego projektu: `pilot_UPWr/CLAUDE_pilot_archiwum.md`.
+Pilotaż metodyczny `pilot_UPWr/` (dawny projekt `UPWr_bibliometria` — scraper UPWr + analiza wydziału WPT, ~145 osób; pierwowzór metodyki) **usunięty z repo 2026-06-20 przy optymalizacji pod oddanie** (backup zewnętrzny). Moduł szeregów czasowych z pilota został już uogólniony na 4 uczelnie w głównym pipelinie (skrypty 11/12 + `scrape_publications.py`).
 
 ## Środowisko
 
@@ -64,7 +53,7 @@ Per-uczelnia różnice + strategia ekstrakcji — szczegóły w `Skrypty/Python/
 
 ## Workflow scrapingu
 
-Stack: Python 3.12 + Playwright (Chromium bundled) + BeautifulSoup. Parsery per uczelnia w `Skrypty/Python/scrapers/{upwr,sggw,urk,uwm}.py` dziedziczą z `OmegaPsirBaseParser`. R-scraper zarchiwizowany w `Skrypty/R/_archive/`. Parsery UP Poznań i UP Lublin pozostają w kodzie na wypadek powrotu, ale nie używane w core analizie.
+Stack: Python 3.12 + Playwright (Chromium bundled) + BeautifulSoup. Parsery per uczelnia w `Skrypty/Python/scrapers/{upwr,sggw,urk,uwm}.py` dziedziczą z `OmegaPsirBaseParser`. Parsery UP Poznań i UP Lublin pozostają w kodzie na wypadek powrotu, ale nie używane w core analizie. (Stary monolityczny R-scraper i jego archiwum usunięte 2026-06-20.)
 
 1. `source .venv/bin/activate`
 2. `python Skrypty/Python/scrape.py --uni <UPWR|SGGW|URK|UWM> --dyscyplina rolnictwo_i_ogrodnictwo`

@@ -12,10 +12,8 @@ Trzy warstwy DS: klastrowanie + modelowanie predykcyjne + sieci współautorstwa
 
 ```
 Dane/
-├── raw/                   # surowe CSV ze scrapingu Omega-PSIR (per uczelnia)
-│   ├── _archive/          # uczelnie z innymi CRIS-ami (UP Poznań, UP Lublin)
-│   └── debug_html/        # snapshoty HTML dla profili z błędem ekstrakcji
-├── openalex/              # cache OpenAlex (matching + works + coauthors + FWCI)
+├── raw/                   # surowe CSV ze scrapingu Omega-PSIR (per uczelnia) + pub_years
+├── openalex/              # OpenAlex (matching + works + coauthors + FWCI); cache/ poza gitem
 └── master/                # finalny dataset analityczny
 Skrypty/Python/
 ├── scrape.py              # entry point (dispatch po --uni → parser.run)
@@ -63,7 +61,7 @@ Próba dobrana wg dwóch kryteriów: (1) ewaluacja MEiN w dyscyplinie rolnictwo 
 | **Razem** | | | | **491** |
 
 **Uczelnie pominięte:**
-- **Uniwersytet Przyrodniczy w Poznaniu** (kategoria A, DSpace-CRIS) — zarchiwizowany w `Dane/raw/_archive/`. Test kompletności 2026-05-26: DSpace UP Poznań pokazuje ~10-15% rzeczywistego dorobku autorów (np. prof. Potarzycki: 9 prac w DSpace vs 66 w OpenAlex vs 112 w wykazie autora). Włączenie złamałoby porównywalność z Omega-PSIR (średnio 2-3× pełniejszy katalog).
+- **Uniwersytet Przyrodniczy w Poznaniu** (kategoria A, DSpace-CRIS) — wykluczony z próby. Test kompletności 2026-05-26: DSpace UP Poznań pokazuje ~10-15% rzeczywistego dorobku autorów (np. prof. Potarzycki: 9 prac w DSpace vs 66 w OpenAlex vs 112 w wykazie autora). Włączenie złamałoby porównywalność z Omega-PSIR (średnio 2-3× pełniejszy katalog).
 - **Zachodniopomorski Uniwersytet Technologiczny w Szczecinie** (kategoria A) — brak publicznego CRIS.
 - **UP Lublin** (kategoria B+, OpenUP) — asymetryczna metodyka.
 
@@ -73,6 +71,8 @@ Z Omega-PSIR ciągniemy **tożsamość** (kto, gdzie, ORCID) + **lokalne metryki
 
 OpenAlex używamy jako **uzupełnienie**: FWCI (field-weighted citation impact, niepoliczalny lokalnie), `cited_by_count`, lista współautorów do sieci współautorstwa, oraz **QA cross-check** dla metryk lokalnych.
 
-## Pilotaż metodyczny
+## Odtwarzalność (uwagi)
 
-Fundament metodyczny: katalog `pilot_UPWr/` (wchłonięty 2026-05-31 dawny samodzielny projekt `UPWr_bibliometria`), wcześniejsza analiza WPT UPWr (145 profili, scraper + ANOVA + raport Quarto). Korzysta z parasola środowiskowego tego projektu (brak własnego env/git).
+- **Rok referencyjny przypięty na stałe.** Skrypty `12_dynamika_omega.R` i `14_model_jakosc.R` używają stałej `2026L` (rok przygotowania pracy) zamiast `Sys.Date()`, żeby okna analizy (trend 2008–2024, wiek akademicki) nie dryfowały przy ponownym uruchomieniu w kolejnych latach.
+- **Scraping nie jest w pełni bezobsługowy.** Pozyskanie danych z Omega-PSIR wymaga ręcznego ustawienia filtra dyscypliny w Chromium (portale PrimeFaces, paginacja bez stabilnych URL). Odtwarzalność analizy opiera się więc na **zamrożonych CSV** w `Dane/raw/`, a nie na automatycznym ponownym scrapingu.
+- **Matching OpenAlex** odbywa się po identyfikatorze ROR uczelni + nazwisku (Jaro-Winkler ≥ 0,85). ORCID jest pobierany z Omega-PSIR, ale **nie służy jako klucz dopasowania** — automatyczny match bez ręcznej weryfikacji jest źródłem szumu w cechach OA (opisane w sekcji Ograniczenia pracy).

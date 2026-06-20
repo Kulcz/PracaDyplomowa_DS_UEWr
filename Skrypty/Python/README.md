@@ -119,7 +119,3 @@ python Skrypty/Python/scrape.py --uni UP_POZNAN --dyscyplina rolnictwo_i_ogrodni
 python Skrypty/Python/scrape.py --uni UP_LUBLIN --dyscyplina test --limit-profiles 10 --max-pages 1
 # ~30s, output: Dane/raw/up_lublin_test_<ts>.csv (10 osob z pierwszej strony)
 ```
-
-### Archiwum
-
-`_archive/scraper_omegapsir_monolithic.py` — pierwotny monolityczny scraper Omega-PSIR (przed refaktorem na core + parsery per uczelnia + dodaniem DSpace/OpenUP, 2026-05-25). Zostawiony dla referencji.
