@@ -1,6 +1,6 @@
 # PracaDyplomowa_DS_UEWr
 
-Praca dyplomowa studiów podyplomowych Data Science na Uniwersytecie Ekonomicznym we Wrocławiu — analiza bibliometryczna naukowców dyscypliny **rolnictwo i ogrodnictwo** w czterech polskich uczelniach przyrodniczych z systemem **Omega-PSIR** (UPWr, SGGW, URK, UWM) — łącznie 491 osób.
+Praca dyplomowa studiów podyplomowych Data Science na Uniwersytecie Ekonomicznym we Wrocławiu — analiza bibliometryczna naukowców dyscypliny **rolnictwo i ogrodnictwo** w czterech polskich uczelniach przyrodniczych z systemem **Omega-PSIR** (UPWr, SGGW, URK, UWM) — łącznie 491 osób zeskrapowanych (462 po czyszczeniu jako próba analityczna; 491 wykorzystywane w analizie dynamiki).
 
 > **Omega-PSIR** to opracowany na Politechnice Warszawskiej system klasy CRIS (*Current Research Information System*) — instytucjonalna baza wiedzy gromadząca dorobek naukowy uczelni (publikacje, projekty, patenty, metryki bibliometryczne, dane afiliacyjne). Jeden z dominujących systemów CRIS w Polsce; tu pełni rolę publicznie dostępnego źródła danych (Baza Wiedzy uczelni).
 

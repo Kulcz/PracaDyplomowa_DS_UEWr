@@ -655,42 +655,6 @@
       "Maintainer": "Torsten Hothorn <Torsten.Hothorn@R-project.org>",
       "Repository": "CRAN"
     },
-    "TSP": {
-      "Package": "TSP",
-      "Version": "1.2.7",
-      "Source": "Repository",
-      "Type": "Package",
-      "Title": "Infrastructure for the Traveling Salesperson Problem",
-      "Date": "2026-03-22",
-      "Authors@R": "c(person(\"Michael\", \"Hahsler\",  role = c(\"aut\", \"cre\", \"cph\"), email = \"mhahsler@lyle.smu.edu\", comment = c(ORCID = \"0000-0003-2716-1405\")), person(\"Kurt\", \"Hornik\",  role = c(\"aut\", \"cph\"), comment = c(ORCID = \"0000-0003-4198-9911\")) )",
-      "Description": "Basic infrastructure and some algorithms for the traveling salesperson problem (also traveling salesman problem; TSP). The package provides some simple algorithms and an interface to the Concorde TSP solver and its implementation of the Chained-Lin-Kernighan heuristic. The code for Concorde itself is not included in the package and has to be obtained separately. Hahsler and Hornik (2007) <doi:10.18637/jss.v023.i02>.",
-      "Classification/ACM": "G.1.6, G.2.1, G.4",
-      "URL": "https://github.com/mhahsler/TSP",
-      "BugReports": "https://github.com/mhahsler/TSP/issues",
-      "Depends": [
-        "R (>= 3.5.0)"
-      ],
-      "Imports": [
-        "graphics",
-        "foreach",
-        "utils",
-        "stats",
-        "grDevices"
-      ],
-      "Suggests": [
-        "maps",
-        "doParallel",
-        "testthat"
-      ],
-      "Encoding": "UTF-8",
-      "RoxygenNote": "7.3.3",
-      "License": "GPL-3",
-      "Copyright": "All code is Copyright (C) Michael Hahsler and Kurt Hornik.",
-      "NeedsCompilation": "yes",
-      "Author": "Michael Hahsler [aut, cre, cph] (ORCID: <https://orcid.org/0000-0003-2716-1405>), Kurt Hornik [aut, cph] (ORCID: <https://orcid.org/0000-0003-4198-9911>)",
-      "Maintainer": "Michael Hahsler <mhahsler@lyle.smu.edu>",
-      "Repository": "CRAN"
-    },
     "abind": {
       "Package": "abind",
       "Version": "1.4-8",
@@ -1058,30 +1022,6 @@
       "NeedsCompilation": "no",
       "Author": "Carson Sievert [aut, cre] (ORCID: <https://orcid.org/0000-0002-4958-2844>), Joe Cheng [aut], Garrick Aden-Buie [aut] (ORCID: <https://orcid.org/0000-0002-7111-0077>), Posit Software, PBC [cph, fnd], Bootstrap contributors [ctb] (Bootstrap library), Twitter, Inc [cph] (Bootstrap library), Javi Aguilar [ctb, cph] (Bootstrap colorpicker library), Thomas Park [ctb, cph] (Bootswatch library), PayPal [ctb, cph] (Bootstrap accessibility plugin)",
       "Maintainer": "Carson Sievert <carson@posit.co>",
-      "Repository": "CRAN"
-    },
-    "ca": {
-      "Package": "ca",
-      "Version": "0.71.1",
-      "Source": "Repository",
-      "Date": "2018-10-10",
-      "Title": "Simple, Multiple and Joint Correspondence Analysis",
-      "Authors@R": "c(person(given = \"Michael\", family = \"Greenacre\", role = \"aut\", email = \"michael.greenacre@upf.edu\"), person(given = \"Oleg\", family = \"Nenadic\", role = c(\"aut\", \"cre\"), email = \"onenadi@uni-goettingen.de\"), person(given = \"Michael\", family = \"Friendly\", role = \"ctb\"))",
-      "Author": "Michael Greenacre [aut], Oleg Nenadic [aut, cre], Michael Friendly [ctb]",
-      "Maintainer": "Oleg Nenadic <onenadi@uni-goettingen.de>",
-      "Depends": [
-        "R (>= 3.0.0)"
-      ],
-      "Suggests": [
-        "rgl (>= 0.64-10)",
-        "vcd"
-      ],
-      "Description": "Computation and visualization of simple, multiple and joint correspondence analysis.",
-      "LazyLoad": "yes",
-      "LazyData": "yes",
-      "License": "GPL",
-      "URL": "http://www.carme-n.org/",
-      "NeedsCompilation": "no",
       "Repository": "CRAN"
     },
     "cachem": {
@@ -1504,50 +1444,6 @@
       "RoxygenNote": "7.2.1",
       "NeedsCompilation": "no",
       "Author": "Taiyun Wei [cre, aut], Viliam Simko [aut], Michael Levy [ctb], Yihui Xie [ctb], Yan Jin [ctb], Jeff Zemla [ctb], Moritz Freidank [ctb], Jun Cai [ctb], Tomas Protivinsky [ctb]",
-      "Repository": "CRAN"
-    },
-    "corrr": {
-      "Package": "corrr",
-      "Version": "0.4.5",
-      "Source": "Repository",
-      "Type": "Package",
-      "Title": "Correlations in R",
-      "Authors@R": "c( person(\"Max\", \"Kuhn\", , \"max@rstudio.com\", role = c(\"aut\", \"cre\")), person(\"Simon\", \"Jackson\", role = \"aut\"), person(\"Jorge\", \"Cimentada\", role = \"aut\") )",
-      "Description": "A tool for exploring correlations.  It makes it possible to easily perform routine tasks when exploring correlation matrices such as ignoring the diagonal, focusing on the correlations of certain variables against others, or rearranging and visualizing the matrix in terms of the strength of the correlations.",
-      "License": "MIT + file LICENSE",
-      "URL": "https://github.com/tidymodels/corrr, https://corrr.tidymodels.org",
-      "BugReports": "https://github.com/tidymodels/corrr/issues",
-      "Depends": [
-        "R (>= 3.4)"
-      ],
-      "Imports": [
-        "dplyr (>= 1.0.0)",
-        "ggplot2 (>= 2.2.0)",
-        "ggrepel (>= 0.6.5)",
-        "glue (>= 1.4.2)",
-        "purrr (>= 0.2.2)",
-        "rlang (>= 0.4.0)",
-        "seriation (>= 1.2-0)",
-        "tibble (>= 2.0)"
-      ],
-      "Suggests": [
-        "covr",
-        "DBI",
-        "dbplyr (>= 1.2.1)",
-        "knitr (>= 1.13)",
-        "rmarkdown (>= 0.9.6)",
-        "RSQLite",
-        "sparklyr (>= 0.9)",
-        "testthat (>= 3.0.0)"
-      ],
-      "VignetteBuilder": "knitr",
-      "Config/Needs/website": "tidyverse/tidytemplate",
-      "Encoding": "UTF-8",
-      "RoxygenNote": "7.3.2",
-      "Config/testthat/edition": "3",
-      "NeedsCompilation": "no",
-      "Author": "Max Kuhn [aut, cre], Simon Jackson [aut], Jorge Cimentada [aut]",
-      "Maintainer": "Max Kuhn <max@rstudio.com>",
       "Repository": "CRAN"
     },
     "cowplot": {
@@ -2051,26 +1947,6 @@
       "NeedsCompilation": "yes",
       "Author": "Hadley Wickham [aut, cre] (ORCID: <https://orcid.org/0000-0003-4757-117X>), Romain François [aut] (ORCID: <https://orcid.org/0000-0002-2444-4226>), Lionel Henry [aut], Kirill Müller [aut] (ORCID: <https://orcid.org/0000-0002-1416-3412>), Davis Vaughan [aut] (ORCID: <https://orcid.org/0000-0003-4777-038X>), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
-      "Repository": "CRAN"
-    },
-    "dunn.test": {
-      "Package": "dunn.test",
-      "Version": "1.4.0",
-      "Source": "Repository",
-      "Date": "2026-5-24",
-      "Title": "Dunn's Test of Multiple Comparisons Using Rank Sums",
-      "Authors@R": "c(person(given = \"Alexis\", family =\"Dinno\", role = c(\"aut\", \"cre\", \"cph\"), email = \"alexis.dinno@pdx.edu\", comment = c(ORCID = \"0000-0003-2560-310X\")))",
-      "Imports": [
-        "rlang",
-        "scrutiny"
-      ],
-      "Description": "Computes Dunn's test (1964) for stochastic superiority and reports the results among multiple pairwise comparisons after a Kruskal-Wallis test for stochastic superiority among k groups (Kruskal and Wallis, 1952). 'dunn.test' makes k(k-1)/2 multiple pairwise comparisons based on Dunn's z-test-statistic approximations to the actual rank statistics. The null hypothesis for each pairwise comparison is that the probability of observing a randomly selected value from the first group that is larger than a randomly selected value from the second group equals one half; this null hypothesis corresponds to that of the Wilcoxon-Mann-Whitney rank-sum test. 'dunn.test' accounts for tied ranks.",
-      "License": "GPL-2",
-      "LazyData": "true",
-      "Encoding": "UTF-8",
-      "NeedsCompilation": "no",
-      "Author": "Alexis Dinno [aut, cre, cph] (ORCID: <https://orcid.org/0000-0003-2560-310X>)",
-      "Maintainer": "Alexis Dinno <alexis.dinno@pdx.edu>",
       "Repository": "CRAN"
     },
     "ellipse": {
@@ -2790,30 +2666,6 @@
       "NeedsCompilation": "no",
       "Author": "Henrik Bengtsson [aut, cre, cph] (ORCID: <https://orcid.org/0000-0002-7579-5165>), R Core Team [cph, ctb]",
       "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
-      "Repository": "CRAN"
-    },
-    "gclus": {
-      "Package": "gclus",
-      "Version": "1.3.3",
-      "Source": "Repository",
-      "Authors@R": "person(given = \"Catherine\", family = \"Hurley\",  email = \"catherine.hurley@mu.ie\", role = c(\"aut\", \"cre\"))",
-      "Date": "2025-03-28",
-      "Maintainer": "Catherine Hurley <catherine.hurley@mu.ie>",
-      "Title": "Clustering Graphics",
-      "Description": "Orders panels in scatterplot matrices and parallel coordinate displays by some merit index. Package contains various indices of merit, ordering functions, and enhanced versions of pairs and parcoord which color panels according to their merit level.",
-      "Depends": [
-        "R (>= 2.10)",
-        "cluster"
-      ],
-      "License": "GPL (>= 2)",
-      "Suggests": [
-        "knitr",
-        "rmarkdown"
-      ],
-      "VignetteBuilder": "knitr",
-      "RoxygenNote": "7.3.2",
-      "NeedsCompilation": "no",
-      "Author": "Catherine Hurley [aut, cre]",
       "Repository": "CRAN"
     },
     "gdtools": {
@@ -5425,40 +5277,6 @@
       "Author": "Ulrich Halekoh [aut, cph], Søren Højsgaard [aut, cre, cph]",
       "Repository": "CRAN"
     },
-    "permute": {
-      "Package": "permute",
-      "Version": "0.9-10",
-      "Source": "Repository",
-      "Title": "Functions for Generating Restricted Permutations of Data",
-      "Authors@R": "c(person(given = \"Gavin L.\", family = \"Simpson\", email = \"ucfagls@gmail.com\", role = c(\"aut\", \"cph\", \"cre\"), comment = c(ORCID = \"0000-0002-9084-8413\")), person(given = \"R Core Team\", role = \"cph\"), person(given = \"Douglas M.\", family = \"Bates\", role = \"ctb\"), person(given = \"Jari\", family = \"Oksanen\", role = \"ctb\"))",
-      "Depends": [
-        "R (>= 3.6.0)"
-      ],
-      "Imports": [
-        "stats"
-      ],
-      "Suggests": [
-        "vegan (>= 2.0-0)",
-        "testthat (>= 0.5)",
-        "parallel",
-        "knitr",
-        "rmarkdown",
-        "bookdown",
-        "sessioninfo"
-      ],
-      "Description": "A set of restricted permutation designs for freely exchangeable, line transects (time series), and spatial grid designs plus permutation of blocks (groups of samples) is provided. 'permute' also allows split-plot designs, in which the whole-plots or split-plots or both can be freely-exchangeable or one of the restricted designs. The 'permute' package is modelled after the permutation schemes of 'Canoco 3.1' (and later) by Cajo ter Braak.",
-      "License": "GPL-2",
-      "ByteCompile": "true",
-      "URL": "https://github.com/gavinsimpson/permute",
-      "BugReports": "https://github.com/gavinsimpson/permute/issues",
-      "Copyright": "see file COPYRIGHTS",
-      "VignetteBuilder": "knitr",
-      "Language": "en-GB",
-      "NeedsCompilation": "no",
-      "Author": "Gavin L. Simpson [aut, cph, cre] (ORCID: <https://orcid.org/0000-0002-9084-8413>), R Core Team [cph], Douglas M. Bates [ctb], Jari Oksanen [ctb]",
-      "Maintainer": "Gavin L. Simpson <ucfagls@gmail.com>",
-      "Repository": "CRAN"
-    },
     "pillar": {
       "Package": "pillar",
       "Version": "1.11.1",
@@ -5848,25 +5666,6 @@
       "Maintainer": "Hadley Wickham <hadley@posit.co>",
       "Repository": "CRAN"
     },
-    "qap": {
-      "Package": "qap",
-      "Version": "0.1-2",
-      "Source": "Repository",
-      "Title": "Heuristics for the Quadratic Assignment Problem (QAP)",
-      "Date": "2022-06-27",
-      "Authors@R": "c(person(\"Michael\", \"Hahsler\", role = c(\"aut\", \"cre\", \"cph\"), email = \"mhahsler@lyle.smu.edu\", comment = c(ORCID = \"0000-0003-2716-1405\")), person(\"Franz\", \"Rendl\", role = c(\"ctb\", \"cph\")))",
-      "Description": "Implements heuristics for the Quadratic Assignment Problem (QAP). Although, the QAP was introduced as a combinatorial optimization problem for the facility location problem in operations research, it also has many applications in data analysis. The problem is NP-hard and the package implements a simulated annealing heuristic.",
-      "Suggests": [
-        "testthat"
-      ],
-      "URL": "https://github.com/mhahsler/qap",
-      "BugReports": "https://github.com/mhahsler/qap/issues",
-      "License": "GPL-3",
-      "NeedsCompilation": "yes",
-      "Author": "Michael Hahsler [aut, cre, cph] (<https://orcid.org/0000-0003-2716-1405>), Franz Rendl [ctb, cph]",
-      "Maintainer": "Michael Hahsler <mhahsler@lyle.smu.edu>",
-      "Repository": "CRAN"
-    },
     "quantreg": {
       "Package": "quantreg",
       "Version": "6.1",
@@ -6196,25 +5995,6 @@
       "NeedsCompilation": "no",
       "Author": "Ben Bolker [aut, cre] (ORCID: <https://orcid.org/0000-0002-2127-0443>), Anna Ly [ctb] (ORCID: <https://orcid.org/0000-0002-0210-0342>)",
       "Maintainer": "Ben Bolker <bolker@mcmaster.ca>",
-      "Repository": "CRAN"
-    },
-    "registry": {
-      "Package": "registry",
-      "Version": "0.5-1",
-      "Source": "Repository",
-      "Type": "Package",
-      "Title": "Infrastructure for R Package Registries",
-      "Author": "David Meyer",
-      "Maintainer": "David Meyer <David.Meyer@R-project.org>",
-      "Description": "Provides a generic infrastructure for creating and using registries.",
-      "Depends": [
-        "R (>= 2.6.0)"
-      ],
-      "Imports": [
-        "utils"
-      ],
-      "License": "GPL-2",
-      "NeedsCompilation": "no",
       "Repository": "CRAN"
     },
     "renv": {
@@ -6689,109 +6469,6 @@
       "NeedsCompilation": "no",
       "Author": "Uwe Ligges [aut, cre], Martin Maechler [aut], Sarah Schnackenberg [aut]",
       "Maintainer": "Uwe Ligges <ligges@statistik.tu-dortmund.de>",
-      "Repository": "CRAN"
-    },
-    "scrutiny": {
-      "Package": "scrutiny",
-      "Version": "0.6.1",
-      "Source": "Repository",
-      "Title": "Error Detection in Science",
-      "Authors@R": "c( person(given = \"Lukas\", family = \"Jung\", role = c(\"aut\", \"cre\"), email = \"jung-lukas@gmx.net\"), person(given = \"Aurélien\", family = \"Allard\", role = c(\"ctb\")), person(given = \"Nicolas Roman\", family = \"Posner\", role = c(\"ctb\")) )",
-      "Maintainer": "Lukas Jung <jung-lukas@gmx.net>",
-      "Description": "Test published summary statistics for consistency (Brown and Heathers, 2017, <doi:10.1177/1948550616673876>; Allard, 2018, <https://aurelienallard.netlify.app/post/anaytic-grimmer-possibility-standard-deviations/>; Heathers and Brown, 2019, <https://osf.io/5vb3u/>). The package also provides infrastructure for implementing new error detection techniques.",
-      "License": "MIT + file LICENSE",
-      "Encoding": "UTF-8",
-      "LazyData": "true",
-      "RoxygenNote": "7.3.3",
-      "Imports": [
-        "cli",
-        "corrr",
-        "dplyr",
-        "ggplot2",
-        "ggrepel",
-        "glue",
-        "lifecycle",
-        "magrittr",
-        "methods",
-        "purrr",
-        "rlang (>= 1.1.0)",
-        "stats",
-        "stringr",
-        "tibble",
-        "tidyr",
-        "tidyselect"
-      ],
-      "Collate": "'is-numeric-like.R' 'import-reexport.R' 'utils.R' 'mapper-function-helpers.R' 'audit-cols-minimal.R' 'audit.R' 'baseline-consistency-tests.R' 'before-inside-parens.R' 'function-factory-helpers.R' 'round-ceil-floor.R' 'round.R' 'reround.R' 'unround.R' 'sd-binary.R' 'decimal-places.R' 'debit-table.R' 'debit.R' 'grim.R' 'function-map.R' 'grimmer.R' 'grimmer-map.R' 'duplicate-detect.R' 'debit-map.R' 'restore-zeros.R' 'seq-decimal.R' 'manage-extra-cols.R' 'grim-map.R' 'data-doc.R' 'data-frame-predicates.R' 'seq-predicates.R' 'function-map-seq.R' 'debit-map-seq.R' 'disperse.R' 'function-map-total-n.R' 'debit-map-total-n.R' 'debit-plot.R' 'duplicate-count-colpair.R' 'duplicate-count.R' 'grim-granularity.R' 'grim-map-debug.R' 'grim-map-seq-debug.R' 'grim-map-seq.R' 'grim-map-total-n.R' 'grim-plot.R' 'grim-stats.R' 'grimmer-map-seq.R' 'grimmer-map-total-n.R' 'grimmer-rsprite2.R' 'metadata.R' 'method-audit-seq.R' 'method-audit-total-n.R' 'method-debit-map.R' 'method-detect.R' 'method-dup-count-colpair.R' 'method-dup-count.R' 'method-grim-map.R' 'method-grim-sequence.R' 'method-grimmer-map.R' 'method-tally.R' 'odds-ratio-map.R' 'reround-to-fraction.R' 'reverse-map-seq.R' 'reverse-map-total-n.R' 'rivets-perfect-mean-sd.R' 'rivets-plot-cols.R' 'rivets-plot-lines.R' 'rivets-t-test.R' 'rivets_new.R' 'rounding-bias.R' 'row-to-colnames.R' 'scrutiny-package.R' 'seq-disperse.R' 'seq-length.R' 'split-by-parens.R' 'subset-superset.R' 'utils-pipe.R' 'utils-tidy-eval.R' 'write-doc-audit.R'",
-      "Suggests": [
-        "knitr",
-        "pkgload",
-        "rmarkdown",
-        "testthat (>= 3.0.0)"
-      ],
-      "Config/testthat/edition": "3",
-      "Depends": [
-        "R (>= 3.4.0)"
-      ],
-      "VignetteBuilder": "knitr",
-      "URL": "https://lhdjung.github.io/scrutiny/, https://github.com/lhdjung/scrutiny/",
-      "BugReports": "https://github.com/lhdjung/scrutiny/issues",
-      "NeedsCompilation": "no",
-      "Author": "Lukas Jung [aut, cre], Aurélien Allard [ctb], Nicolas Roman Posner [ctb]",
-      "Repository": "CRAN"
-    },
-    "seriation": {
-      "Package": "seriation",
-      "Version": "1.5.8",
-      "Source": "Repository",
-      "Type": "Package",
-      "Title": "Infrastructure for Ordering Objects Using Seriation",
-      "Date": "2025-08-20",
-      "Authors@R": "c( person(\"Michael\", \"Hahsler\", role = c(\"aut\", \"cre\", \"cph\"), email = \"mhahsler@lyle.smu.edu\", comment = c(ORCID = \"0000-0003-2716-1405\")), person(\"Christian\", \"Buchta\", role = c(\"aut\", \"cph\")), person(\"Kurt\", \"Hornik\", role = c(\"aut\", \"cph\"), comment = c(ORCID = \"0000-0003-4198-9911\")), person(\"David\", \"Barnett\", role = c(\"ctb\")), person(\"Michael\", \"Brusco\", role = c(\"ctb\", \"cph\")), person(\"Michael\", \"Friendly\", role = c(\"ctb\")), person(\"Hans-Friedrich\", \"Koehn\", role = c(\"ctb\", \"cph\")), person(\"Fionn\", \"Murtagh\", role = c(\"ctb\", \"cph\")), person(\"Stephanie\", \"Stahl\", role = c(\"ctb\", \"cph\")))",
-      "Description": "Infrastructure for ordering objects with an implementation of several seriation/sequencing/ordination techniques to reorder matrices, dissimilarity matrices, and dendrograms. Also provides (optimally) reordered heatmaps, color images and clustering visualizations like dissimilarity plots, and visual assessment of cluster tendency plots (VAT and iVAT). Hahsler et al (2008) <doi:10.18637/jss.v025.i03>.",
-      "Classification/ACM": "G.1.6, G.2.1, G.4",
-      "URL": "https://github.com/mhahsler/seriation",
-      "BugReports": "https://github.com/mhahsler/seriation/issues",
-      "Depends": [
-        "R (>= 2.14.0)"
-      ],
-      "Imports": [
-        "ca",
-        "cluster",
-        "colorspace",
-        "foreach",
-        "gclus",
-        "grDevices",
-        "grid",
-        "MASS",
-        "qap",
-        "registry",
-        "stats",
-        "TSP",
-        "vegan"
-      ],
-      "Suggests": [
-        "dbscan",
-        "DendSer",
-        "dendextend",
-        "doParallel",
-        "GA",
-        "ggplot2",
-        "keras",
-        "Rtsne",
-        "scales",
-        "smacof",
-        "tensorflow",
-        "testthat",
-        "umap"
-      ],
-      "Encoding": "UTF-8",
-      "RoxygenNote": "7.3.2",
-      "License": "GPL-3",
-      "Copyright": "The code in src/bbwrcg.f, src/arsa.f and src/bburcg.f are Copyright (C) 2005 M. Brusco, H.F. Koehn, and S. Stahl. All other code is Copyright (C) Michael Hahsler, Christian Buchta, and Kurt Hornik.",
-      "Collate": "'AAA_check_installed.R' 'AAA_color_palette.R' 'AAA_defaults.R' 'AAA_map.R' 'AAA_parameters.R' 'AAA_registry_criterion.R' 'AAA_registry_seriate.R' 'AAA_seriation-package.R' 'Chameleon.R' 'Irish.R' 'Munsingen.R' 'Psych24.R' 'SupremeCourt.R' 'Townships.R' 'VAT.R' 'Wood.R' 'Zoo.R' 'bertinplot.R' 'criterion.R' 'criterion.array.R' 'criterion.dist.R' 'criterion.matrix.R' 'dissplot.R' 'get_order.R' 'ggVAT.R' 'ggbertinplot.R' 'ggdissplot.R' 'hmap.R' 'gghmap.R' 'pimage.R' 'ggpimage.R' 'grid_helpers.R' 'lines_and_ordered_data.R' 'lle.R' 'permute.R' 'register_DendSer.R' 'register_GA.R' 'register_optics.R' 'register_smacof.R' 'register_tsne.R' 'register_umap.R' 'reorder.hclust.R' 'robinson.R' 'ser_dist.R' 'ser_permutation.R' 'ser_permutation_vector.R' 'ser_permutation_vector2matrix.R' 'seriate.R' 'seriate.dist.R' 'seriate.matrix.R' 'seriate.array.R' 'seriate.data.frame.R' 'seriate.table.R' 'seriate_AOE.R' 'seriate_ARSA_Branch-Bound.R' 'seriate_TSP.R' 'seriate_BEA.R' 'seriate_BK.R' 'seriate_CA.R' 'seriate_GSA.R' 'seriate_HC.R' 'seriate_LLE.R' 'seriate_MDS.R' 'seriate_Mean.R' 'seriate_PCA.R' 'seriate_QAP.R' 'seriate_R2E.R' 'seriate_SGD.R' 'seriate_SPIN.R' 'seriate_VAT.R' 'seriate_best.R' 'seriate_enumerate.R' 'seriate_heatmap.R' 'seriate_identity.R' 'seriate_random.R' 'seriate_reverse.R' 'seriate_spectral.R' 'seriate_vegan.R' 'uniscale.R'",
-      "NeedsCompilation": "yes",
-      "Author": "Michael Hahsler [aut, cre, cph] (ORCID: <https://orcid.org/0000-0003-2716-1405>), Christian Buchta [aut, cph], Kurt Hornik [aut, cph] (ORCID: <https://orcid.org/0000-0003-4198-9911>), David Barnett [ctb], Michael Brusco [ctb, cph], Michael Friendly [ctb], Hans-Friedrich Koehn [ctb, cph], Fionn Murtagh [ctb, cph], Stephanie Stahl [ctb, cph]",
-      "Maintainer": "Michael Hahsler <mhahsler@lyle.smu.edu>",
       "Repository": "CRAN"
     },
     "sfd": {
@@ -7851,37 +7528,6 @@
       "NeedsCompilation": "yes",
       "Author": "Hadley Wickham [aut], Lionel Henry [aut], Davis Vaughan [aut, cre], data.table team [cph] (Radix sort based on data.table's forder() and their contribution to R's order()), Posit Software, PBC [cph, fnd]",
       "Maintainer": "Davis Vaughan <davis@posit.co>",
-      "Repository": "CRAN"
-    },
-    "vegan": {
-      "Package": "vegan",
-      "Version": "2.7-5",
-      "Source": "Repository",
-      "Title": "Community Ecology Package",
-      "Authors@R": "c(person(\"Jari\", \"Oksanen\", role=c(\"aut\",\"cre\"), email=\"jhoksane@gmail.com\", comment = c(ORCID=\"0000-0001-7102-9626\")), person(\"Gavin L.\", \"Simpson\", role=\"aut\", email=\"ucfagls@gmail.com\", comment = c(ORCID = \"0000-0002-9084-8413\")), person(\"F. Guillaume\", \"Blanchet\", role=\"aut\"), person(\"Roeland\", \"Kindt\", role=\"aut\"), person(\"Pierre\", \"Legendre\", role=\"aut\"), person(\"Peter R.\", \"Minchin\", role=\"aut\"), person(\"R.B.\", \"O'Hara\", role=\"aut\"), person(\"Peter\", \"Solymos\", role=\"aut\"), person(\"M. Henry H.\", \"Stevens\", role=\"aut\"), person(\"Eduard\", \"Szoecs\", role=\"aut\"), person(\"Helene\", \"Wagner\", role=\"aut\"), person(\"Matt\", \"Barbour\", role=\"ctb\"), person(\"Michael\", \"Bedward\", role=\"aut\"), person(\"Henrik\", \"Bengtsson\", role=\"ctb\"), person(\"Ben\", \"Bolker\", role=\"aut\"), person(\"Daniel\", \"Borcard\", role=\"aut\"), person(\"Tuomas\", \"Borman\", role=\"ctb\"), person(\"Gustavo\", \"Carvalho\", role=\"aut\"), person(\"Michael\", \"Chirico\", role=\"ctb\"), person(\"Miquel\", \"De Caceres\", role=\"aut\"), person(\"Sebastien\", \"Durand\", role=\"aut\"), person(\"Heloisa Beatriz Antoniazi\", \"Evangelista\", role=\"aut\"), person(\"Rich\", \"FitzJohn\", role=\"ctb\"), person(\"Michael\", \"Friendly\", role=\"ctb\"), person(\"Brendan\",\"Furneaux\", role=\"ctb\"), person(\"Geoffrey\", \"Hannigan\", role=\"aut\"), person(\"Isaac\", \"Heida\", role=\"ctb\"), person(\"Mark O.\", \"Hill\", role=\"aut\"), person(\"Leo\", \"Lahti\", role=\"aut\"), person(\"Cameron\", \"Martino\", role=\"aut\"), person(\"Dan\", \"McGlinn\", role=\"ctb\"), person(\"Marie-Helene\", \"Ouellette\", role=\"aut\"), person(\"Eduardo\", \"Ribeiro Cunha\", role=\"aut\"), person(\"Tyler\", \"Smith\", role=\"aut\"), person(\"Adrian\", \"Stier\", role=\"aut\"), person(\"Cajo J.F.\", \"Ter Braak\", role=\"aut\"), person(\"James\", \"Weedon\", role=\"aut\"))",
-      "Depends": [
-        "permute (>= 0.9-0)",
-        "R (>= 4.1.0)"
-      ],
-      "Suggests": [
-        "parallel",
-        "knitr",
-        "markdown"
-      ],
-      "Imports": [
-        "MASS",
-        "cluster",
-        "lattice",
-        "mgcv"
-      ],
-      "VignetteBuilder": "utils, knitr",
-      "Description": "Ordination methods, diversity analysis and other functions for community and vegetation ecologists.",
-      "License": "GPL-2",
-      "BugReports": "https://github.com/vegandevs/vegan/issues",
-      "URL": "https://vegandevs.github.io/vegan/, https://github.com/vegandevs/vegan",
-      "NeedsCompilation": "yes",
-      "Author": "Jari Oksanen [aut, cre] (ORCID: <https://orcid.org/0000-0001-7102-9626>), Gavin L. Simpson [aut] (ORCID: <https://orcid.org/0000-0002-9084-8413>), F. Guillaume Blanchet [aut], Roeland Kindt [aut], Pierre Legendre [aut], Peter R. Minchin [aut], R.B. O'Hara [aut], Peter Solymos [aut], M. Henry H. Stevens [aut], Eduard Szoecs [aut], Helene Wagner [aut], Matt Barbour [ctb], Michael Bedward [aut], Henrik Bengtsson [ctb], Ben Bolker [aut], Daniel Borcard [aut], Tuomas Borman [ctb], Gustavo Carvalho [aut], Michael Chirico [ctb], Miquel De Caceres [aut], Sebastien Durand [aut], Heloisa Beatriz Antoniazi Evangelista [aut], Rich FitzJohn [ctb], Michael Friendly [ctb], Brendan Furneaux [ctb], Geoffrey Hannigan [aut], Isaac Heida [ctb], Mark O. Hill [aut], Leo Lahti [aut], Cameron Martino [aut], Dan McGlinn [ctb], Marie-Helene Ouellette [aut], Eduardo Ribeiro Cunha [aut], Tyler Smith [aut], Adrian Stier [aut], Cajo J.F. Ter Braak [aut], James Weedon [aut]",
-      "Maintainer": "Jari Oksanen <jhoksane@gmail.com>",
       "Repository": "CRAN"
     },
     "vip": {

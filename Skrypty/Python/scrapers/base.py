@@ -218,9 +218,12 @@ def parse_float_first(x: str | None) -> float | None:
 
 
 def parse_mein_loose(x: str | None) -> float | None:
+    # Liczba punktow MEiN moze miec spacje jako separator tysiecy ("1 200" -> 1200).
+    # Kotwiczymy na pierwszej CYFRZE (\d[\d ]*), bo "[0-9 ]+" lapalo spacje przed
+    # liczba przy wejsciu z tekstem wiodacym ("Liczba punktow 924") i zwracalo None.
     if x is None:
         return None
-    m = re.search(r"([0-9 ]+)", x)
+    m = re.search(r"(\d[\d ]*)", x)
     if not m:
         return None
     return parse_int_loose(m.group(1).replace(" ", ""))
