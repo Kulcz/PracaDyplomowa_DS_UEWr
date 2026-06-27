@@ -12,6 +12,7 @@ library(ggplot2)
 library(readr)
 library(here)
 library(scales)
+library(fs)
 
 UCZ_LEVELS <- c("upwr", "sggw", "urk", "uwm")
 UCZ_LABELS <- c(upwr = "UPWr", sggw = "SGGW", urk = "URK", uwm = "UWM")
@@ -44,6 +45,7 @@ p <- ggplot(dat, aes(uczelnia, cagr, fill = zrodlo)) +
   theme_minimal(base_size = 12) +
   theme(legend.position = "top")
 
+dir_create(here("Wykresy", "praca"))
 ggsave(here("Wykresy", "praca", "fig_06_dynamika_porownanie.png"), p,
        width = 9, height = 5.5, dpi = 200)
 cat("Zapisano: Wykresy/praca/fig_06_dynamika_porownanie.png\n")

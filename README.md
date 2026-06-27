@@ -46,8 +46,9 @@ Praca_dyplomowa/           # praca_dyplomowa.qmd + referencje.bib + praca_dyplom
 
 ```bash
 # 1. Otwórz w Positron → ustaw cwd = root projektu
-# 2. R: instalacja pakietów + snapshot renv
-Rscript init_r_env.R
+#    (.Rprofile aktywuje renv automatycznie przy starcie sesji)
+# 2. R: odtworzenie środowiska z zapiętego renv.lock (dokładne wersje pakietów)
+Rscript -e 'renv::restore()'
 # 3. Python: venv + Playwright
 python3 -m venv .venv
 source .venv/bin/activate
